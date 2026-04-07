@@ -1,0 +1,78 @@
+/* Flash Cards — Clean study theme with flip animation */
+
+.page { min-height:100vh; display:flex; flex-direction:column; background:linear-gradient(180deg,#f8f9fe,#eef0f7); }
+
+.topBar { display:flex; justify-content:space-between; align-items:center; padding:12px 20px; }
+.counter { font-family:var(--font-display); font-size:14px; color:var(--color-text-secondary); font-weight:700; }
+.nameTag { font-size:13px; color:var(--color-text-secondary); background:rgba(108,92,231,0.08); padding:5px 12px; border-radius:16px; font-weight:700; }
+.statsLabel { display:flex; gap:10px; font-size:13px; font-weight:800; }
+.knownCount { color:#27ae60; }
+.unknownCount { color:#e74c3c; }
+
+.progressBar { height:4px; background:rgba(0,0,0,0.06); display:flex; overflow:hidden; }
+.progressKnown { height:100%; background:#27ae60; transition:width 0.4s ease; }
+.progressUnknown { height:100%; background:#e74c3c; transition:width 0.4s ease; }
+
+/* Card Area */
+.cardArea { flex:1; display:flex; align-items:center; justify-content:center; padding:20px; perspective:1200px; }
+
+.card { width:min(85vw,420px); height:min(55vh,320px); position:relative; cursor:pointer; transform-style:preserve-3d; transition:transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+.cardFlipped { transform:rotateY(180deg); }
+
+.swipeRight { animation:swipeR 0.4s ease forwards; }
+.swipeLeft { animation:swipeL 0.4s ease forwards; }
+@keyframes swipeR { to{transform:translateX(120%) rotate(8deg); opacity:0} }
+@keyframes swipeL { to{transform:translateX(-120%) rotate(-8deg); opacity:0} }
+
+.cardFront, .cardBack {
+  position:absolute; inset:0; backface-visibility:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-radius:24px; padding:32px; text-align:center; gap:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.08);
+}
+
+.cardFront { background:white; border:2px solid rgba(108,92,231,0.1); }
+.cardBack { background:linear-gradient(135deg,#6c5ce7,#a29bfe); transform:rotateY(180deg); }
+
+.cardImage { max-height:120px; border-radius:12px; object-fit:contain; }
+.cardText { font-family:var(--font-display); font-size:26px; font-weight:800; color:var(--color-text); line-height:1.3; }
+.cardBack .cardText { color:white; }
+
+.speakBtn { width:40px; height:40px; border-radius:50%; background:rgba(108,92,231,0.1); border:none; font-size:18px; cursor:pointer; transition:all 0.2s; }
+.speakBtn:hover { background:rgba(108,92,231,0.2); transform:scale(1.1); }
+.cardBack .speakBtn { background:rgba(255,255,255,0.2); }
+
+.flipHint { font-size:12px; color:var(--color-text-light); font-weight:600; opacity:0.6; }
+.cardBack .flipHint { color:rgba(255,255,255,0.5); }
+
+/* Action Buttons */
+.actionRow { display:flex; gap:16px; padding:16px 32px 24px; justify-content:center; }
+.unknownBtn, .knownBtn { display:flex; flex-direction:column; align-items:center; gap:4px; padding:14px 36px; border-radius:16px; font-family:var(--font-display); font-weight:800; font-size:14px; cursor:pointer; border:none; transition:all 0.25s; }
+.unknownBtn span:first-child, .knownBtn span:first-child { font-size:28px; }
+.unknownBtn { background:#ffebee; color:#e74c3c; }
+.unknownBtn:hover { background:#ffcdd2; transform:translateY(-2px); }
+.knownBtn { background:#e8f5e9; color:#27ae60; }
+.knownBtn:hover { background:#c8e6c9; transform:translateY(-2px); }
+
+/* Results */
+.resultPage { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#f8f9fe,#eef0f7); padding:20px; }
+.resultCard { background:white; border-radius:24px; max-width:460px; width:100%; padding:36px; text-align:center; box-shadow:0 12px 40px rgba(0,0,0,0.08); animation:slideUp 0.5s ease; }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.resultEmoji { font-size:56px; margin-bottom:8px; }
+.resultTitle { font-family:var(--font-display); font-size:26px; font-weight:800; color:var(--color-text); margin-bottom:2px; }
+.resultSub { color:var(--color-purple); font-weight:700; margin-bottom:16px; }
+.resultCard .progressBar { height:8px; border-radius:4px; margin-bottom:16px; }
+.statsRow { display:flex; gap:12px; margin-bottom:20px; }
+.statGreen, .statRed { flex:1; padding:14px 8px; border-radius:14px; display:flex; flex-direction:column; align-items:center; gap:4px; font-size:13px; font-weight:700; }
+.statGreen { background:#e8f5e9; color:#27ae60; }
+.statRed { background:#ffebee; color:#e74c3c; }
+.statBig { font-family:var(--font-display); font-size:28px; font-weight:800; }
+.btnRow { display:flex; gap:10px; flex-direction:column; }
+.reviewBtn { padding:14px; border-radius:14px; background:linear-gradient(135deg,#e67e22,#f39c12); color:#fff; font-family:var(--font-display); font-size:15px; font-weight:800; cursor:pointer; border:none; }
+.retryBtn { padding:14px; border-radius:14px; background:linear-gradient(135deg,#6c5ce7,#a29bfe); color:#fff; font-family:var(--font-display); font-size:15px; font-weight:800; cursor:pointer; border:none; }
+
+@media(max-width:640px) {
+  .card { width:90vw; height:min(50vh,280px); }
+  .cardText { font-size:22px; }
+  .actionRow { padding:12px 20px; }
+}

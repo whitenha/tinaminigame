@@ -1,0 +1,225 @@
+.card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  transition: all var(--transition-bounce);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+/* Staggered entrance animation */
+.card {
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+/* Remove old iconWrapper fixed width if we want it to blend */
+.imageContainer {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+}
+
+.imageGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 60%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  filter: blur(20px);
+  opacity: 0.15;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+  z-index: 0;
+}
+
+.templateImage {
+  width: 86px; /* Slightly larger than container for pop-out effect */
+  height: 86px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
+  transform-origin: center bottom;
+}
+
+.card:hover .templateImage {
+  transform: scale(1.18) translateY(-4px);
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,0.2));
+}
+
+.card:hover .imageGlow {
+  opacity: 0.4;
+  filter: blur(25px);
+}
+
+.iconWrapper {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-bounce);
+  position: relative;
+  z-index: 1;
+}
+
+.card:hover .iconWrapper {
+  transform: scale(1.1) rotate(-3deg);
+  animation: wiggle 0.6s ease;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.nameVi {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.description {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badges {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.badgePopular {
+  background: rgba(253, 203, 110, 0.2);
+  color: #E17055;
+}
+
+.badgeNew {
+  background: rgba(0, 184, 148, 0.15);
+  color: #00B894;
+}
+
+.badgePro {
+  background: rgba(108, 92, 231, 0.12);
+  color: var(--color-purple);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-light);
+}
+
+.difficulty {
+  display: flex;
+  gap: 1px;
+}
+
+.diffStar {
+  font-size: 10px;
+}
+
+.diffStarActive {
+  color: var(--color-yellow);
+}
+
+.diffStarInactive {
+  opacity: 0.3;
+}
+
+@media (max-width: 600px) {
+  .card {
+    padding: var(--space-md);
+  }
+  
+  .iconWrapper {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .name {
+    font-size: var(--text-base);
+  }
+  
+  .description {
+    -webkit-line-clamp: 1;
+  }
+  
+  .meta {
+    display: none;
+  }
+}

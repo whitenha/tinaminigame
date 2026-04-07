@@ -1,0 +1,96 @@
+/* ============================================================
+ * PAIRS EDITOR — Dark Glassmorphic Card Layout
+ * Premium pair-linking UI with visual connection
+ * ============================================================ */
+
+.singleEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-top: var(--space-xl);
+  animation: pairsFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pairsFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.boxLabel {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.heroTermBox {
+  background: rgba(108, 92, 231, 0.06);
+  border: 2px solid rgba(108, 92, 231, 0.15);
+  border-radius: 22px 22px 6px 6px;
+  padding: var(--space-xl) var(--space-xl) 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.termInput, .definitionInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  resize: vertical;
+  min-height: 80px;
+}
+
+.termInput:focus, .definitionInput:focus {
+  outline: none;
+  color: white;
+}
+
+.termInput::placeholder, .definitionInput::placeholder {
+  color: rgba(255,255,255,0.18);
+}
+
+.connectionIcon {
+  text-align: center;
+  color: rgba(255,255,255,0.2);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 12px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.connectionIcon::before,
+.connectionIcon::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+.definitionBox {
+  background: rgba(0, 184, 148, 0.04);
+  border: 2px solid rgba(0, 184, 148, 0.12);
+  border-radius: 6px 6px 22px 22px;
+  padding: 20px var(--space-xl) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255,255,255,0.02);
+}

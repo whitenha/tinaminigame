@@ -1,0 +1,439 @@
+/* ============================================================
+ * SETTINGS EDITOR — Ultra-Premium Dark Card Layout
+ * ============================================================ */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+  animation: settingsFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes settingsFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── HERO BANNER ──────────────────────────────────────────── */
+.heroBanner {
+  background: linear-gradient(135deg, #1a1348 0%, #2d1b69 40%, #1e0a3c 100%);
+  border-radius: 24px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(108, 92, 231, 0.15);
+  box-shadow:
+    0 12px 40px rgba(108, 92, 231, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 85%, rgba(232,67,147,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(108,92,231,0.2) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(162,155,254,0.08) 0%, transparent 50%);
+  pointer-events: none;
+  animation: bannerPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes bannerPulse {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Decorative orbs */
+.heroBanner::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(162,155,254,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.heroIcon {
+  font-size: 52px;
+  margin-bottom: 10px;
+  animation: float 3s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 12px rgba(108, 92, 231, 0.3);
+}
+
+.heroSubtitle {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ── CARDS GRID ───────────────────────────────────────────── */
+.cardsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.settingCard {
+  background: rgba(26, 26, 46, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 22px;
+  padding: 26px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.settingCard:hover {
+  border-color: rgba(255,255,255,0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cardIcon {
+  font-size: 28px;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(108, 92, 231, 0.1);
+  border: 1px solid rgba(108, 92, 231, 0.15);
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 3px;
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 600;
+}
+
+/* ── TITLE INPUT ──────────────────────────────────────────── */
+.inputWrapper {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.titleInput {
+  width: 100%;
+  padding: 16px 70px 16px 20px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  background: rgba(255,255,255,0.04);
+}
+
+.titleInput:focus {
+  outline: none;
+  border-color: rgba(108, 92, 231, 0.5);
+  background: rgba(108, 92, 231, 0.06);
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.12);
+}
+
+.titleInput::placeholder {
+  color: rgba(255,255,255,0.2);
+  font-weight: 500;
+}
+
+.charCount {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.06);
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+
+.hint {
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+  padding-left: 4px;
+  line-height: 1.6;
+}
+
+/* ── COVER IMAGE ZONE ────────────────────────────────────── */
+.coverZone {
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.coverEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 44px 24px;
+  background: rgba(255,255,255,0.02);
+  border: 2px dashed rgba(255,255,255,0.08);
+  border-radius: 18px;
+  transition: all 0.3s ease;
+}
+
+.coverEmpty:hover {
+  border-color: rgba(108, 92, 231, 0.4);
+  background: rgba(108, 92, 231, 0.04);
+  box-shadow: 0 0 30px rgba(108, 92, 231, 0.08);
+}
+
+.coverEmptyIcon {
+  color: rgba(255,255,255,0.2);
+  opacity: 0.8;
+}
+
+.coverEmptyText {
+  font-size: 14px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 600;
+}
+
+.uploadBtn {
+  background: linear-gradient(135deg, #6C5CE7 0%, #a29bfe 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+}
+
+.uploadBtn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 28px rgba(108, 92, 231, 0.45);
+}
+
+/* ── COVER PREVIEW ────────────────────────────────────────── */
+.coverPreview {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  max-height: 260px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coverOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.coverPreview:hover .coverOverlay {
+  opacity: 1;
+}
+
+.coverAction {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 11px 20px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.coverAction:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.2);
+}
+
+.coverActionDanger {
+  color: #f87171;
+}
+
+.coverActionDanger:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* ── TIME SETTINGS ────────────────────────────────────────── */
+.timeBtn {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.06);
+  padding: 11px 0;
+  border-radius: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.timeBtn:hover {
+  border-color: rgba(108, 92, 231, 0.4);
+  color: #a29bfe;
+  background: rgba(108, 92, 231, 0.08);
+}
+
+.timeActive {
+  background: linear-gradient(135deg, rgba(108,92,231,0.2) 0%, rgba(162,155,254,0.15) 100%);
+  border-color: rgba(108, 92, 231, 0.5);
+  color: #a29bfe;
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.15);
+}
+
+.timeActive:hover {
+  color: #a29bfe;
+}
+
+.applyAllBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(108, 92, 231, 0.08);
+  color: #a29bfe;
+  border: 2px dashed rgba(108, 92, 231, 0.25);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.applyAllBtn:hover {
+  background: rgba(108, 92, 231, 0.15);
+  border-color: rgba(108, 92, 231, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.15);
+}
+
+/* ── TOGGLE SWITCHES (AUDIO SETTINGS) ─────────────────────── */
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.toggleRow:hover {
+  border-color: rgba(108, 92, 231, 0.2);
+  background: rgba(108, 92, 231, 0.04);
+  box-shadow: 0 0 20px rgba(108, 92, 231, 0.05);
+}
+
+.toggleText {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggleText strong {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 3px;
+}
+
+.toggleText span {
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 500;
+}
+
+.toggleSwitch {
+  width: 48px;
+  height: 26px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 26px;
+  position: relative;
+  transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+  box-shadow: 0 0 16px rgba(108, 92, 231, 0.3);
+}
+
+.toggleKnob {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(22px);
+}

@@ -1,0 +1,305 @@
+/* ============================================================
+ * MCQ EDITOR — Ultra-Premium Dark Quiz Builder
+ * Glassmorphic cards with neon accents and micro-animations
+ * ============================================================ */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 100%;
+  padding: 20px 0;
+  animation: editorFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes editorFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── QUESTION CARD ────────────────────────────────────────── */
+.questionCard {
+  background: linear-gradient(135deg, #1a1a40 0%, #2d1b69 50%, #1a1a40 100%);
+  border-radius: 24px;
+  padding: 28px 32px 24px;
+  box-shadow:
+    0 12px 40px rgba(108, 92, 231, 0.2),
+    0 0 0 1px rgba(108, 92, 231, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Animated gradient overlay */
+.questionCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(108, 92, 231, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(232, 67, 147, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 0%, rgba(162,155,254,0.1) 0%, transparent 40%);
+  pointer-events: none;
+  animation: questionGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes questionGlow {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* Decorative corner accents */
+.questionCard::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, rgba(162, 155, 254, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.questionInput {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 20px 24px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: white;
+  resize: none;
+  height: 214px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+}
+
+.questionInput:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(162, 155, 254, 0.5);
+  box-shadow:
+    0 0 0 4px rgba(108, 92, 231, 0.15),
+    0 0 30px rgba(108, 92, 231, 0.1);
+}
+
+.questionInput::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── ANSWERS SECTION ──────────────────────────────────────── */
+.answersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.answersLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.answersProgress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progressDot, .progressDotOpt {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.progressDot[data-filled="true"] {
+  background: #00cec9;
+  box-shadow: 0 0 10px rgba(0, 206, 201, 0.5);
+}
+
+.progressDotOpt[data-filled="true"] {
+  background: #00b894;
+  box-shadow: 0 0 10px rgba(0, 184, 148, 0.4);
+}
+
+.progressText {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-left: 6px;
+  font-weight: 700;
+}
+
+/* ── OPTIONS GRID ─────────────────────────────────────────── */
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+}
+
+/* ── OPTION CARD (base) ───────────────────────────────────── */
+.optionCard {
+  display: flex;
+  border-radius: 18px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255,255,255,0.04);
+  cursor: default;
+  min-height: 100px;
+  position: relative;
+}
+
+.optionCard:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* Color strip */
+.optionStrip {
+  width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Subtle shimmer on strip */
+.optionStrip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+  pointer-events: none;
+}
+
+.optionShape {
+  font-size: 28px;
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+/* Content area */
+.optionContent {
+  flex: 1;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(26, 26, 46, 0.95);
+}
+
+.optionMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+}
+
+.correctBadge {
+  background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
+}
+
+.optionalBadge {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.4);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 10px;
+}
+
+.optionInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  resize: none;
+  height: 76px;
+  overflow: hidden;
+  padding: 4px 0;
+  transition: all 0.25s;
+}
+
+.optionInput:focus {
+  outline: none;
+  color: white;
+}
+
+.optionInput::placeholder {
+  color: rgba(255,255,255,0.2);
+  font-weight: 500;
+}
+
+/* ── THEME: Option A (RED — Correct answer) ───────────────── */
+.optA .optionStrip { background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%); }
+.optA.correctCard {
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(0, 184, 148, 0.4);
+}
+.optA.correctCard .optionContent {
+  background: linear-gradient(135deg, rgba(0, 184, 148, 0.08) 0%, rgba(26, 26, 46, 0.95) 100%);
+}
+
+/* ── THEME: Option B (BLUE) ───────────────────────────────── */
+.optB .optionStrip { background: linear-gradient(180deg, #3498db 0%, #2980b9 100%); }
+
+/* ── THEME: Option C (AMBER) ─────────────────────────────── */
+.optC .optionStrip { background: linear-gradient(180deg, #f39c12 0%, #e67e22 100%); }
+
+/* ── THEME: Option D (GREEN) ──────────────────────────────── */
+.optD .optionStrip { background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .questionCard {
+    padding: 20px 18px;
+  }
+
+  .questionInput {
+    font-size: 20px;
+    padding: 16px 18px;
+    height: 160px;
+  }
+}

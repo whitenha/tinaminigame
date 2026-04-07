@@ -1,0 +1,173 @@
+/* AnagramPlayer — K-5 Letter Rearrangement */
+
+.gamePage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+}
+
+.questionArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 24px 8px;
+  gap: 8px;
+}
+
+.instruction { color: rgba(255,255,255,0.8); font-weight: 700; font-size: 16px; }
+
+.hint {
+  color: rgba(253,203,110,0.9);
+  font-weight: 600;
+  font-size: 14px;
+  background: rgba(253,203,110,0.1);
+  padding: 6px 14px;
+  border-radius: 10px;
+}
+
+/* Letter slots */
+.slotsRow {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.letterSlot {
+  width: 52px;
+  height: 60px;
+  border-radius: 14px;
+  border: 2px dashed rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.3);
+  transition: all 0.2s ease;
+  cursor: default;
+  padding: 0;
+}
+
+.slotPlaceholder { opacity: 0.3; font-size: 20px; }
+
+.slotFilled {
+  border-style: solid;
+  border-color: #4D96FF;
+  background: linear-gradient(135deg, rgba(77,150,255,0.2), rgba(56,189,248,0.2));
+  color: white;
+  cursor: pointer;
+  animation: slotPop 0.2s ease;
+}
+
+.slotCorrect {
+  border-color: #6BCB77 !important;
+  background: linear-gradient(135deg, rgba(107,203,119,0.3), rgba(16,172,132,0.3)) !important;
+  color: #6BCB77 !important;
+}
+
+.slotWrong {
+  border-color: #FF6B6B !important;
+  background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(231,76,60,0.2)) !important;
+  color: #FF6B6B !important;
+  animation: slotShake 0.3s ease;
+}
+
+@keyframes slotPop {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slotShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Available letters */
+.lettersRow {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.letterBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+  color: white;
+  font-size: 22px;
+  font-weight: 900;
+  border: 2px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.letterBtn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.5);
+}
+
+.letterBtn:active:not(:disabled) { transform: scale(0.9); }
+
+/* Feedback */
+.feedback {
+  text-align: center;
+  padding: 14px 20px;
+  margin: 12px 20px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.fbOk { background: rgba(46,204,113,0.15); border: 1px solid rgba(46,204,113,0.3); color: #6BCB77; }
+.fbBad { background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); color: #FF6B6B; }
+
+.actionRow {
+  display: flex;
+  gap: 12px;
+  padding: 12px 20px;
+  justify-content: center;
+}
+
+.hintBtn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.hintUsedBtn { opacity: 0.4; cursor: not-allowed; }
+
+.checkBtn {
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6BCB77, #10ac84);
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(107,203,119,0.3);
+}
+
+.checkBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 640px) {
+  .letterSlot, .letterBtn { width: 44px; height: 48px; font-size: 18px; }
+  .slotsRow, .lettersRow { gap: 6px; }
+}

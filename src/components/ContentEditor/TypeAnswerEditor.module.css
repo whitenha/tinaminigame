@@ -1,0 +1,266 @@
+/* ══════════════════════════════════════════════════════════════
+   TypeAnswerEditor — Premium Dark Theme
+   ══════════════════════════════════════════════════════════════ */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px 0 24px;
+}
+
+/* ── Question Card ────────────────────────────────────────── */
+.questionCard {
+  background: linear-gradient(135deg, rgba(156, 136, 255, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%);
+  border: 1px solid rgba(156, 136, 255, 0.15);
+  border-radius: 16px;
+  padding: 6px;
+  transition: border-color 0.2s;
+}
+
+.questionCard:focus-within {
+  border-color: rgba(156, 136, 255, 0.4);
+}
+
+.questionInput {
+  width: 100%;
+  min-height: 120px;
+  padding: 20px 24px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: white;
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 26px;
+  font-weight: 700;
+  resize: none;
+  outline: none;
+  line-height: 1.4;
+}
+
+.questionInput::placeholder {
+  color: rgba(255,255,255,0.3);
+  font-weight: 500;
+}
+
+/* ── Section Labels ──────────────────────────────────────── */
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.answersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Correct Answer Card ─────────────────────────────────── */
+.correctCard {
+  display: flex;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(67, 160, 71, 0.15) 0%, rgba(102, 187, 106, 0.08) 100%);
+  border: 1px solid rgba(67, 160, 71, 0.25);
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+}
+
+.correctCard:focus-within {
+  border-color: rgba(67, 160, 71, 0.6);
+  box-shadow: 0 0 0 3px rgba(67, 160, 71, 0.15), 0 8px 24px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, rgba(67, 160, 71, 0.2) 0%, rgba(102, 187, 106, 0.1) 100%);
+}
+
+.correctStrip {
+  width: 48px;
+  background: linear-gradient(180deg, #43A047, #66BB6A);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+}
+
+.correctIcon {
+  font-size: 20px;
+  font-weight: 900;
+  color: white;
+}
+
+.correctContent {
+  flex: 1;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.correctBadge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #66BB6A;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.correctInput {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  color: white;
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 18px;
+  font-weight: 700;
+  outline: none;
+}
+
+.correctInput::placeholder {
+  color: rgba(255,255,255,0.3);
+  font-weight: 500;
+}
+
+/* ── Alternative Answers ─────────────────────────────────── */
+.altSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.altCount {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.8);
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  box-shadow: 0 2px 6px rgba(255,107,107,0.3);
+}
+
+.altHint {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 500;
+  font-style: italic;
+  padding: 0 4px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.altList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.altRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(77, 150, 255, 0.12) 0%, rgba(107, 203, 119, 0.08) 100%);
+  border: 1px solid rgba(77, 150, 255, 0.2);
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  backdrop-filter: blur(8px);
+}
+
+.altRow:focus-within {
+  border-color: rgba(77, 150, 255, 0.6);
+  background: linear-gradient(135deg, rgba(77, 150, 255, 0.18) 0%, rgba(107, 203, 119, 0.12) 100%);
+  box-shadow: 0 0 0 3px rgba(77, 150, 255, 0.15), 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.altNum {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4D96FF, #6BCB77);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(77,150,255,0.4);
+}
+
+.altInput {
+  flex: 1;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  color: white;
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+}
+
+.altInput::placeholder {
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+}
+
+.altRemoveBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(239, 83, 80, 0.1);
+  border: 1px solid rgba(239, 83, 80, 0.2);
+  color: #EF5350;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.altRemoveBtn:hover {
+  background: #EF5350;
+  border-color: #EF5350;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(239, 83, 80, 0.3);
+}
+
+/* ── Add Button ──────────────────────────────────────────── */
+.addAltBtn {
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 217, 61, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
+  border: 2px dashed rgba(255, 217, 61, 0.3);
+  color: #FFD93D;
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.addAltBtn:hover {
+  background: linear-gradient(135deg, rgba(255, 217, 61, 0.2) 0%, rgba(255, 107, 107, 0.15) 100%);
+  border-color: #FFD93D;
+  box-shadow: 0 6px 16px rgba(255, 217, 61, 0.2);
+  transform: translateY(-2px);
+}
+

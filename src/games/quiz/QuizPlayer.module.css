@@ -1,0 +1,240 @@
+/* ============================================================
+ * QUIZ PLAYER — TV Gameshow K-5 Theme
+ * Only game-specific styles. Shell styles come from GameShell.
+ * Optimized for Smartboard / Projector (large screen viewing)
+ * ============================================================ */
+
+.gamePage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient decorative orbs */
+.gamePage::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 350px; height: 350px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(108,92,231,0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.gamePage::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -100px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(253,203,110,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Question Section ──────────────────────────────────── */
+.questionSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 48px;
+  text-align: center;
+  gap: 20px;
+  z-index: 1;
+}
+
+.qImg {
+  max-height: 240px;
+  max-width: 85%;
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  object-fit: contain;
+  border: 3px solid rgba(255,255,255,0.12);
+}
+
+.questionText {
+  font-family: var(--font-display, 'Inter', sans-serif);
+  font-size: 36px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.35;
+  max-width: 900px;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Options Grid ──────────────────────────────────────── */
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 18px 28px 32px;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.optionBtn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 24px;
+  border-radius: 18px;
+  font-weight: 800;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 3px solid transparent;
+  position: relative;
+  text-align: left;
+  min-height: 80px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+.optionBtn:hover:not(:disabled) {
+  transform: scale(1.04) translateY(-3px);
+  filter: brightness(1.12);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+}
+
+.optionBtn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+/* K-5 vibrant colors — high contrast for projector */
+.colorA { background: linear-gradient(135deg, #FF6B6B, #ee5a24); box-shadow: 0 6px 20px rgba(238,90,36,0.3); }
+.colorB { background: linear-gradient(135deg, #4D96FF, #3742fa); box-shadow: 0 6px 20px rgba(55,66,250,0.3); }
+.colorC { background: linear-gradient(135deg, #6BCB77, #10ac84); box-shadow: 0 6px 20px rgba(16,172,132,0.3); }
+.colorD { background: linear-gradient(135deg, #FFD93D, #f39c12); color: #2d3436; box-shadow: 0 6px 20px rgba(243,156,18,0.3); }
+
+/* Neon glow hover for each color */
+.colorA:hover:not(:disabled) { box-shadow: 0 0 28px rgba(238,90,36,0.5), 0 12px 32px rgba(0,0,0,0.35); }
+.colorB:hover:not(:disabled) { box-shadow: 0 0 28px rgba(55,66,250,0.5), 0 12px 32px rgba(0,0,0,0.35); }
+.colorC:hover:not(:disabled) { box-shadow: 0 0 28px rgba(16,172,132,0.5), 0 12px 32px rgba(0,0,0,0.35); }
+.colorD:hover:not(:disabled) { box-shadow: 0 0 28px rgba(243,156,18,0.5), 0 12px 32px rgba(0,0,0,0.35); }
+
+.optLetter {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.optText {
+  flex: 1;
+  line-height: 1.35;
+}
+
+.optCheck {
+  font-size: 28px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* Feedback States — MORE DRAMATIC */
+.optCorrect {
+  background: linear-gradient(135deg, #2ecc71, #6BCB77) !important;
+  border-color: #27ae60;
+  animation: correctPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 36px rgba(46, 204, 113, 0.5), 0 0 80px rgba(46, 204, 113, 0.2);
+}
+
+.optWrong {
+  background: linear-gradient(135deg, #e74c3c, #FF6B6B) !important;
+  border-color: #c0392b;
+  animation: wrongShake 0.5s ease;
+  box-shadow: 0 0 36px rgba(231, 76, 60, 0.5), 0 0 80px rgba(231, 76, 60, 0.2);
+}
+
+.optDimmed {
+  background: rgba(255, 255, 255, 0.06) !important;
+  opacity: 0.25;
+  border-color: transparent;
+}
+
+@keyframes correctPop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.12); }
+  60% { transform: scale(0.97); }
+  100% { transform: scale(1.02); }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-10px); }
+  30% { transform: translateX(10px); }
+  45% { transform: translateX(-8px); }
+  60% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .optionsGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px 16px 20px;
+  }
+
+  .questionText {
+    font-size: 22px;
+    padding: 0 8px;
+  }
+
+  .optionBtn {
+    padding: 14px 16px;
+    font-size: 16px;
+    min-height: 56px;
+  }
+
+  .questionSection {
+    padding: 16px 20px;
+  }
+}
+
+/* Smartboard / Large Screen */
+@media (min-width: 1200px) {
+  .questionText {
+    font-size: 48px;
+    max-width: 1100px;
+  }
+
+  .qImg {
+    max-height: 320px;
+  }
+
+  .optionsGrid {
+    max-width: 1200px;
+    gap: 18px;
+    padding: 24px 32px 40px;
+  }
+
+  .optionBtn {
+    padding: 28px 32px;
+    font-size: 28px;
+    min-height: 100px;
+    border-radius: 22px;
+  }
+
+  .optLetter {
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+    border-radius: 14px;
+  }
+
+  .optCheck {
+    font-size: 36px;
+  }
+}

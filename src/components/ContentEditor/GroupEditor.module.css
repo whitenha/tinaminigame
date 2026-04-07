@@ -1,0 +1,97 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.termCard {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.cardHeader {
+  font-weight: 800;
+  color: #2d3436;
+  margin-bottom: 12px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.termInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-weight: 700;
+  color: #2d3436;
+  resize: none;
+  text-align: center;
+}
+
+.termInput::placeholder {
+  color: #b2bec3;
+}
+
+.optionsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionHeader {
+  font-weight: 800;
+  color: #2d3436;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.subtext {
+  color: #636e72;
+  font-size: 13px;
+  margin-top: -4px;
+  margin-bottom: 12px;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.optionCardCorrect, .optionCardWrong {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  transition: all 0.2s;
+}
+
+.optionCardCorrect {
+  border: 2px solid #55efc4;
+}
+
+.optionCardWrong {
+  border: 2px solid #ff7675;
+}
+
+.optionInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-weight: 600;
+  color: #2d3436;
+  resize: none;
+  text-align: center;
+}
+
+.optionInput::placeholder {
+  color: #b2bec3;
+  font-weight: 500;
+}

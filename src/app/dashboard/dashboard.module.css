@@ -1,0 +1,194 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl);
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2xl);
+  border-bottom: 2px solid var(--color-border);
+  padding-bottom: var(--space-lg);
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  color: var(--color-text-dark);
+}
+
+.subtitle {
+  color: var(--color-text-light);
+  font-size: var(--text-lg);
+  margin-top: var(--space-xs);
+}
+
+.createButton {
+  background: var(--gradient-hero);
+  color: white;
+  padding: var(--space-md) var(--space-xl);
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-bounce);
+}
+
+.createButton:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-dark);
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--space-3xl);
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--color-border);
+  color: var(--color-text-light);
+}
+
+.primaryLink {
+  display: inline-block;
+  margin-top: var(--space-md);
+  color: var(--color-purple);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid var(--color-gray-100);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: transform var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-purple);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardBadge {
+  color: white;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.cardDate {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+}
+
+.cardTitle {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  color: var(--color-text-dark);
+}
+
+.shareBox {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shareLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-light);
+  font-weight: 700;
+}
+
+.shareInput {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-gray-50);
+  color: var(--color-purple);
+  font-size: var(--text-sm);
+  cursor: copy;
+}
+
+.shareInput:focus {
+  outline: none;
+  border-color: var(--color-purple);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.actionBtn {
+  flex: 1;
+  text-align: center;
+  background: var(--color-purple);
+  color: white;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  transition: background var(--transition-fast);
+}
+
+.actionBtn:hover {
+  background: #5a4bcf;
+}
+
+.actionBtnSecondary {
+  flex: 1;
+  text-align: center;
+  background: white;
+  color: var(--color-purple);
+  padding: 8px;
+  border: 2px solid var(--color-purple);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  transition: all var(--transition-fast);
+}
+
+.actionBtnSecondary:hover {
+  background: var(--color-purple);
+  color: white;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: var(--text-xl);
+  color: var(--color-text-light);
+}

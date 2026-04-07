@@ -1,0 +1,81 @@
+/* ============================================================
+ * TRUE/FALSE PLAYER — TV Gameshow K-5 Theme
+ * Bold split-screen with dramatic animations for Smartboard
+ * ============================================================ */
+
+.gamePage { min-height:100vh; display:flex; flex-direction:column; background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%); }
+
+.questionSection { 
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; 
+  padding:24px 40px; text-align:center; gap:20px; 
+}
+
+.qImg { max-height:200px; border-radius:20px; box-shadow:0 12px 32px rgba(0,0,0,0.35); }
+
+.statement { 
+  font-family:var(--font-display); font-size:36px; font-weight:800; 
+  color:#fff; line-height:1.35; max-width:800px; 
+  text-shadow:0 3px 16px rgba(0,0,0,0.35); 
+}
+
+/* Two big buttons or grid of 4 buttons */
+.choicesRow { 
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+  gap: 14px; min-height:200px; padding: 0 24px 24px; 
+}
+
+.choiceBtn { 
+  display:flex; flex-direction:column; align-items:center; justify-content:center; 
+  gap:10px; border:none; cursor:pointer; transition:all 0.25s cubic-bezier(0.16,1,0.3,1); 
+  color:#fff; border-radius:20px; min-height:160px; 
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+.choiceBtn:hover:not(:disabled) { 
+  filter:brightness(1.15); transform:translateY(-4px) scale(1.02); 
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3); 
+}
+.choiceBtn:active:not(:disabled) { transform:scale(0.96); }
+
+.choiceIcon { font-size:56px; font-weight:900; line-height:1; }
+.choiceLabel { font-family:var(--font-display); font-size:24px; font-weight:800; letter-spacing:1px; padding:0 10px; }
+
+.optionTrue { background:linear-gradient(180deg,#27ae60,#2ecc71); box-shadow: 0 6px 24px rgba(39,174,96,0.35); }
+.optionFalse { background:linear-gradient(180deg,#c0392b,#e74c3c); box-shadow: 0 6px 24px rgba(192,57,43,0.35); }
+
+.optionTrue:hover:not(:disabled) { box-shadow: 0 0 28px rgba(46,204,113,0.5), 0 12px 32px rgba(0,0,0,0.3); }
+.optionFalse:hover:not(:disabled) { box-shadow: 0 0 28px rgba(231,76,60,0.5), 0 12px 32px rgba(0,0,0,0.3); }
+
+.color0 { background: linear-gradient(135deg, #FF6B6B, #EE5253); }
+.color1 { background: linear-gradient(135deg, #48DBFB, #0ABDE3); }
+.color2 { background: linear-gradient(135deg, #1DD1A1, #10AC84); }
+.color3 { background: linear-gradient(135deg, #FECA57, #FF9F43); }
+
+.choiceCorrect { 
+  animation:correctPop 0.5s cubic-bezier(0.16,1,0.3,1); 
+  filter:brightness(1.3) !important; border:4px solid #fff; z-index:10; 
+  box-shadow: 0 0 40px rgba(46,204,113,0.5) !important;
+}
+.choiceWrong { 
+  animation:wrongShake 0.5s ease; 
+  filter:brightness(0.3) !important; opacity:0.6; 
+}
+
+@keyframes correctPop { 0%{transform:scale(1)} 30%{transform:scale(1.1)} 60%{transform:scale(0.97)} 100%{transform:scale(1.02)} }
+@keyframes wrongShake { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-10px)} 30%{transform:translateX(10px)} 45%{transform:translateX(-8px)} 60%{transform:translateX(6px)} 75%{transform:translateX(-4px)} }
+
+@media(max-width:640px) {
+  .statement { font-size:22px; }
+  .choicesRow { min-height:140px; gap:10px; }
+  .choiceIcon { font-size:40px; }
+  .choiceLabel { font-size:18px; }
+}
+
+/* Smartboard / Large Screen */
+@media (min-width: 1200px) {
+  .statement { font-size:52px; max-width:1000px; }
+  .choiceBtn { min-height:220px; border-radius:24px; }
+  .choiceIcon { font-size:72px; }
+  .choiceLabel { font-size:32px; }
+  .choicesRow { gap:20px; padding:0 32px 32px; }
+}

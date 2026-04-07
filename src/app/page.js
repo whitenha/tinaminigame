@@ -1,66 +1,62 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link';
+import Hero from '@/components/Hero/Hero';
+import TemplateCard from '@/components/TemplateCard/TemplateCard';
+import { getFeaturedTemplates, getActiveCategories, getCategoryCounts } from '@/data/templates';
+import styles from './home.module.css';
 
-export default function Home() {
+export default function HomePage() {
+  const featured = getFeaturedTemplates(8);
+  const categories = getActiveCategories().filter(c => c.id !== 'all');
+  const counts = getCategoryCounts();
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <Hero />
+
+      {/* Category Quick Links */}
+      <section className={styles.categories}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEmoji}>📂</span>
+            <h2 className={styles.sectionTitle}>Danh mục trò chơi</h2>
+            <p className={styles.sectionDesc}>Chọn loại trò chơi bạn muốn tạo</p>
+          </div>
+          <div className={styles.catGrid}>
+            {categories.map(cat => (
+              <Link
+                key={cat.id}
+                href={`/templates?category=${cat.id}`}
+                className={styles.catCard}
+              >
+                <span className={styles.catEmoji}>{cat.emoji}</span>
+                <div className={styles.catName}>{cat.label}</div>
+                <div className={styles.catCount}>{counts[cat.id] || 0} templates</div>
+              </Link>
+            ))}
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Featured Templates */}
+      <section className={styles.featured}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionEmoji}>⭐</span>
+            <h2 className={styles.sectionTitle}>Templates phổ biến</h2>
+            <p className={styles.sectionDesc}>Những trò chơi được yêu thích nhất</p>
+          </div>
+          <div className={styles.grid}>
+            {featured.map((template, i) => (
+              <TemplateCard key={template.id} template={template} index={i} />
+            ))}
+          </div>
+          <div className={styles.viewAll}>
+            <Link href="/templates" className={styles.viewAllBtn}>
+              🎮 Xem tất cả {getCategoryCounts().all} templates →
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }

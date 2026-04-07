@@ -1,0 +1,294 @@
+/* UnjumblePlayer — Premium Drag & Drop Game Engine */
+
+.gamePage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding-bottom: 2rem;
+}
+
+.questionArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 24px 8px;
+  gap: 8px;
+}
+
+.instruction {
+  color: rgba(255,255,255,0.9);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.subInstruction {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  margin-top: -4px;
+}
+
+.hintText {
+  color: rgba(253,203,110,0.9);
+  font-weight: 600;
+  font-size: 14px;
+  background: rgba(253,203,110,0.1);
+  padding: 6px 14px;
+  border-radius: 10px;
+}
+
+/* ── BOARD CONTAINER (The Ruled Lines) ── */
+.boardContainer {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.ruledBoard {
+  width: 100%;
+  min-height: 300px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  
+  /* The "Ruled Notebook" lines effect */
+  /* We use 4.5rem as line-height to fit big chips, so lines repeat every 4.5rem */
+  padding: 2rem 2rem 3rem 2rem;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent calc(4.5rem - 2px),
+    rgba(255, 255, 255, 0.15) calc(4.5rem - 2px),
+    rgba(255, 255, 255, 0.15) 4.5rem
+  );
+  background-position: 0 2rem; /* offset to match padding */
+
+  /* Flex Layout for words */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.2rem;
+  align-content: flex-start;
+  align-items: flex-start;
+  line-height: 4.5rem; /* Forces exactly one baseline per drawn rule */
+}
+
+/* ── WORD CHIP (Floating 3D) ── */
+.wordChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.2rem; /* Shorter than line height to float inside the line */
+  margin-top: 0.65rem; /* (4.5 - 3.2) / 2 = 0.65. Centers chip exactly on the line vertically */
+  margin-bottom: 0.65rem;
+  padding: 0 1.5rem;
+  
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #2d3436;
+  
+  background: linear-gradient(135deg, #ffffff, #f1f2f6);
+  border-radius: 12px;
+  cursor: grab;
+  user-select: none;
+  
+  /* Premium 3D look */
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.15), 
+    0 8px 0 #dfe4ea,
+    inset 0 2px 0 #ffffff;
+  
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  vertical-align: middle;
+}
+
+/* Hover, Grab states */
+.wordChip:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 8px 20px rgba(0,0,0,0.2), 
+    0 12px 0 #dfe4ea,
+    inset 0 2px 0 #ffffff;
+  background: linear-gradient(135deg, #ffffff, #dfe4ea);
+}
+
+.wordChip:active, .chipDragging {
+  cursor: grabbing;
+  transform: translateY(8px); /* compress the bottom shadow */
+  box-shadow: 
+    0 2px 4px rgba(0,0,0,0.1), 
+    0 0 0 #dfe4ea, 
+    inset 0 2px 0 #ffffff;
+}
+
+.chipDragging {
+  opacity: 0.5;
+  filter: grayscale(0.5);
+}
+
+/* Tap to select state (fallback for drag and drop) */
+.chipSelected {
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7) !important;
+  color: white;
+  transform: translateY(-4px) !important;
+  box-shadow: 
+    0 8px 20px rgba(108, 92, 231, 0.4), 
+    0 12px 0 #4834d4,
+    inset 0 2px 0 rgba(255,255,255,0.3) !important;
+}
+
+/* Feedback States */
+.chipCorrect {
+  background: linear-gradient(135deg, #55efc4, #00b894) !important;
+  color: white;
+  pointer-events: none;
+  transform: translateY(8px) !important;
+  box-shadow: 
+    0 4px 15px rgba(0, 184, 148, 0.4), 
+    0 0 0 #008f73,
+    inset 0 2px 0 rgba(255,255,255,0.3) !important;
+}
+
+.chipWrong {
+  background: linear-gradient(135deg, #ff7675, #d63031) !important;
+  color: white;
+  pointer-events: none;
+  animation: shakeWrong 0.5s ease-in-out;
+  transform: translateY(8px) !important;
+  box-shadow: 
+    0 4px 15px rgba(214, 48, 49, 0.4), 
+    0 0 0 #b32627,
+    inset 0 2px 0 rgba(255,255,255,0.3) !important;
+}
+
+@keyframes shakeWrong {
+  0%, 100% { transform: translateY(8px) translateX(0); }
+  25% { transform: translateY(8px) translateX(-6px); }
+  75% { transform: translateY(8px) translateX(6px); }
+}
+
+/* ── ACTION BUTTONS ── */
+.actionRow {
+  display: flex;
+  gap: 16px;
+  padding: 0 20px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.hintBtn {
+  padding: 14px 24px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.8);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+.hintBtn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-2px);
+}
+.hintUsedBtn {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.checkBtn {
+  padding: 14px 32px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #0984e3, #74b9ff);
+  color: white;
+  font-weight: 900;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(9, 132, 227, 0.3);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.checkBtn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(9, 132, 227, 0.4);
+}
+.checkBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ── FEEDBACK MESSAGE ── */
+.feedbackMsg {
+  text-align: center;
+  padding: 20px 30px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-width: 300px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.fbMsgCorrect {
+  background: rgba(0, 184, 148, 0.15);
+  border: 1px solid rgba(0, 184, 148, 0.4);
+  color: #55efc4;
+  backdrop-filter: blur(10px);
+}
+
+.fbMsgWrong {
+  background: rgba(214, 48, 49, 0.15);
+  border: 1px solid rgba(214, 48, 49, 0.4);
+  color: #ff7675;
+  backdrop-filter: blur(10px);
+}
+
+.correctionText {
+  color: white;
+  margin-top: 10px;
+  font-size: 1.2rem;
+  font-family: var(--font-display);
+  background: rgba(0,0,0,0.3);
+  padding: 10px 15px;
+  border-radius: 8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 640px) {
+  .ruledBoard {
+    padding: 1.5rem 1rem 2rem 1rem;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent calc(4rem - 2px),
+      rgba(255, 255, 255, 0.15) calc(4rem - 2px),
+      rgba(255, 255, 255, 0.15) 4rem
+    );
+    background-position: 0 1.5rem;
+    line-height: 4rem;
+    gap: 0.8rem;
+  }
+  .wordChip {
+    height: 2.8rem;
+    margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
+    padding: 0 1rem;
+    font-size: 1.1rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1), 0 5px 0 #dfe4ea, inset 0 2px 0 #ffffff;
+  }
+  .wordChip:hover { box-shadow: 0 5px 12px rgba(0,0,0,0.15), 0 5px 0 #dfe4ea, inset 0 2px 0 #ffffff; transform: translateY(0); }
+  .wordChip:active, .chipDragging, .chipCorrect, .chipWrong { transform: translateY(5px) !important; box-shadow: 0 0 0 #dfe4ea, inset 0 1px 0 #ffffff !important; }
+}

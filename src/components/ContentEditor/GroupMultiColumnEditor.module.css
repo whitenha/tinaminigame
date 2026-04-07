@@ -1,0 +1,221 @@
+.boardContainer {
+  width: 100vw;
+  height: calc(100vh - 70px); /* header height is usually around 70px */
+  margin-left: -50vw;
+  left: 50%;
+  position: relative;
+  background: linear-gradient(135deg, #111424, #1a233a);
+  overflow: hidden;
+}
+
+.boardScroll {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 2rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) rgba(0,0,0,0.1);
+}
+
+.boardScroll::-webkit-scrollbar {
+  height: 10px;
+}
+.boardScroll::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+.boardScroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 5px;
+}
+
+.columnCard {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  width: 320px;
+  min-width: 320px;
+  max-height: calc(100% - 20px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.columnHeader {
+  background: rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.termInput {
+  flex: 1;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  resize: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+
+.termInput:focus {
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.deleteColBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: 0.2s;
+  padding: 4px;
+}
+.deleteColBtn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.columnBody {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: none; /* hide scrollbar for clean look */
+}
+.columnBody::-webkit-scrollbar {
+  display: none;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sectionTitle {
+  font-weight: 700;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconCorrect { color: #55efc4; }
+.iconWrong { color: #ff7675; }
+
+.addOptBtn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 16px;
+  font-weight: 300;
+}
+.addOptBtn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.optionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionItem {
+  background: rgba(255,255,255,0.08);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 10px;
+  gap: 8px;
+  border-left: 3px solid transparent;
+  transition: 0.2s;
+}
+.optionItem:hover {
+  background: rgba(255,255,255,0.12);
+}
+.optItemCorrect { border-left-color: #55efc4; }
+.optItemWrong { border-left-color: #ff7675; }
+
+.optionInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+}
+.optionInput::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.delOptBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  padding: 2px;
+  font-size: 14px;
+  transition: 0.2s;
+}
+.delOptBtn:hover {
+  color: #ff7675;
+}
+
+.sectionDivider {
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+  margin: 16px 0;
+}
+
+.addColumnBtn {
+  background: rgba(255,255,255,0.03);
+  border: 2px dashed rgba(255,255,255,0.15);
+  border-radius: 12px;
+  width: 280px;
+  min-width: 280px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.addColumnBtn:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.8);
+}
+.addIcon {
+  font-size: 24px;
+  font-weight: 300;
+}

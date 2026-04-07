@@ -1,0 +1,69 @@
+/* MazeChase — Canvas Game Styles */
+
+.gamePage {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0f0c29;
+}
+
+.canvasWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  position: relative;
+}
+
+.gameCanvas {
+  width: 100%;
+  max-width: 700px;
+  aspect-ratio: 15/11;
+  border-radius: 16px;
+  border: 3px solid rgba(108, 92, 231, 0.5);
+  box-shadow:
+    0 0 30px rgba(108, 92, 231, 0.3),
+    inset 0 0 20px rgba(0,0,0,0.5);
+  background: #1a1a2e;
+  image-rendering: pixelated;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.controlHint {
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+  font-size: 13px;
+  background: rgba(255,255,255,0.05);
+  padding: 6px 16px;
+  border-radius: 12px;
+}
+
+.livesBar {
+  display: flex;
+  gap: 2px;
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+
+.heart {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.heartLost {
+  filter: grayscale(1);
+  opacity: 0.3;
+  transform: scale(0.8);
+}
+
+@media (max-width: 640px) {
+  .gameCanvas { border-radius: 12px; }
+  .controlHint { font-size: 11px; }
+}

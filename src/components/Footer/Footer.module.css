@@ -1,0 +1,107 @@
+.footer {
+  background: var(--color-text);
+  color: white;
+  padding: var(--space-3xl) 0 var(--space-xl);
+  margin-top: var(--space-3xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    var(--color-purple), 
+    var(--color-pink), 
+    var(--color-orange), 
+    var(--color-yellow), 
+    var(--color-teal), 
+    var(--color-blue)
+  );
+}
+
+.footerInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: var(--space-2xl);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.brandLogo {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.brandDesc {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  max-width: 320px;
+}
+
+.column h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-md);
+  color: var(--color-yellow);
+}
+
+.column a {
+  display: block;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--text-sm);
+  padding: var(--space-xs) 0;
+  transition: all var(--transition-fast);
+}
+
+.column a:hover {
+  color: white;
+  transform: translateX(4px);
+}
+
+.bottomBar {
+  max-width: var(--max-width);
+  margin: var(--space-2xl) auto 0;
+  padding: var(--space-lg) var(--space-xl) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: var(--text-sm);
+}
+
+.hearts {
+  color: var(--color-pink);
+  animation: pulse 2s infinite;
+}
+
+@media (max-width: 768px) {
+  .footerInner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .brandDesc {
+    max-width: 100%;
+  }
+
+  .bottomBar {
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+  }
+}
