@@ -264,7 +264,10 @@ export default function SpeakingCardsPlayer({ items: rawItems = [], activity, pl
       const en = v.filter(x => x.lang.startsWith('en'));
       const vi = v.filter(x => x.lang.startsWith('vi'));
       setEnVoice(en.find(x => x.name.includes('Google') && x.lang === 'en-US') || en.find(x => x.lang === 'en-US') || en[0]);
-      setViVoice(vi.find(x => x.name.includes('Google')) || vi[0]);
+      // Prefer female Vietnamese voice
+      const femaleVi = vi.find(x => /female|nữ|woman/i.test(x.name));
+      const notMaleVi = vi.find(x => !/(male|nam)\b/i.test(x.name));
+      setViVoice(femaleVi || notMaleVi || vi.find(x => x.name.includes('Google')) || vi[0]);
     };
     load();
     if (typeof window !== 'undefined' && window.speechSynthesis) {

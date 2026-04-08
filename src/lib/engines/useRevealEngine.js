@@ -13,6 +13,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useGameEvents } from './useGameEvents';
 import { GameEvent } from '@/lib/gameEvents';
+import { speak as ttsSpeak, cancelSpeech } from '@/lib/tts';
 
 /**
  * @param {Array} items — content items
@@ -149,13 +150,8 @@ export function useRevealEngine(items, options = {}) {
 
   // ── TTS ─────────────────────────────────────────────────
   const speakText = useCallback((text) => {
-    if (!text || typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const isVi = /[àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệđìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]/i.test(text);
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = isVi ? 'vi-VN' : 'en-US';
-    u.rate = 0.95;
-    window.speechSynthesis.speak(u);
+    cancelSpeech();
+    ttsSpeak(text, { rate: 0.95 });
   }, []);
 
   // ── Derived State ───────────────────────────────────────

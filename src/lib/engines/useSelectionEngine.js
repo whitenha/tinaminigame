@@ -16,6 +16,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useGameEvents } from './useGameEvents';
 import { GameEvent } from '@/lib/gameEvents';
+import { speak as ttsSpeak, cancelSpeech, preloadVoices } from '@/lib/tts';
 
 export function useSelectionEngine(items, options = {}) {
   const {
@@ -85,25 +86,15 @@ export function useSelectionEngine(items, options = {}) {
   }, [items]);
 
   // ── TTS (Text-to-Speech) — Opt-in only ─────────────────
+  useEffect(() => { if (enableTTS) preloadVoices(); }, [enableTTS]);
+
   useEffect(() => {
-    // ✅ FIX Bug #4: Only speak if enableTTS is true
     if (!enableTTS) return;
     if (phase !== 'playing' || !items[currentQ]) return;
     const text = items[currentQ].question || items[currentQ].term || '';
-    if (text && typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      // Detect language on raw text first
-      const isVi = /[àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệđìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]/i.test(text);
-      const cleaned = text
-        .replace(/_+/g, isVi ? ' chỗ trống ' : ' blank ')
-        .replace(/\.{2,}/g, isVi ? ' chỗ trống ' : ' blank ')
-        .replace(/\s{2,}/g, ' ')
-        .trim();
-        
-      const u = new SpeechSynthesisUtterance(cleaned);
-      u.lang = isVi ? 'vi-VN' : 'en-US';
-      u.rate = 0.95;
-      setTimeout(() => window.speechSynthesis.speak(u), 500);
+    if (text) {
+      cancelSpeech();
+      setTimeout(() => ttsSpeak(text, { clean: true, rate: 0.95 }), 500);
     }
   }, [enableTTS, phase, currentQ, items]);
 

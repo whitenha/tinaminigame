@@ -7,6 +7,7 @@ import { getTemplateBySlug } from '@/data/templates';
 import { supabase } from '@/lib/supabase';
 import { CldUploadWidget } from 'next-cloudinary';
 import { getContentFormat, parseImportText } from '@/lib/gameRegistry';
+import { speak as ttsSpeak, cancelSpeech, preloadVoices, detectLang } from '@/lib/tts';
 import MCQEditor from '@/components/ContentEditor/MCQEditor';
 import PairsEditor from '@/components/ContentEditor/PairsEditor';
 import ListEditor from '@/components/ContentEditor/ListEditor';
@@ -147,6 +148,9 @@ export default function CreateActivityPage({ params }) {
   // --- TEXT TO SPEECH (TTS) ---
   const speakTextRef = useRef(null);
 
+  // Pre-warm TTS voices on mount
+  useEffect(() => { preloadVoices(); }, []);
+
   useEffect(() => {
     // Only speak when slide changes, not on every keystroke
     if (currentIndex >= 0 && contentItems[currentIndex]) {
@@ -155,44 +159,30 @@ export default function CreateActivityPage({ params }) {
 
       speakTextRef.current = setTimeout(() => {
         const item = contentItems[currentIndex];
-        let textToRead = '';
-        
-        // 1. Detect language based on raw text first
-        const rawText = [item.question, item.term, ...(item.options || [])].filter(Boolean).join(' ');
-        const isVietnamese = /[àáảãạăắằẳẵặâấầẩẫậèéẻẽẹêếềểễệđìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]/i.test(rawText);
-        
+        cancelSpeech();
+
         // Read question if enabled
-        if (readQuestion && (item.question || item.term)) {
-          textToRead += (item.question || item.term) + '. ';
+        const questionText = item.question || item.term;
+        if (readQuestion && questionText) {
+          ttsSpeak(questionText, { clean: true });
         }
         
         // Read options if enabled
         if (readOptions && item.options) {
           const validOpts = item.options.filter(o => typeof o === 'string' && o.trim() !== '');
           if (validOpts.length > 0) {
-            const prefix = isVietnamese ? "Các đáp án là: " : "The options are: ";
-            textToRead += prefix + validOpts.map((opt, i) => `${String.fromCharCode(65 + i)}, ${opt}`).join('. ');
+            const optsLang = detectLang(validOpts.join(' '));
+            ttsSpeak(optsLang === 'vi-VN' ? "Các đáp án là: " : "The options are: ", { forceLang: optsLang });
+            
+            validOpts.forEach((opt, i) => {
+              const letter = String.fromCharCode(65 + i);
+              ttsSpeak(`${letter}, ${opt}`, { clean: true });
+            });
           }
         }
-
-        if (textToRead && typeof window !== 'undefined' && window.speechSynthesis) {
-          window.speechSynthesis.cancel();
-          // Clean underscores and special chars for natural TTS based on language
-          textToRead = textToRead
-            .replace(/_+/g, isVietnamese ? ' chỗ trống ' : ' blank ')
-            .replace(/\.{2,}/g, isVietnamese ? ' chỗ trống ' : ' blank ')
-            .replace(/\s{2,}/g, ' ')
-            .trim();
-          const utterance = new SpeechSynthesisUtterance(textToRead);
-          utterance.lang = isVietnamese ? 'vi-VN' : 'en-US';
-          utterance.rate = 1.0;
-          window.speechSynthesis.speak(utterance);
-        }
-      }, 400); // Wait 400ms after switching slide before speaking
+      }, 400);
     } else {
-      if (typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
+      cancelSpeech();
     }
     
     return () => {
@@ -384,8 +374,13 @@ export default function CreateActivityPage({ params }) {
   };
 
   const handleDataImport = async (type, payload) => {
-    // For non-MCQ text imports, use local parsing from gameRegistry
-    if (type === 'text' && contentFormat !== 'MCQ') {
+    // Determine if text is a vocabulary list (word: definition) without MCQ options
+    const isVocabList = type === 'text' && 
+      payload.split('\n').some(l => /->|→|:/.test(l)) && 
+      !payload.split('\n').some(l => /^[A-Da-d][.)]\s/m.test(l));
+
+    // For non-MCQ text imports, OR vocab lists, use local parsing from gameRegistry
+    if (type === 'text' && (contentFormat !== 'MCQ' || isVocabList)) {
       const { parseImportText } = await import('@/lib/gameRegistry');
       const parsed = parseImportText(payload, contentFormat);
       

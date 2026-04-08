@@ -104,6 +104,23 @@ export function parseImportText(text, contentFormat) {
 
   switch (contentFormat) {
     case 'MCQ': {
+      // Look for vocab list format first
+      const hasOptions = lines.some(l => /^[A-Da-d][.)]\s/.test(l));
+      if (!hasOptions) {
+        const vocabLines = lines.filter(l => /->|→|:|\t/.test(l));
+        if (vocabLines.length > 0) {
+           return vocabLines.map(line => {
+             const parts = line.split(/->|→|:|\t/).map(s => s.trim());
+             return {
+                question: parts[0] || '',
+                options: [parts[1] || '', '', '', ''],
+                image_url: null,
+                time_limit: 20
+             };
+           });
+        }
+      }
+
       const items = [];
       let current = null;
       for (const line of lines) {

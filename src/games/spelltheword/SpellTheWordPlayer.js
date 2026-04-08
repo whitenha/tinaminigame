@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useOrderingEngine } from '@/lib/engines/useOrderingEngine';
 import { CountdownScreen, GameTopBar, TimerBar, TimerBubble, ResultScreen } from '@/components/GameShell';
+import { speak as ttsSpeak, cancelSpeech as ttsCancelSpeech, preloadVoices } from '@/lib/tts';
 import styles from './SpellTheWordPlayer.module.css';
 
 // ── Confetti Colors ──────────────────────────────────────────
@@ -57,19 +58,14 @@ export default function SpellTheWordPlayer({ items, activity, playerName }) {
   });
 
   // ── Text-To-Speech Helpers ─────────────────────────────────
+  useEffect(() => { preloadVoices(); }, []);
+
   const speakText = useCallback((text) => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US'; // Bắt buộc giọng Anh - Mỹ
-      utterance.rate = 1.0;
-      window.speechSynthesis.speak(utterance);
-    }
+    ttsSpeak(text);
   }, []);
 
   const cancelSpeech = useCallback(() => {
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
+    ttsCancelSpeech();
   }, []);
 
   // ── Preview Phase Logic ────────────────────────────────────
