@@ -3,7 +3,7 @@
  * Theme: Bright, colorful, K-5 kid-friendly
  * ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@400;500;600;700;800&family=Great+Vibes&display=swap');
 
 /* ── Design Tokens ──────────────────────────────────────────── */
 :root {
@@ -257,4 +257,29 @@ ul, ol {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #5A4BD1;
+}
+
+/* ── Custom Fonts ────────────────────────────────────────────── */
+@font-face {
+  font-family: 'tapviet1normal';
+  src: url('/fonts/tapviet-hp/HP001_4_hang_normal.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'tapviet1bold';
+  src: url('/fonts/tapviet-hp/HP001_4_hang_bold.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'tapviet4hang';
+  src: url('/fonts/tapviet-hp/HP0014HB.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'tapviet5hang';
+  src: url('/fonts/tapviet-hp/HP0015HB.ttf') format('truetype');
+  font-display: swap;
 }

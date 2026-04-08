@@ -13,6 +13,9 @@ export default function DashboardPage() {
   const router = useRouter();
   const [activities, setActivities] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
+  const [toastMessage, setToastMessage] = useState('');
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   useEffect(() => {
     if (!loading && !isTeacher) {
@@ -43,79 +46,191 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (confirm('Bạn có chắc chắn muốn xóa bản lưu này không? Hành động này không thể hoàn tác.')) {
+      try {
+        const { error } = await supabase
+          .from('mg_activities')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        setActivities(activities.filter(a => a.id !== id));
+        showToast('Đã xóa thành công!');
+      } catch (err) {
+        console.error('Error deleting activity:', err);
+        alert('Lỗi khi xóa bài viết.');
+      }
+    }
+  };
+
   const getShareLink = (code) => {
     return `${window.location.origin}/play/${code}`;
   };
 
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
+  };
+
+  const toggleMenu = (id) => {
+    setOpenMenuId(prev => prev === id ? null : id);
+  };
+
   if (loading || dataLoading) {
-    return <div className={styles.loadingContainer}>Đang tải dữ liệu...</div>;
+    return <div className={styles.loadingContainer}>Đang tải Bàn làm việc...</div>;
   }
 
   if (!isTeacher) return null;
 
+  // Tách Tools và Games
+  const games = activities.filter(a => a.template_slug !== 'viet-bai');
+  const tools = activities.filter(a => a.template_slug === 'viet-bai');
+
+  let displayedActivities = activities;
+  if (activeTab === 'games') displayedActivities = games;
+  if (activeTab === 'tools') displayedActivities = tools;
+
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <h1 className={styles.title}>Bảng Điều Khiển Giáo Viên</h1>
-          <p className={styles.subtitle}>Chào mừng, {user.email}</p>
+      {/* Toast Notification */}
+      <div className={`${styles.toast} ${toastMessage ? styles.toastVisible : ''}`}>
+        ✅ {toastMessage}
+      </div>
+
+      {/* Stats Banner */}
+      <div className={styles.statsContainer}>
+        <div className={styles.statCard}>
+          <span className={styles.statNumber}>{activities.length}</span>
+          <span className={styles.statLabel}>Tổng tài sản</span>
         </div>
-        <Link href="/templates" className={styles.createButton}>
-          ✨ Tạo trò chơi mới
-        </Link>
-      </header>
+        <div className={styles.statCard}>
+          <span className={styles.statNumber}>{games.length}</span>
+          <span className={styles.statLabel}>Trò Chơi</span>
+        </div>
+        <div className={styles.statCard}>
+          <span className={styles.statNumber}>{tools.length}</span>
+          <span className={styles.statLabel}>Bản Nháp Vở</span>
+        </div>
+      </div>
 
       <section className={styles.main}>
-        <h2 className={styles.sectionTitle}>Các trò chơi của tôi ({activities.length})</h2>
+        {/* Animated Tabs */}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.tabsContainer}>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'all' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('all')}
+            >
+              Tất Cả
+            </button>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'games' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('games')}
+            >
+              🎮 Trò Chơi
+            </button>
+            <button 
+              className={`${styles.tabButton} ${activeTab === 'tools' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('tools')}
+            >
+              🛠️ Công Cụ
+            </button>
+          </div>
+        </div>
         
-        {activities.length === 0 ? (
+        {displayedActivities.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>Bạn chưa tạo trò chơi nào.</p>
+            <p>Không có dữ liệu khóa học nào ở mục này.</p>
             <Link href="/templates" className={styles.primaryLink}>
               Khám phá Kho Templates
             </Link>
           </div>
         ) : (
-          <div className={styles.grid}>
-            {activities.map((act) => {
+          <div className={styles.listContainer}>
+            {displayedActivities.map((act) => {
+              const checkTool = act.template_slug === 'viet-bai';
               const template = getTemplateBySlug(act.template_slug);
+              
               return (
-                <div key={act.id} className={styles.card}>
-                  <div className={styles.cardHeader}>
-                    <span 
-                      className={styles.cardBadge} 
-                      style={{ backgroundColor: template?.color || '#ccc' }}
-                    >
-                      {template?.nameVi || 'Game'}
-                    </span>
-                    <span className={styles.cardDate}>
-                      {new Date(act.created_at).toLocaleDateString()}
-                    </span>
+                <div 
+                  key={act.id} 
+                  className={styles.listItem}
+                  style={{ zIndex: openMenuId === act.id ? 50 : 1 }}
+                >
+                  <div className={styles.itemLeft}>
+                    <div className={styles.itemInfo}>
+                      <h3 className={styles.itemTitle}>
+                        {act.title}
+                      </h3>
+                      <div className={styles.itemMeta}>
+                        <span 
+                          className={styles.cardBadge} 
+                          style={{ backgroundColor: template?.color || (checkTool ? '#3b82f6' : '#94a3b8') }}
+                        >
+                          {template?.nameVi || (checkTool ? 'Vở Luyện Viết' : 'Trò Chơi')}
+                        </span>
+                        <span className={styles.cardDate}>
+                          🕒 {new Date(act.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className={styles.cardTitle}>{act.title}</h3>
-                  <div className={styles.cardActions}>
-                    <div className={styles.shareBox}>
-                      <span className={styles.shareLabel}>Link chơi sinh viên:</span>
-                      <input 
-                        type="text" 
-                        readOnly 
-                        value={getShareLink(act.share_code)} 
-                        className={styles.shareInput}
-                        onClick={(e) => {
-                          e.target.select();
-                          navigator.clipboard.writeText(e.target.value);
-                          alert('Đã copy link!');
-                        }}
-                      />
-                    </div>
-                    <div className={styles.buttonGroup}>
-                      <Link href={`/dashboard/results/${act.id}`} className={styles.actionBtn}>
-                        📊 Xem kết quả
-                      </Link>
-                      <Link href={`/create/${act.template_slug}?edit=${act.id}`} className={styles.actionBtnSecondary}>
-                        ✏️ Sửa
-                      </Link>
-                    </div>
+
+                  <div className={styles.itemRight} data-dropdown="true">
+                    <button 
+                      className={styles.menuBtn} 
+                      onClick={() => toggleMenu(act.id)}
+                    >
+                      ⋮
+                    </button>
+
+                    {openMenuId === act.id && (
+                      <>
+                        <div 
+                          className={styles.menuOverlay}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenMenuId(null);
+                          }}
+                        />
+                        <div className={styles.dropdownMenu} onClick={(e) => e.stopPropagation()}>
+                        {!checkTool && (
+                          <button 
+                            className={styles.dropdownItem}
+                            onClick={() => {
+                              navigator.clipboard.writeText(getShareLink(act.share_code));
+                              showToast('Đã copy link học sinh!');
+                            }}
+                          >
+                            🔗 Copy Link Nhỏ
+                          </button>
+                        )}
+                        
+                        {checkTool ? (
+                          <Link href={`/tools/viet-bai/u1/${act.share_code}`} className={styles.dropdownItem}>
+                            ✏️ Mở Vở Tiếp Tục
+                          </Link>
+                        ) : (
+                          <>
+                            <Link href={`/dashboard/results/${act.id}`} className={styles.dropdownItem}>
+                              📊 Xem Kết Quả
+                            </Link>
+                            <Link href={`/create/${act.template_slug}?edit=${act.id}`} className={styles.dropdownItem}>
+                              ⚙️ Cài Đặt Game
+                            </Link>
+                          </>
+                        )}
+                        
+                        <button 
+                          className={`${styles.dropdownItem} ${styles.dropdownItemDelete}`}
+                          onClick={() => handleDelete(act.id)}
+                        >
+                          🗑️ Xóa
+                        </button>
+                      </div>
+                      </>
+                    )}
                   </div>
                 </div>
               );

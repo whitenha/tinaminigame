@@ -13,7 +13,8 @@ export default function Navbar() {
 
   const links = [
     { href: '/', label: 'Trang chủ', emoji: '🏠' },
-    { href: '/templates', label: 'Templates', emoji: '🎮' },
+    { href: '/templates', label: 'Games', emoji: '🎮' },
+    { href: '/tools', label: 'Tools', emoji: '🛠️' },
     { href: '/about', label: 'Giới thiệu', emoji: '💡' },
   ];
 

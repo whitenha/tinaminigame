@@ -371,6 +371,17 @@ function getIconContent(slug) {
           <text x="28" y="44" fontSize="11" fill="currentColor" fontWeight="bold">5</text>
         </>
       );
+      case 'viet-bai':
+      return (
+        <>
+          <rect x="20" y="16" width="24" height="32" rx="2" stroke="currentColor" strokeWidth="2" fill="currentColor" opacity="0.1" />
+          <line x1="26" y1="24" x2="38" y2="24" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
+          <line x1="26" y1="32" x2="38" y2="32" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
+          <line x1="26" y1="40" x2="38" y2="40" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
+          <path d="M42 22 L36 38" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="35" cy="40" r="1" fill="currentColor" />
+        </>
+      );
     default:
       return (
         <>

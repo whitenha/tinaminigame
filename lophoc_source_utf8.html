@@ -1,0 +1,405 @@
+﻿<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Viết bài - LopHoc.net</title>
+    <meta name="author" content="LopHoc.net">
+    <meta name="description" content="Công cụ online hỗ trợ dạy học">
+    <meta name="keywords" content="Công cụ online hỗ trợ dạy học">
+    <meta name="robots" content="INDEX,FOLLOW">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+     
+
+    <link rel="canonical" href="https://lophoc.net/cong-cu/viet-bai">
+    <meta property="og:url"           content="https://lophoc.net/cong-cu/viet-bai" />
+    <meta property="og:type"          content="website" />
+    <meta property="og:title"         content="Viết bài - LopHoc.net" />
+    <meta property="og:description"   content="Công cụ online hỗ trợ dạy học" />
+    <meta property="og:image"         content="https://lophoc.net/img/cong-cu/fb/fb-viet-bai.jpg" />
+ 
+    <link rel="stylesheet" href="/ass/class/css/bootstrap.min.css"> 
+    <link rel="stylesheet" href="/ass/class/css/fontawesome.min.css"> 
+    <link rel="stylesheet" href="/ass/class/css/layerslider.min.css"> 
+    <link rel="stylesheet" href="/ass/class/css/magnific-popup.min.css"> 
+    <link rel="stylesheet" href="/ass/class/css/slick.min.css"> 
+    <link rel="stylesheet" href="/ass/class/css/style.css">  
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Jost:wght@400;500&display=swap" rel="stylesheet"> 
+
+
+
+    <style> 
+        @font-face {
+          font-family: tapviet4hang;
+          src: url(/fonts/tapviet-hp/HP0014HB.ttf);
+        }
+         @font-face {
+          font-family: tapviet5hang;
+          src: url(/fonts/tapviet-hp/HP0015HB.ttf);
+        }
+        @font-face {
+          font-family: tapviet1bold;
+          src: url(/fonts/tapviet-hp/HP001_4_hang_bold.ttf);
+        }
+        @font-face {
+          font-family: tapviet1normal;
+          src: url(/fonts/tapviet-hp/HP001_4_hang_normal.ttf);
+        }
+
+        .scrollToTop {display: none;}
+        .prevent-select {
+          -webkit-user-select: none; /* Safari */
+          -ms-user-select: none; /* IE 10 and IE 11 */
+          user-select: none; /* Standard syntax */
+        }
+
+
+
+.containermenu {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  z-index: 99;
+}
+
+.menu-toggle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #1ef0a0;
+  box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  z-index: 5;
+  bottom: 0;
+  right: 0;
+  display: table;
+  text-align: center;
+}
+.menu-toggle .fa {
+  color: #fff;
+  font-size: 2em;
+  display: table-cell;
+  vertical-align: middle;
+  transition: 0.4s;
+}
+.menu-toggle.open .fa {
+  transform: rotate(135deg);
+}
+
+.btn-app, .btn-app-lop {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--theme-color);
+  color: #fff;
+  text-align: center;
+  display: none;
+  cursor: pointer;
+}
+.btn-app .fa {
+  line-height: 2.5em;
+}
+
+.open .btn-app {
+  box-shadow: 4px 4px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.btn-app-lop {
+    width: 100px !important;
+    border-radius: 999px;
+/*    display: inline-block;*/
+    padding-left: 15px;
+    text-align: left;
+    font-weight: 700;
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+.menubbitem {display: inline-block !important;}
+
+.menu-round {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 3;
+}
+.menu-round .btn-app {
+  bottom: 0.25em;
+  right: 0.25em;
+  transition: 0.4s;
+}
+.menu-round.open .btn-app:nth-of-type(1) {
+  right: 0.5em;
+  bottom: 4.25em;
+  transition-delay: 0.2s;
+}
+.menu-round.open .btn-app:nth-of-type(2) {
+  right: 3.5em;
+  bottom: 3.5em;
+  transition-delay: 0.1s;
+}
+.menu-round.open .btn-app:nth-of-type(3) {
+  right: 4.25em;
+  bottom: 0.5em;
+}
+
+.menu-line {
+  position: absolute;
+  z-index: 2;
+}
+.menu-line .btn-app {
+  bottom: 0;
+  right: 0.5em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(1) {
+  bottom: 1.25em;
+}
+.menu-line.open .btn-app:nth-of-type(1) {
+  bottom: 4.25em;
+}
+.menu-line.open .btn-app:nth-of-type(2) {
+  bottom: 7.25em;
+}
+.menu-line.open .btn-app:nth-of-type(3) {
+  bottom: 10.25em;
+}
+.menu-line.open .btn-app:nth-of-type(4) {
+  bottom: 13.25em;
+}
+.menu-line.open .btn-app:nth-of-type(5) {
+  bottom: 16.25em;
+}
+.menu-line.open .btn-app:nth-of-type(6) {
+  bottom: 19.25em;
+}
+.menu-line.open .btn-app:nth-of-type(7) {
+  bottom: 22.25em;
+}
+.containermenu a {color: white; } 
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!--[if lte IE 9]>
+    	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+
+<style>
+    .ultopmenu > li > a {padding: 30px !important;}
+    .menu-area {margin: 0 auto 0px auto !important;}
+</style>    
+    <div class="vs-menu-wrapper">
+        <div class="vs-menu-area text-center">
+            <button class="vs-menu-toggle"><i class="fal fa-times"></i></button>
+            <div class="mobile-logo">
+                <a href="/"><img src="/img/logo-top.png" alt="LopHoc.net"></a>
+            </div>
+            <div class="vs-mobile-menu">
+                <ul class="ultopmenu">
+                                <li>
+                                    <a href="/">Trang chủ</a>
+                                </li> 
+                                <li class="menu-item-has-children">
+                                    <a href="#">Học Toán</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="/toan/lop-1">Lớp 1</a></li>
+                                        <li><a href="/toan/lop-2">Lớp 2</a></li>
+                                        <li><a href="/toan/bang-cuu-chuong">Bảng cửu chương</a></li>
+                                    </ul>
+                                </li>  
+                                <li>
+                                    <a href="https://www.tiktok.com/@giaolang4.0" target="_blank">TikTok</a>
+                                </li> 
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="sidemenu-wrapper d-none d-lg-block  ">
+        <div class="sidemenu-content">
+            <button class="closeButton sideMenuCls" id="btnCloseTool"><i class="far fa-times"></i></button>
+              
+        </div>
+ 
+        
+    </div> -->
+
+    <!-- <div class="popup-search-box d-none d-lg-block  ">
+        <button class="searchClose"><i class="fal fa-times"></i></button>
+        <form action="#">
+            <input type="text" class="border-theme" placeholder="What are you looking for">
+            <button type="submit"><i class="fal fa-search"></i></button>
+        </form>
+    </div> -->
+    
+
+    <header class="vs-header header-layout3">
+        <!-- <div class="header-top">
+            <div class="container">
+                <div class="row justify-content-between align-items-center"> 
+                </div>
+            </div>
+        </div> -->
+        <div class="menu-area">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col col-lg-auto">
+                        <div class="header-logo" style="padding: 5px 0px;">
+                            <a href="/"><img src="/img/logo-top.png" alt="LopHoc.net" style=" "></a>
+                        </div>
+                    </div>
+                    <div class="col-auto col-lg text-center">
+                        <nav class="main-menu menu-style3 d-none d-lg-block">
+                            <ul class="ultopmenu">
+                                <li>
+                                    <a href="/">Trang chủ</a>
+                                </li>  
+                                <li class="menu-item-has-children">
+                                    <a href="#">Học Toán</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="/toan/lop-1">Lớp 1</a></li>
+                                        <li><a href="/toan/lop-2">Lớp 2</a></li>
+                                        <li><a href="/toan/bang-cuu-chuong">Bảng cửu chương</a></li>
+                                    </ul>
+                                </li>   
+                                <li>
+                                    <a href="https://www.tiktok.com/@giaolang4.0" target="_blank">TikTok</a>
+                                </li> 
+                            </ul>
+                        </nav>
+                        <button class="vs-menu-toggle d-inline-block d-lg-none"><i class="fal fa-bars"></i></button>
+                    </div>
+                    <!-- <div class="col-auto  d-none d-lg-block">
+                        <div class="header-icons">
+                            <button class="simple-icon style2 sideMenuToggler"><i class="far fa-bars"></i></button>
+                        </div>
+                    </div> -->
+                    <!-- <div class="col-auto d-none d-xl-block">
+                        <a href="contact.html" class="vs-btn sideMenuToggler">Apply Today</a>
+                    </div> -->
+                    <!-- <div class="col-auto  d-xl-block">
+                        <span class="vs-btn sideMenuToggler" style="font-size:30px;padding-top:10px;padding-bottom: 10px;" data-id="" id="divtenlop">x</span>
+                    </div> -->
+                </div>
+            </div>
+        </div> 
+
+    </header> 
+
+
+
+<!-- <script src="/ass/class/js/vendor/jquery-3.6.0.min.js"></script> -->
+ 
+ 
+
+    <section class="space-top1 space-extra-bottom" style="padding-top:30px;">
+        <div class="container">  
+            <div class="row text-center" id="dkhung" style="padding:10px;background-color: white;overflow-x: hidden;overflow-y: scroll;display: none;">
+                <div class="col-12 form-style3" style="padding:0px;margin:0px;height: 2000px;text-align: left;overflow:hidden;" id="dkhung1">  
+                    <div id="dvanban" style="color: #000;font-family: tapviet1bold;font-size: 60px;line-height: 96px;position: absolute; z-index:50;width:100%;"  contenteditable="true"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thứ 2, ngày 14 tháng 10 năm 2024<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trong đầm gì đẹp bằng sen<br>&nbsp;&nbsp;&nbsp;&nbsp;Lá xanh, bông trắng, lại chen nhụy vàng<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ca dao</div>
+                    <div id="ddongke" class="prevent-select" style="color: #9E9E9E;font-family: tapviet4hang;font-size: 60px;line-height: 96px;overflow: hidden;">ǯǯǯǯǯǯǯǯ<br>ǯǯǯǯǯǯǯǯ
+                    </div>
+ 
+                    <div class="containermenu prevent-select">
+                        <div class="menu-toggle" style="background-color: var(--vs-secondary-color);">
+                            <span class="fa fa-plus" style="cursor: pointer;"></span>
+                        </div> 
+                        <div class="menu-line">
+                            <div class="btn-app btn-app-lop" id="btnsualoi"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;">Sửa lỗi</div>
+                            </div>
+                            <div class="btn-app btn-app-lop" id="btn4oly"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;" id="txt4oly">4 ô ly</div>
+                            </div>
+                            <!-- <div class="btn-app btn-app-lop" id="btn5oly"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;">5 ô ly</div>
+                            </div> -->
+                            <div class="btn-app btn-app-lop" id="btnfullscreen"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;">Mở rộng</div>
+                            </div>
+                            <div class="btn-app btn-app-lop" id="btnto"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;">To</div>
+                            </div>
+                            <div class="btn-app btn-app-lop" id="btnnho"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;">Nhỏ</div>
+                            </div>  
+                            <div class="btn-app btn-app-lop" id="btnnetdam"> 
+                                <div class="fa fa-caret-right"></div> 
+                                <div style="display:inline-block;" id="txtnetdam">Thường</div>
+                            </div> 
+                        </div>
+                        
+                        
+                    </div>
+
+                </div>
+            </div> 
+
+        </div>  
+    </section> 
+
+
+
+
+    <footer class="footer-wrapper footer-layout1">
+         
+        <div class="copyright-wrap bg-theme">
+            <p class="copyright-text text-white">Công cụ online cho Lớp học 4.0<br>Copyright &copy; 2024 <a href="/">LopHoc.net</a> | <a href="https://www.tiktok.com/@giaolang4.0" target="_blank">TikTok</a> | <a href="https://www.facebook.com/giaolang4.0" target="_blank">Facebook</a> | <a href="https://www.youtube.com/@giaolang4.0" target="_blank">Youtube</a>
+        </div>
+    </footer> 
+    <a href="#" class="scrollToTop scroll-btn"><i class="far fa-arrow-up"></i></a>
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SY5KS3DRGN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SY5KS3DRGN');
+</script>
+ 
+    <script src="/ass/class/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="/ass/class/js/slick.min.js"></script>
+    <script src="/ass/class/js/layerslider.utils.js"></script>
+    <script src="/ass/class/js/layerslider.transitions.js"></script>
+    <script src="/ass/class/js/layerslider.kreaturamedia.jquery.js"></script>
+    <script src="/ass/class/js/jquery-ui.min.js"></script>
+    <script src="/ass/class/js/bootstrap.min.js"></script>
+    <script src="/ass/class/js/jquery.magnific-popup.min.js"></script>
+    <script src="/ass/class/js/imagesloaded.pkgd.min.js"></script>
+    <script src="/ass/class/js/isotope.pkgd.min.js"></script>
+    <script src="/ass/class/js/main.js"></script>
+
+<script type="text/javascript"> 
+var _0x38e36d=_0x51db;(function(_0x3f72a2,_0x38e205){var _0x1d970d=_0x51db,_0x1095aa=_0x3f72a2();while(!![]){try{var _0x109752=-parseInt(_0x1d970d(0x225))/0x1+parseInt(_0x1d970d(0x217))/0x2+-parseInt(_0x1d970d(0x22a))/0x3*(-parseInt(_0x1d970d(0x223))/0x4)+-parseInt(_0x1d970d(0x1f4))/0x5+parseInt(_0x1d970d(0x1ef))/0x6+parseInt(_0x1d970d(0x21d))/0x7*(parseInt(_0x1d970d(0x228))/0x8)+-parseInt(_0x1d970d(0x1f8))/0x9*(parseInt(_0x1d970d(0x205))/0xa);if(_0x109752===_0x38e205)break;else _0x1095aa['push'](_0x1095aa['shift']());}catch(_0xc83158){_0x1095aa['push'](_0x1095aa['shift']());}}}(_0x2815,0xb9895));var khungCao=0x7d0,khungRong=0x3e8,chuSize=0x3c,chuHeight=0x60,isFullScr=![],loaioly=0x4,kytuoly='ǯ',ptop=0x0,isNetDam=!![];function _0x2815(){var _0x40c67b=['1075549nlRGQb','css','ǕΜ∆','379096rTokBu','exitFullscreen','1164ULBosh','includes','ǕΜ⁄','ǕΜ≈','ǕΜ;','substring','\x20Θ≈','Ηˇc','Ηğc','ΗϜc','webkitRequestFullscreen','text','show','ǕΜ◊','tapviet1bold','\x20π˙','ǕΜ˘','\x20Θ◊','mozRequestFullScreen','\x20Θ∆','Η˛c','#ddongke','\x20πı','tapviet1normal','oph','tapviet5hang','#btnnetdam','remove','ǕΜ','\x20Θˉ','\x20πˉ','hostname','Thường','\x20Ŕ\x20','open','Đậm','4\x20ô\x20ly','html','\x20Θł','#txtnetdam','\x20π≈','menubbitem','.menu-line','ǕΜŃ','ready','tapviet4hang','\x20πŃ','webkitExitFullscreen','#txt4oly','\x20Θ˘','padding-top','ǕΜˉ','.menu-round','font-family','6095694NSKTEg','Β΄o','\x20ΘŃ','mozCancelFullScreen','Η˝c','1147440DFTgKQ','\x20Θı','\x20π','click','11511243dviJRa','ΐêu\x20','width','.btn-app','\x20|\x20','Η΄c','.menu-toggle','requestFullscreen','#btnfullscreen','\x20Θ;','Ηİc','\x20Θ','join','10BTsoMf','font-size','toLowerCase','#dkhung','dkhung','\x20π∆','toggleClass','getElementById','round','href','line-height','Η˞c','ǕΜ','\x20π⁄','ǕΜı','\x20Θ⁄','\x20π◊','sΝ\x20','1209582PTxxER','&nbsp;','\x20Ď\x20','msRequestFullscreen','\x20Θ','ǕΜ˙','77LpDpVm','Ηłc','msExitFullscreen','replace','ΗĞc','\x20π˘','12392xlZYfq','#dvanban'];_0x2815=function(){return _0x40c67b;};return _0x2815();}$(document)[_0x38e36d(0x1e5)](function(){capnhat();});var myhona=location[_0x38e36d(0x1d8)];function capnhat(){var _0x34eb3d=_0x38e36d;if(loaioly==0x4)chuHeight=chuSize/0.625,ptop=0x0;else loaioly==0x5?(chuHeight=chuSize/0.5,ptop=chuSize/0x5):(chuHeight=chuSize*0x4/0x5,ptop=chuSize/0x5*1.5);isFullScr?khungRong=screen[_0x34eb3d(0x1fa)]-0x14:khungRong=$(_0x34eb3d(0x208))[_0x34eb3d(0x1fa)]();if(!window['location'][_0x34eb3d(0x20e)][_0x34eb3d(0x22b)](_0x34eb3d(0x242)))return![];$(_0x34eb3d(0x23f))[_0x34eb3d(0x226)](_0x34eb3d(0x1fa),khungRong+'px'),$(_0x34eb3d(0x224))[_0x34eb3d(0x226)](_0x34eb3d(0x1fa),khungRong-0x14+'px');let _0x282045=Math[_0x34eb3d(0x20d)](khungRong/chuHeight)+0x2;loaioly==0x4||loaioly==0x2?(kytuoly='ǯ',$('#ddongke')[_0x34eb3d(0x226)](_0x34eb3d(0x1ee),_0x34eb3d(0x1e6))):(kytuoly='ǰ',$(_0x34eb3d(0x23f))['css'](_0x34eb3d(0x1ee),_0x34eb3d(0x243)));let _0x5070eb=new Array(_0x282045)[_0x34eb3d(0x204)](kytuoly),_0x1a5cf9=Math[_0x34eb3d(0x20d)](khungCao/chuHeight)+0x2,_0x21c5d8=new Array(_0x1a5cf9)[_0x34eb3d(0x204)]('\x0a'+_0x5070eb);$(_0x34eb3d(0x23f))[_0x34eb3d(0x235)](_0x21c5d8);if(loaioly!=0x2)$('#ddongke')[_0x34eb3d(0x226)]('font-size',chuSize+'px');else $(_0x34eb3d(0x23f))[_0x34eb3d(0x226)](_0x34eb3d(0x206),chuSize/0x2+'px');$('#ddongke')[_0x34eb3d(0x226)](_0x34eb3d(0x20f),chuHeight+'px'),$(_0x34eb3d(0x224))[_0x34eb3d(0x226)](_0x34eb3d(0x206),chuSize+'px');if(loaioly!=0x2)$(_0x34eb3d(0x224))[_0x34eb3d(0x226)](_0x34eb3d(0x20f),chuHeight+'px');else $(_0x34eb3d(0x224))[_0x34eb3d(0x226)](_0x34eb3d(0x20f),chuHeight*0x2+'px');$(_0x34eb3d(0x224))['css'](_0x34eb3d(0x1eb),ptop+'px');}$(document)['on'](_0x38e36d(0x1f7),'#btnnho',function(){chuSize--,capnhat();}),$(document)['on'](_0x38e36d(0x1f7),'#btnto',function(){chuSize++,capnhat();}),$(document)['on'](_0x38e36d(0x1f7),'#btnsualoi',function(){var _0x4d6edf=_0x38e36d;let _0x13ab67=$(_0x4d6edf(0x224))[_0x4d6edf(0x1de)]()[_0x4d6edf(0x220)](/&nbsp;/g,'$'),_0x53509a=cv0l(_0x13ab67),_0x3027f5=_0x53509a[_0x4d6edf(0x207)](),_0x4db883=kn9e(_0x53509a);$(_0x4d6edf(0x224))[_0x4d6edf(0x1de)](_0x4db883[_0x4d6edf(0x220)](/\$/g,_0x4d6edf(0x218)));}),$(document)['on'](_0x38e36d(0x1f7),'#btn4oly',function(){var _0x44c325=_0x38e36d;if(loaioly==0x4)$(_0x44c325(0x1e9))[_0x44c325(0x235)]('5\x20ô\x20ly'),loaioly=0x5,capnhat();else loaioly==0x5?($(_0x44c325(0x1e9))[_0x44c325(0x235)]('4\x20ô\x20nhỏ'),loaioly=0x2,capnhat()):($(_0x44c325(0x1e9))[_0x44c325(0x235)](_0x44c325(0x1dd)),loaioly=0x4,capnhat());}),$(document)['on'](_0x38e36d(0x1f7),_0x38e36d(0x1d3),function(){var _0x3c3b82=_0x38e36d;isNetDam?($(_0x3c3b82(0x1e0))['text'](_0x3c3b82(0x1dc)),$('#dvanban')[_0x3c3b82(0x226)](_0x3c3b82(0x1ee),_0x3c3b82(0x241)),isNetDam=![],capnhat()):($(_0x3c3b82(0x1e0))['text'](_0x3c3b82(0x1d9)),$(_0x3c3b82(0x224))[_0x3c3b82(0x226)](_0x3c3b82(0x1ee),_0x3c3b82(0x238)),isNetDam=!![],capnhat());}),$(document)['on']('click',_0x38e36d(0x200),function(){isFullScr?(exitFullScreen(),isFullScr=![]):(goFullScreen(),isFullScr=!![]),setTimeout(function(){capnhat();},0x1f4);});var l1=myhona;function _0x51db(_0x3f3fca,_0x1f60b2){var _0x281586=_0x2815();return _0x51db=function(_0x51db77,_0x700bfe){_0x51db77=_0x51db77-0x1d3;var _0x274c16=_0x281586[_0x51db77];return _0x274c16;},_0x51db(_0x3f3fca,_0x1f60b2);}$(_0x38e36d(0x208))[_0x38e36d(0x236)]();myhona[0x1]=='o'&&myhona[0x3]=='h'&&myhona[0x4]=='o'?$('#dkhung')[_0x38e36d(0x236)]():$(_0x38e36d(0x208))[_0x38e36d(0x1d4)]();function goFullScreen(){var _0x12ad6c=_0x38e36d,_0x21ed15=document[_0x12ad6c(0x20c)](_0x12ad6c(0x209));if(_0x21ed15[_0x12ad6c(0x1ff)])_0x21ed15[_0x12ad6c(0x1ff)]();else{if(_0x21ed15[_0x12ad6c(0x23c)])_0x21ed15[_0x12ad6c(0x23c)]();else{if(_0x21ed15['webkitRequestFullscreen'])_0x21ed15[_0x12ad6c(0x234)]();else _0x21ed15[_0x12ad6c(0x21a)]&&_0x21ed15[_0x12ad6c(0x21a)]();}}}function exitFullScreen(){var _0x41787f=_0x38e36d;if(document[_0x41787f(0x229)])document[_0x41787f(0x229)]();else{if(document[_0x41787f(0x1f2)])document[_0x41787f(0x1f2)]();else{if(document[_0x41787f(0x1e8)])document[_0x41787f(0x1e8)]();else document[_0x41787f(0x21f)]&&document['msExitFullscreen']();}}}$(document)['on'](_0x38e36d(0x1f7),'.menu-toggle',function(_0xa77c83){var _0x39483d=_0x38e36d;$(_0x39483d(0x1fb))[_0x39483d(0x20b)](_0x39483d(0x1e2)),$(_0x39483d(0x1fe))['toggleClass'](_0x39483d(0x1db)),$(_0x39483d(0x1ed))['toggleClass'](_0x39483d(0x1db)),$(_0x39483d(0x1e3))['toggleClass'](_0x39483d(0x1db));});function cv0l(_0x2dbc54){var _0x4b6514=_0x38e36d;inputText='\x20'+_0x2dbc54+'\x20',inputText=inputText['replace'](/,/g,'\x20|\x20'),inputText=inputText['replace'](/\|/g,','),inputText=inputText[_0x4b6514(0x220)](/\./g,_0x4b6514(0x1fc)),inputText=inputText[_0x4b6514(0x220)](/\|/g,'.'),inputText=inputText[_0x4b6514(0x220)](/!/g,_0x4b6514(0x1fc)),inputText=inputText[_0x4b6514(0x220)](/\|/g,'!'),inputText=inputText[_0x4b6514(0x220)](/\?/g,_0x4b6514(0x1fc)),inputText=inputText[_0x4b6514(0x220)](/\|/g,'?'),inputText=inputText[_0x4b6514(0x220)](/;/g,_0x4b6514(0x1fc)),inputText=inputText['replace'](/\|/g,';');if(l1[0x0]!='l')return'';return inputText=inputText[_0x4b6514(0x220)](/oon/g,'ά'),inputText=inputText[_0x4b6514(0x220)](/ooc/g,'β'),inputText=inputText[_0x4b6514(0x220)](/oóc/g,'γ'),inputText=inputText[_0x4b6514(0x220)](/oọc/g,'ǭ'),inputText=inputText[_0x4b6514(0x220)](/que/g,'ǕΜ;'),inputText=inputText[_0x4b6514(0x220)](/què/g,_0x4b6514(0x227)),inputText=inputText['replace'](/quẹ/g,_0x4b6514(0x1d5)),inputText=inputText[_0x4b6514(0x220)](/quẻ/g,'ǕΜ◊'),inputText=inputText[_0x4b6514(0x220)](/qué/g,_0x4b6514(0x22d)),inputText=inputText[_0x4b6514(0x220)](/quẽ/g,_0x4b6514(0x22c)),inputText=inputText[_0x4b6514(0x220)](/quê/g,_0x4b6514(0x211)),inputText=inputText[_0x4b6514(0x220)](/quề/g,_0x4b6514(0x1ec)),inputText=inputText[_0x4b6514(0x220)](/quệ/g,'ǕΜŃ'),inputText=inputText[_0x4b6514(0x220)](/quể/g,'ǕΜ˘'),inputText=inputText[_0x4b6514(0x220)](/quế/g,'ǕΜı'),inputText=inputText[_0x4b6514(0x220)](/quễ/g,_0x4b6514(0x21c)),inputText=inputText['replace'](/mi/g,'ji'),inputText=inputText[_0x4b6514(0x220)](/mì/g,'jì'),inputText=inputText[_0x4b6514(0x220)](/mị/g,'jị'),inputText=inputText['replace'](/mỉ/g,'jỉ'),inputText=inputText[_0x4b6514(0x220)](/mí/g,'jí'),inputText=inputText[_0x4b6514(0x220)](/mĩ/g,'jĩ'),inputText=inputText['replace'](/ r/g,'\x20ǟ'),inputText=inputText['replace'](/oa/g,'Ξ'),inputText=inputText[_0x4b6514(0x220)](/oà/g,'♦'),inputText=inputText[_0x4b6514(0x220)](/oạ/g,'Ĳ'),inputText=inputText[_0x4b6514(0x220)](/oả/g,'♪'),inputText=inputText['replace'](/oá/g,'Ǩ'),inputText=inputText[_0x4b6514(0x220)](/oã/g,'♫'),inputText=inputText[_0x4b6514(0x220)](/òa/g,'ƣ'),inputText=inputText[_0x4b6514(0x220)](/ọa/g,'Ʀ'),inputText=inputText[_0x4b6514(0x220)](/ỏa/g,'Ƥ'),inputText=inputText[_0x4b6514(0x220)](/óa/g,'Ƣ'),inputText=inputText['replace'](/õa/g,'ƥ'),inputText=inputText['replace'](/oă/g,'ę'),inputText=inputText[_0x4b6514(0x220)](/oằ/g,'ż'),inputText=inputText[_0x4b6514(0x220)](/oặ/g,'Ǡ'),inputText=inputText['replace'](/oẳ/g,'ſ'),inputText=inputText['replace'](/oắ/g,'ĳ'),inputText=inputText[_0x4b6514(0x220)](/oẵ/g,'Ƌ'),inputText=inputText['replace'](/oc/g,'Ο'),inputText=inputText[_0x4b6514(0x220)](/ọc/g,'ǌ'),inputText=inputText['replace'](/óc/g,'ŉ'),inputText=inputText[_0x4b6514(0x220)](/oi/g,'Ρ'),inputText=inputText['replace'](/òi/g,'ā'),inputText=inputText[_0x4b6514(0x220)](/ọi/g,'Ċ'),inputText=inputText[_0x4b6514(0x220)](/ỏi/g,'Ĉ'),inputText=inputText['replace'](/ói/g,'Ā'),inputText=inputText[_0x4b6514(0x220)](/õi/g,'ĉ'),inputText=inputText[_0x4b6514(0x220)](/om/g,'Ψ'),inputText=inputText[_0x4b6514(0x220)](/òm/g,'ī'),inputText=inputText[_0x4b6514(0x220)](/ọm/g,'Į'),inputText=inputText['replace'](/ỏm/g,'Ĭ'),inputText=inputText[_0x4b6514(0x220)](/óm/g,'Ī'),inputText=inputText[_0x4b6514(0x220)](/õm/g,'ĭ'),inputText=inputText[_0x4b6514(0x220)](/on/g,'Ϊ'),inputText=inputText[_0x4b6514(0x220)](/òn/g,'Ŝ'),inputText=inputText[_0x4b6514(0x220)](/ọn/g,'ŧ'),inputText=inputText[_0x4b6514(0x220)](/ỏn/g,'ŝ'),inputText=inputText['replace'](/ón/g,'ŗ'),inputText=inputText[_0x4b6514(0x220)](/õn/g,'Ŧ'),inputText=inputText[_0x4b6514(0x220)](/op/g,'Φ'),inputText=inputText['replace'](/ọp/g,'Ĥ'),inputText=inputText[_0x4b6514(0x220)](/óp/g,'ģ'),inputText=inputText[_0x4b6514(0x220)](/ot/g,'Τ'),inputText=inputText[_0x4b6514(0x220)](/ọt/g,'Ġ'),inputText=inputText[_0x4b6514(0x220)](/ót/g,'ĝ'),inputText=inputText[_0x4b6514(0x220)](/ôc/g,'″'),inputText=inputText['replace'](/ộc/g,'ℓ'),inputText=inputText[_0x4b6514(0x220)](/ốc/g,'Ǭ'),inputText=inputText[_0x4b6514(0x220)](/ôi/g,'ċ'),inputText=inputText['replace'](/ồi/g,'ē'),inputText=inputText[_0x4b6514(0x220)](/ội/g,'Ė'),inputText=inputText['replace'](/ổi/g,'Ĕ'),inputText=inputText[_0x4b6514(0x220)](/ối/g,'Ē'),inputText=inputText[_0x4b6514(0x220)](/ỗi/g,'ĕ'),inputText=inputText['replace'](/ôm/g,'į'),inputText=inputText[_0x4b6514(0x220)](/ồm/g,'ĵ'),inputText=inputText[_0x4b6514(0x220)](/ộm/g,'ĸ'),inputText=inputText[_0x4b6514(0x220)](/ổm/g,'Ķ'),inputText=inputText[_0x4b6514(0x220)](/ốm/g,'Ĵ'),inputText=inputText['replace'](/ỗm/g,'ķ'),inputText=inputText[_0x4b6514(0x220)](/ôn/g,'Ū'),inputText=inputText[_0x4b6514(0x220)](/ồn/g,'Ŭ'),inputText=inputText[_0x4b6514(0x220)](/ộn/g,'ų'),inputText=inputText[_0x4b6514(0x220)](/ổn/g,'ŭ'),inputText=inputText[_0x4b6514(0x220)](/ốn/g,'ū'),inputText=inputText[_0x4b6514(0x220)](/ỗn/g,'Ų'),inputText=inputText[_0x4b6514(0x220)](/ôp/g,'Ļ'),inputText=inputText[_0x4b6514(0x220)](/ộp/g,'Ņ'),inputText=inputText[_0x4b6514(0x220)](/ốp/g,'ļ'),inputText=inputText[_0x4b6514(0x220)](/ôt/g,'Ō'),inputText=inputText[_0x4b6514(0x220)](/ột/g,'Ŏ'),inputText=inputText[_0x4b6514(0x220)](/ốt/g,'ō'),inputText=inputText[_0x4b6514(0x220)](/ơc/g,'έ'),inputText=inputText['replace'](/ợc/g,'ϑ'),inputText=inputText[_0x4b6514(0x220)](/ớc/g,'ϐ'),inputText=inputText[_0x4b6514(0x220)](/ơi/g,'Π'),inputText=inputText['replace'](/ời/g,'Ɵ'),inputText=inputText[_0x4b6514(0x220)](/ợi/g,'◦'),inputText=inputText[_0x4b6514(0x220)](/ởi/g,'▫'),inputText=inputText['replace'](/ới/g,'ƞ'),inputText=inputText[_0x4b6514(0x220)](/ỡi/g,'ǫ'),inputText=inputText[_0x4b6514(0x220)](/ơm/g,'Χ'),inputText=inputText[_0x4b6514(0x220)](/ờm/g,'Ħ'),inputText=inputText[_0x4b6514(0x220)](/ợm/g,'ħ'),inputText=inputText['replace'](/ởm/g,'ϕ'),inputText=inputText[_0x4b6514(0x220)](/ớm/g,'ĥ'),inputText=inputText[_0x4b6514(0x220)](/ỡm/g,'ϖ'),inputText=inputText[_0x4b6514(0x220)](/ơn/g,'Ω'),inputText=inputText['replace'](/ờn/g,'Ŋ'),inputText=inputText[_0x4b6514(0x220)](/ợn/g,'Ŗ'),inputText=inputText['replace'](/ởn/g,'ŋ'),inputText=inputText[_0x4b6514(0x220)](/ớn/g,'ņ'),inputText=inputText[_0x4b6514(0x220)](/ỡn/g,'ŏ'),inputText=inputText[_0x4b6514(0x220)](/ơp/g,'Υ'),inputText=inputText['replace'](/ợp/g,'Ģ'),inputText=inputText[_0x4b6514(0x220)](/ớp/g,'ġ'),inputText=inputText[_0x4b6514(0x220)](/ơt/g,'Σ'),inputText=inputText[_0x4b6514(0x220)](/ợt/g,'Ĝ'),inputText=inputText[_0x4b6514(0x220)](/ớt/g,'ė'),inputText=inputText[_0x4b6514(0x220)](/ơu/g,'Ϋ'),inputText=inputText[_0x4b6514(0x220)](/ơu/g,'Ϋ'),inputText=inputText[_0x4b6514(0x220)](/ợu/g,'ŵ'),inputText=inputText[_0x4b6514(0x220)](/ớu/g,'Ŵ'),inputText=inputText['replace'](/iec/g,_0x4b6514(0x1fd)),inputText=inputText[_0x4b6514(0x220)](/ièc/g,_0x4b6514(0x1f3)),inputText=inputText['replace'](/iẹc/g,'Η−c'),inputText=inputText[_0x4b6514(0x220)](/iẻc/g,_0x4b6514(0x210)),inputText=inputText['replace'](/iéc/g,_0x4b6514(0x23e)),inputText=inputText[_0x4b6514(0x220)](/iẽc/g,_0x4b6514(0x231)),inputText=inputText[_0x4b6514(0x220)](/iêc/g,'Ηłc'),inputText=inputText['replace'](/iềc/g,'Ηϛc'),inputText=inputText[_0x4b6514(0x220)](/iệc/g,_0x4b6514(0x202)),inputText=inputText[_0x4b6514(0x220)](/iểc/g,_0x4b6514(0x233)),inputText=inputText[_0x4b6514(0x220)](/iếc/g,_0x4b6514(0x221)),inputText=inputText[_0x4b6514(0x220)](/iễc/g,_0x4b6514(0x232)),inputText=inputText[_0x4b6514(0x220)](/ ie/g,_0x4b6514(0x201)),inputText=inputText['replace'](/ iè/g,_0x4b6514(0x23d)),inputText=inputText[_0x4b6514(0x220)](/ iẹ/g,_0x4b6514(0x203)),inputText=inputText['replace'](/ iẻ/g,_0x4b6514(0x23b)),inputText=inputText[_0x4b6514(0x220)](/ ié/g,_0x4b6514(0x230)),inputText=inputText[_0x4b6514(0x220)](/ iẽ/g,_0x4b6514(0x214)),inputText=inputText['replace'](/ iê/g,_0x4b6514(0x21b)),inputText=inputText[_0x4b6514(0x220)](/ iề/g,_0x4b6514(0x1d6)),inputText=inputText[_0x4b6514(0x220)](/ iệ/g,_0x4b6514(0x1f1)),inputText=inputText['replace'](/ iể/g,_0x4b6514(0x1ea)),inputText=inputText[_0x4b6514(0x220)](/ iế/g,_0x4b6514(0x1f5)),inputText=inputText[_0x4b6514(0x220)](/ iễ/g,'\x20Θ˙'),inputText=inputText[_0x4b6514(0x220)](/ie/g,'Η;'),inputText=inputText[_0x4b6514(0x220)](/iè/g,'Η∆'),inputText=inputText[_0x4b6514(0x220)](/iẹ/g,'Η'),inputText=inputText['replace'](/iẻ/g,'Η◊'),inputText=inputText[_0x4b6514(0x220)](/ié/g,'Η≈'),inputText=inputText[_0x4b6514(0x220)](/iẽ/g,'Η⁄'),inputText=inputText[_0x4b6514(0x220)](/iê/g,'Η'),inputText=inputText['replace'](/iề/g,'Ηˉ'),inputText=inputText['replace'](/iệ/g,'ΗŃ'),inputText=inputText[_0x4b6514(0x220)](/iể/g,'Η˘'),inputText=inputText[_0x4b6514(0x220)](/iế/g,'Ηı'),inputText=inputText[_0x4b6514(0x220)](/iễ/g,'Η˙'),inputText=inputText[_0x4b6514(0x220)](/ ue/g,'\x20π;'),inputText=inputText[_0x4b6514(0x220)](/ uè/g,_0x4b6514(0x20a)),inputText=inputText[_0x4b6514(0x220)](/ uẹ/g,_0x4b6514(0x1f6)),inputText=inputText[_0x4b6514(0x220)](/ uẻ/g,_0x4b6514(0x215)),inputText=inputText[_0x4b6514(0x220)](/ ué/g,_0x4b6514(0x1e1)),inputText=inputText[_0x4b6514(0x220)](/ uẽ/g,_0x4b6514(0x212)),inputText=inputText[_0x4b6514(0x220)](/ uê/g,'\x20π'),inputText=inputText[_0x4b6514(0x220)](/ uề/g,_0x4b6514(0x1d7)),inputText=inputText[_0x4b6514(0x220)](/ uệ/g,_0x4b6514(0x1e7)),inputText=inputText[_0x4b6514(0x220)](/ uể/g,_0x4b6514(0x222)),inputText=inputText[_0x4b6514(0x220)](/ uế/g,_0x4b6514(0x240)),inputText=inputText[_0x4b6514(0x220)](/ uễ/g,_0x4b6514(0x239)),inputText=inputText[_0x4b6514(0x220)](/ue/g,'Μ;'),inputText=inputText[_0x4b6514(0x220)](/uè/g,'Μ∆'),inputText=inputText[_0x4b6514(0x220)](/uẹ/g,'Μ'),inputText=inputText[_0x4b6514(0x220)](/uẻ/g,'Μ◊'),inputText=inputText[_0x4b6514(0x220)](/ué/g,'Μ≈'),inputText=inputText[_0x4b6514(0x220)](/uẽ/g,'Μ⁄'),inputText=inputText[_0x4b6514(0x220)](/uê/g,'Μ'),inputText=inputText[_0x4b6514(0x220)](/uề/g,'Μˉ'),inputText=inputText[_0x4b6514(0x220)](/uệ/g,'ΜŃ'),inputText=inputText[_0x4b6514(0x220)](/uể/g,'Μ˘'),inputText=inputText[_0x4b6514(0x220)](/uế/g,'Μı'),inputText=inputText['replace'](/uễ/g,'Μ˙'),inputText=inputText[_0x4b6514(0x220)](/ye/g,'ΐ;'),inputText=inputText[_0x4b6514(0x220)](/yè/g,'ΐ∆'),inputText=inputText[_0x4b6514(0x220)](/yẹ/g,'ΐ'),inputText=inputText[_0x4b6514(0x220)](/yẻ/g,'ΐ◊'),inputText=inputText[_0x4b6514(0x220)](/yé/g,'ΐ≈'),inputText=inputText[_0x4b6514(0x220)](/yẽ/g,'ΐ⁄'),inputText=inputText[_0x4b6514(0x220)](/yê/g,'ΐ'),inputText=inputText['replace'](/yề/g,'ΐˉ'),inputText=inputText[_0x4b6514(0x220)](/yệ/g,'ΐŃ'),inputText=inputText[_0x4b6514(0x220)](/yể/g,'ΐ˘'),inputText=inputText[_0x4b6514(0x220)](/yế/g,'ΐı'),inputText=inputText[_0x4b6514(0x220)](/yễ/g,'ΐ˙'),inputText=inputText[_0x4b6514(0x220)](/ghe/g,'Ή;'),inputText=inputText[_0x4b6514(0x220)](/ghè/g,'Ή∆'),inputText=inputText[_0x4b6514(0x220)](/ghẹ/g,'Ή'),inputText=inputText[_0x4b6514(0x220)](/ghẻ/g,'Ή◊'),inputText=inputText[_0x4b6514(0x220)](/ghé/g,'Ή≈'),inputText=inputText[_0x4b6514(0x220)](/ghẽ/g,'Ή⁄'),inputText=inputText['replace'](/ghê/g,'Ή'),inputText=inputText[_0x4b6514(0x220)](/ghề/g,'Ήˉ'),inputText=inputText['replace'](/ghệ/g,'ΉŃ'),inputText=inputText[_0x4b6514(0x220)](/ghể/g,'Ή˘'),inputText=inputText[_0x4b6514(0x220)](/ghế/g,'Ήı'),inputText=inputText['replace'](/ghễ/g,'Ή˙'),inputText=inputText[_0x4b6514(0x220)](/Ghe/g,'Ŷ;'),inputText=inputText[_0x4b6514(0x220)](/Ghè/g,'Ŷ∆'),inputText=inputText[_0x4b6514(0x220)](/Ghẹ/g,'Ŷ'),inputText=inputText[_0x4b6514(0x220)](/Ghẻ/g,'Ŷ◊'),inputText=inputText[_0x4b6514(0x220)](/Ghé/g,'Ŷ≈'),inputText=inputText[_0x4b6514(0x220)](/Ghẽ/g,'Ŷ⁄'),inputText=inputText['replace'](/Ghê/g,'Ŷ'),inputText=inputText[_0x4b6514(0x220)](/Ghề/g,'Ŷˉ'),inputText=inputText[_0x4b6514(0x220)](/Ghệ/g,'ŶŃ'),inputText=inputText[_0x4b6514(0x220)](/Ghể/g,'Ŷ˘'),inputText=inputText['replace'](/Ghế/g,'Ŷı'),inputText=inputText[_0x4b6514(0x220)](/Ghễ/g,'Ŷ˙'),inputText=inputText[_0x4b6514(0x220)](/khe/g,'Ά;'),inputText=inputText[_0x4b6514(0x220)](/khè/g,'Ά∆'),inputText=inputText[_0x4b6514(0x220)](/khẹ/g,'Ά'),inputText=inputText[_0x4b6514(0x220)](/khẻ/g,'Ά◊'),inputText=inputText[_0x4b6514(0x220)](/khé/g,'Ά≈'),inputText=inputText[_0x4b6514(0x220)](/khẽ/g,'Ά⁄'),inputText=inputText[_0x4b6514(0x220)](/khê/g,'Ά'),inputText=inputText[_0x4b6514(0x220)](/khề/g,'Άˉ'),inputText=inputText['replace'](/khệ/g,'ΆŃ'),inputText=inputText[_0x4b6514(0x220)](/khể/g,'Ά˘'),inputText=inputText['replace'](/khế/g,'Άı'),inputText=inputText[_0x4b6514(0x220)](/khễ/g,'Ά˙'),inputText=inputText[_0x4b6514(0x220)](/nhe/g,'·;'),inputText=inputText[_0x4b6514(0x220)](/nhè/g,'·∆'),inputText=inputText['replace'](/nhẹ/g,'·'),inputText=inputText[_0x4b6514(0x220)](/nhẻ/g,'·◊'),inputText=inputText[_0x4b6514(0x220)](/nhé/g,'·≈'),inputText=inputText['replace'](/nhẽ/g,'·⁄'),inputText=inputText[_0x4b6514(0x220)](/nhê/g,'·'),inputText=inputText[_0x4b6514(0x220)](/nhề/g,'·ˉ'),inputText=inputText[_0x4b6514(0x220)](/nhệ/g,'·Ń'),inputText=inputText[_0x4b6514(0x220)](/nhể/g,'·˘'),inputText=inputText[_0x4b6514(0x220)](/nhế/g,'·ı'),inputText=inputText[_0x4b6514(0x220)](/nhễ/g,'·˙'),inputText=inputText[_0x4b6514(0x220)](/che/g,'Έ;'),inputText=inputText[_0x4b6514(0x220)](/chè/g,'Έ∆'),inputText=inputText[_0x4b6514(0x220)](/chẹ/g,'Έ'),inputText=inputText[_0x4b6514(0x220)](/chẻ/g,'Έ◊'),inputText=inputText[_0x4b6514(0x220)](/ché/g,'Έ≈'),inputText=inputText[_0x4b6514(0x220)](/chẽ/g,'Έ⁄'),inputText=inputText[_0x4b6514(0x220)](/chê/g,'Έ'),inputText=inputText[_0x4b6514(0x220)](/chề/g,'Έˉ'),inputText=inputText[_0x4b6514(0x220)](/chệ/g,'ΈŃ'),inputText=inputText['replace'](/chể/g,'Έ˘'),inputText=inputText[_0x4b6514(0x220)](/chế/g,'Έı'),inputText=inputText[_0x4b6514(0x220)](/chễ/g,'Έ˙'),inputText=inputText['replace'](/the/g,'Ό;'),inputText=inputText['replace'](/thè/g,'Ό∆'),inputText=inputText[_0x4b6514(0x220)](/thẹ/g,'Ό'),inputText=inputText[_0x4b6514(0x220)](/thẻ/g,'Ό◊'),inputText=inputText[_0x4b6514(0x220)](/thé/g,'Ό≈'),inputText=inputText[_0x4b6514(0x220)](/thẽ/g,'Ό⁄'),inputText=inputText[_0x4b6514(0x220)](/thê/g,'Ό'),inputText=inputText[_0x4b6514(0x220)](/thề/g,'Όˉ'),inputText=inputText['replace'](/thệ/g,'ΌŃ'),inputText=inputText[_0x4b6514(0x220)](/thể/g,'Ό˘'),inputText=inputText['replace'](/thế/g,'Όı'),inputText=inputText[_0x4b6514(0x220)](/thễ/g,'Ό˙'),inputText=inputText[_0x4b6514(0x220)](/phe/g,'Ί;'),inputText=inputText[_0x4b6514(0x220)](/phè/g,'Ί∆'),inputText=inputText[_0x4b6514(0x220)](/phẹ/g,'Ί'),inputText=inputText[_0x4b6514(0x220)](/phẻ/g,'Ί◊'),inputText=inputText[_0x4b6514(0x220)](/phé/g,'Ί≈'),inputText=inputText[_0x4b6514(0x220)](/phẽ/g,'Ί⁄'),inputText=inputText[_0x4b6514(0x220)](/phê/g,'Ί'),inputText=inputText[_0x4b6514(0x220)](/phề/g,'Ίˉ'),inputText=inputText[_0x4b6514(0x220)](/phệ/g,'ΊŃ'),inputText=inputText[_0x4b6514(0x220)](/phể/g,'Ί˘'),inputText=inputText[_0x4b6514(0x220)](/phế/g,'Ίı'),inputText=inputText[_0x4b6514(0x220)](/phễ/g,'Ί˙'),inputText=inputText[_0x4b6514(0x220)](/he/g,'Ǘ;'),inputText=inputText[_0x4b6514(0x220)](/hè/g,'Ǘ∆'),inputText=inputText['replace'](/hẹ/g,'Ǘ'),inputText=inputText['replace'](/hẻ/g,'Ǘ◊'),inputText=inputText['replace'](/hé/g,'Ǘ≈'),inputText=inputText[_0x4b6514(0x220)](/hẽ/g,'Ǘ⁄'),inputText=inputText['replace'](/hê/g,'Ǘ'),inputText=inputText[_0x4b6514(0x220)](/hề/g,'Ǘˉ'),inputText=inputText['replace'](/hệ/g,'ǗŃ'),inputText=inputText[_0x4b6514(0x220)](/hể/g,'Ǘ˘'),inputText=inputText[_0x4b6514(0x220)](/hế/g,'Ǘı'),inputText=inputText['replace'](/hễ/g,'Ǘ˙'),inputText=inputText[_0x4b6514(0x220)](/He/g,'υ;'),inputText=inputText[_0x4b6514(0x220)](/Hè/g,'υ∆'),inputText=inputText[_0x4b6514(0x220)](/Hẹ/g,'υ'),inputText=inputText[_0x4b6514(0x220)](/Hẻ/g,'υ◊'),inputText=inputText['replace'](/Hé/g,'υ≈'),inputText=inputText[_0x4b6514(0x220)](/Hẽ/g,'υ⁄'),inputText=inputText['replace'](/Hê/g,'υ'),inputText=inputText[_0x4b6514(0x220)](/Hề/g,'υˉ'),inputText=inputText[_0x4b6514(0x220)](/Hệ/g,'υŃ'),inputText=inputText['replace'](/Hể/g,'υ˘'),inputText=inputText[_0x4b6514(0x220)](/Hế/g,'υı'),inputText=inputText[_0x4b6514(0x220)](/Hễ/g,'υ˙'),inputText=inputText[_0x4b6514(0x220)](/le/g,'Δ;'),inputText=inputText[_0x4b6514(0x220)](/lè/g,'Δ∆'),inputText=inputText['replace'](/lẹ/g,'Δ'),inputText=inputText[_0x4b6514(0x220)](/lẻ/g,'Δ◊'),inputText=inputText[_0x4b6514(0x220)](/lé/g,'Δ≈'),inputText=inputText[_0x4b6514(0x220)](/lẽ/g,'Δ⁄'),inputText=inputText[_0x4b6514(0x220)](/lê/g,'Δ'),inputText=inputText['replace'](/lề/g,'Δˉ'),inputText=inputText[_0x4b6514(0x220)](/lệ/g,'ΔŃ'),inputText=inputText[_0x4b6514(0x220)](/lể/g,'Δ˘'),inputText=inputText[_0x4b6514(0x220)](/lế/g,'Δı'),inputText=inputText[_0x4b6514(0x220)](/lễ/g,'Δ˙'),inputText=inputText[_0x4b6514(0x220)](/Le/g,'ϋ;'),inputText=inputText[_0x4b6514(0x220)](/Lè/g,'ϋ∆'),inputText=inputText[_0x4b6514(0x220)](/Lẹ/g,'ϋ'),inputText=inputText[_0x4b6514(0x220)](/Lẻ/g,'ϋ◊'),inputText=inputText[_0x4b6514(0x220)](/Lé/g,'ϋ≈'),inputText=inputText['replace'](/Lẽ/g,'ϋ⁄'),inputText=inputText[_0x4b6514(0x220)](/Lê/g,'ϋ'),inputText=inputText[_0x4b6514(0x220)](/Lề/g,'ϋˉ'),inputText=inputText[_0x4b6514(0x220)](/Lệ/g,'ϋŃ'),inputText=inputText[_0x4b6514(0x220)](/Lể/g,'ϋ˘'),inputText=inputText[_0x4b6514(0x220)](/Lế/g,'ϋı'),inputText=inputText['replace'](/Lễ/g,'ϋ˙'),inputText=inputText[_0x4b6514(0x220)](/đe/g,'Α;'),inputText=inputText['replace'](/đè/g,'Α∆'),inputText=inputText[_0x4b6514(0x220)](/đẹ/g,'Α'),inputText=inputText[_0x4b6514(0x220)](/đẻ/g,'Α◊'),inputText=inputText[_0x4b6514(0x220)](/đé/g,'Α≈'),inputText=inputText[_0x4b6514(0x220)](/đẽ/g,'Α⁄'),inputText=inputText[_0x4b6514(0x220)](/đê/g,'Α'),inputText=inputText[_0x4b6514(0x220)](/đề/g,'Αˉ'),inputText=inputText['replace'](/đệ/g,'ΑŃ'),inputText=inputText[_0x4b6514(0x220)](/để/g,'Α˘'),inputText=inputText[_0x4b6514(0x220)](/đế/g,'Αı'),inputText=inputText['replace'](/đễ/g,'Α˙'),inputText=inputText[_0x4b6514(0x220)](/be/g,'χϊ'),inputText=inputText[_0x4b6514(0x220)](/bè/g,'χĘ'),inputText=inputText[_0x4b6514(0x220)](/bẹ/g,'χě'),inputText=inputText['replace'](/bẻ/g,'χϗ'),inputText=inputText[_0x4b6514(0x220)](/bé/g,'χď'),inputText=inputText['replace'](/bẽ/g,'χϘ'),inputText=inputText[_0x4b6514(0x220)](/bê/g,'χĹ'),inputText=inputText['replace'](/bề/g,'χϙ'),inputText=inputText[_0x4b6514(0x220)](/bệ/g,'χϚ'),inputText=inputText[_0x4b6514(0x220)](/bể/g,'χĽ'),inputText=inputText['replace'](/bế/g,'χĺ'),inputText=inputText[_0x4b6514(0x220)](/bễ/g,'χľ'),inputText=inputText[_0x4b6514(0x220)](/ve/g,'ωϊ'),inputText=inputText['replace'](/vè/g,'ωĘ'),inputText=inputText['replace'](/vẹ/g,'ωě'),inputText=inputText[_0x4b6514(0x220)](/vẻ/g,'ωϗ'),inputText=inputText[_0x4b6514(0x220)](/vé/g,'ωď'),inputText=inputText[_0x4b6514(0x220)](/vẽ/g,'ωϘ'),inputText=inputText[_0x4b6514(0x220)](/vê/g,'ωĹ'),inputText=inputText[_0x4b6514(0x220)](/về/g,'ωϙ'),inputText=inputText[_0x4b6514(0x220)](/vệ/g,'ωϚ'),inputText=inputText[_0x4b6514(0x220)](/vể/g,'ωĽ'),inputText=inputText[_0x4b6514(0x220)](/vế/g,'ωĺ'),inputText=inputText[_0x4b6514(0x220)](/vễ/g,'ωľ'),inputText=inputText[_0x4b6514(0x220)](/;m/g,'΄m'),inputText=inputText[_0x4b6514(0x220)](/∆m/g,'˝m'),inputText=inputText['replace'](/m/g,'−m'),inputText=inputText[_0x4b6514(0x220)](/◊m/g,'˞m'),inputText=inputText[_0x4b6514(0x220)](/≈m/g,'˛m'),inputText=inputText['replace'](/⁄m/g,'ˇm'),inputText=inputText[_0x4b6514(0x220)](/m/g,'łm'),inputText=inputText['replace'](/ˉm/g,'ϛm'),inputText=inputText[_0x4b6514(0x220)](/Ńm/g,'İm'),inputText=inputText[_0x4b6514(0x220)](/˘m/g,'Ϝm'),inputText=inputText[_0x4b6514(0x220)](/ım/g,'Ğm'),inputText=inputText[_0x4b6514(0x220)](/˙m/g,'ğm'),inputText=inputText[_0x4b6514(0x220)](/;n/g,'΄n'),inputText=inputText['replace'](/∆n/g,'˝n'),inputText=inputText[_0x4b6514(0x220)](/n/g,'−n'),inputText=inputText[_0x4b6514(0x220)](/◊n/g,'˞n'),inputText=inputText[_0x4b6514(0x220)](/≈n/g,'˛n'),inputText=inputText[_0x4b6514(0x220)](/⁄n/g,'ˇn'),inputText=inputText['replace'](/n/g,'łn'),inputText=inputText[_0x4b6514(0x220)](/ˉn/g,'ϛn'),inputText=inputText[_0x4b6514(0x220)](/Ńn/g,'İn'),inputText=inputText[_0x4b6514(0x220)](/˘n/g,'Ϝn'),inputText=inputText['replace'](/ın/g,'Ğn'),inputText=inputText[_0x4b6514(0x220)](/˙n/g,'ğn'),inputText=inputText[_0x4b6514(0x220)](/;p/g,'΄p'),inputText=inputText[_0x4b6514(0x220)](/∆p/g,'˝p'),inputText=inputText['replace'](/p/g,'−p'),inputText=inputText['replace'](/◊p/g,'˞p'),inputText=inputText[_0x4b6514(0x220)](/≈p/g,'˛p'),inputText=inputText['replace'](/⁄p/g,'ˇp'),inputText=inputText['replace'](/p/g,'łp'),inputText=inputText[_0x4b6514(0x220)](/ˉp/g,'ϛp'),inputText=inputText[_0x4b6514(0x220)](/Ńp/g,'İp'),inputText=inputText['replace'](/˘p/g,'Ϝp'),inputText=inputText[_0x4b6514(0x220)](/ıp/g,'Ğp'),inputText=inputText[_0x4b6514(0x220)](/˙p/g,'ğp'),inputText=inputText[_0x4b6514(0x220)](/;t/g,'΄Ι'),inputText=inputText[_0x4b6514(0x220)](/∆t/g,'˝Ι'),inputText=inputText[_0x4b6514(0x220)](/t/g,'−Ι'),inputText=inputText[_0x4b6514(0x220)](/◊t/g,'˞Ι'),inputText=inputText[_0x4b6514(0x220)](/≈t/g,'˛Ι'),inputText=inputText[_0x4b6514(0x220)](/⁄t/g,'ˇΙ'),inputText=inputText[_0x4b6514(0x220)](/t/g,'łΙ'),inputText=inputText['replace'](/ˉt/g,'ϛΙ'),inputText=inputText[_0x4b6514(0x220)](/Ńt/g,'İΙ'),inputText=inputText[_0x4b6514(0x220)](/˘t/g,'ϜΙ'),inputText=inputText[_0x4b6514(0x220)](/ıt/g,'ĞΙ'),inputText=inputText[_0x4b6514(0x220)](/˙t/g,'ğΙ'),inputText=inputText[_0x4b6514(0x220)](/;u/g,'΄u'),inputText=inputText['replace'](/∆u/g,'˝u'),inputText=inputText[_0x4b6514(0x220)](/u/g,'−u'),inputText=inputText['replace'](/◊u/g,'˞u'),inputText=inputText['replace'](/≈u/g,'˛u'),inputText=inputText[_0x4b6514(0x220)](/⁄u/g,'ˇu'),inputText=inputText[_0x4b6514(0x220)](/u/g,'łu'),inputText=inputText[_0x4b6514(0x220)](/ˉu/g,'ϛu'),inputText=inputText[_0x4b6514(0x220)](/Ńu/g,'İu'),inputText=inputText[_0x4b6514(0x220)](/˘u/g,'Ϝu'),inputText=inputText[_0x4b6514(0x220)](/ıu/g,'Ğu'),inputText=inputText[_0x4b6514(0x220)](/˙u/g,'ğu'),inputText;}function kn9e(_0x42f531){var _0x1c353d=_0x38e36d;inputText=_0x42f531[_0x1c353d(0x220)](/eu/g,'΄u'),inputText=inputText[_0x1c353d(0x220)](/èu/g,'˝u'),inputText=inputText[_0x1c353d(0x220)](/ẹu/g,'−u'),inputText=inputText[_0x1c353d(0x220)](/ẻu/g,'˞u'),inputText=inputText[_0x1c353d(0x220)](/éu/g,'˛u'),inputText=inputText[_0x1c353d(0x220)](/ẽu/g,'ˇu'),inputText=inputText['replace'](/êu/g,'łu'),inputText=inputText[_0x1c353d(0x220)](/ều/g,'ϛu'),inputText=inputText[_0x1c353d(0x220)](/ệu/g,'İu'),inputText=inputText[_0x1c353d(0x220)](/ểu/g,'Ϝu'),inputText=inputText['replace'](/ếu/g,'Ğu'),inputText=inputText['replace'](/ễu/g,'ğu'),inputText=inputText[_0x1c353d(0x220)](/t΄/g,'Ι΄'),inputText=inputText[_0x1c353d(0x220)](/t˝/g,'Ι˝'),inputText=inputText[_0x1c353d(0x220)](/t−/g,'Ι−'),inputText=inputText[_0x1c353d(0x220)](/t˞/g,'Ι˞'),inputText=inputText[_0x1c353d(0x220)](/t˛/g,'Ι˛'),inputText=inputText[_0x1c353d(0x220)](/tˇ/g,'Ιˇ'),inputText=inputText[_0x1c353d(0x220)](/tł/g,'Ιł'),inputText=inputText[_0x1c353d(0x220)](/tϛ/g,'Ιϛ'),inputText=inputText[_0x1c353d(0x220)](/tİ/g,'Ιİ'),inputText=inputText[_0x1c353d(0x220)](/tϜ/g,'ΙϜ'),inputText=inputText[_0x1c353d(0x220)](/tĞ/g,'ΙĞ'),inputText=inputText[_0x1c353d(0x220)](/tğ/g,'Ιğ'),inputText=inputText[_0x1c353d(0x220)](/te/g,'Ι΄'),inputText=inputText[_0x1c353d(0x220)](/tè/g,'Ι˝'),inputText=inputText[_0x1c353d(0x220)](/tẹ/g,'Ι−'),inputText=inputText[_0x1c353d(0x220)](/tẻ/g,'Ι˞'),inputText=inputText[_0x1c353d(0x220)](/té/g,'Ι˛'),inputText=inputText['replace'](/tẽ/g,'Ιˇ'),inputText=inputText[_0x1c353d(0x220)](/tê/g,'Ιł'),inputText=inputText[_0x1c353d(0x220)](/tề/g,'Ιϛ'),inputText=inputText[_0x1c353d(0x220)](/tệ/g,'Ιİ'),inputText=inputText[_0x1c353d(0x220)](/tể/g,'ΙϜ'),inputText=inputText[_0x1c353d(0x220)](/tế/g,'ΙĞ'),inputText=inputText[_0x1c353d(0x220)](/tễ/g,'Ιğ'),inputText=inputText[_0x1c353d(0x220)](/le/g,'Δ΄'),inputText=inputText[_0x1c353d(0x220)](/lè/g,'Δ˝'),inputText=inputText[_0x1c353d(0x220)](/lẹ/g,'Δ−'),inputText=inputText[_0x1c353d(0x220)](/lẻ/g,'Δ˞'),inputText=inputText['replace'](/lé/g,'Δ˛'),inputText=inputText[_0x1c353d(0x220)](/lẽ/g,'Δˇ'),inputText=inputText[_0x1c353d(0x220)](/lê/g,'Δł'),inputText=inputText['replace'](/lề/g,'Δϛ'),inputText=inputText[_0x1c353d(0x220)](/lệ/g,'Δİ'),inputText=inputText[_0x1c353d(0x220)](/lể/g,'ΔϜ'),inputText=inputText[_0x1c353d(0x220)](/lế/g,'ΔĞ'),inputText=inputText[_0x1c353d(0x220)](/lễ/g,'Δğ'),inputText=inputText[_0x1c353d(0x220)](/me/g,'Ε΄'),inputText=inputText[_0x1c353d(0x220)](/mè/g,'Ε˝'),inputText=inputText['replace'](/mẹ/g,'Ε−'),inputText=inputText[_0x1c353d(0x220)](/mẻ/g,'Ε˞'),inputText=inputText[_0x1c353d(0x220)](/mé/g,'Ε˛'),inputText=inputText[_0x1c353d(0x220)](/mẽ/g,'Εˇ'),inputText=inputText[_0x1c353d(0x220)](/mê/g,'Εł'),inputText=inputText[_0x1c353d(0x220)](/mề/g,'Εϛ'),inputText=inputText['replace'](/mệ/g,'Εİ'),inputText=inputText['replace'](/mể/g,'ΕϜ'),inputText=inputText[_0x1c353d(0x220)](/mế/g,'ΕĞ'),inputText=inputText[_0x1c353d(0x220)](/mễ/g,'Εğ');if(l1[_0x1c353d(0x22f)](0x2,0x4)!='ph')return'';return inputText=inputText['replace'](/ne/g,'Ζ΄'),inputText=inputText[_0x1c353d(0x220)](/nè/g,'Ζ˝'),inputText=inputText[_0x1c353d(0x220)](/nẹ/g,'Ζ−'),inputText=inputText['replace'](/nẻ/g,'Ζ'),inputText=inputText['replace'](/né/g,'Ζ˛'),inputText=inputText[_0x1c353d(0x220)](/nẽ/g,'Ζˇ'),inputText=inputText[_0x1c353d(0x220)](/nê/g,'Ζł'),inputText=inputText['replace'](/nề/g,'Ζϛ'),inputText=inputText[_0x1c353d(0x220)](/nệ/g,'Ζİ'),inputText=inputText[_0x1c353d(0x220)](/nể/g,'ΖϜ'),inputText=inputText[_0x1c353d(0x220)](/nế/g,'ΖĞ'),inputText=inputText[_0x1c353d(0x220)](/nễ/g,'Ζğ'),inputText=inputText[_0x1c353d(0x220)](/tre/g,'Λ΄'),inputText=inputText[_0x1c353d(0x220)](/trè/g,'Λ˝'),inputText=inputText['replace'](/trẹ/g,'Λ−'),inputText=inputText['replace'](/trẻ/g,'Λ˞'),inputText=inputText[_0x1c353d(0x220)](/tré/g,'Λ˛'),inputText=inputText['replace'](/trẽ/g,'Λˇ'),inputText=inputText['replace'](/trê/g,'Λł'),inputText=inputText[_0x1c353d(0x220)](/trề/g,'Λϛ'),inputText=inputText[_0x1c353d(0x220)](/trệ/g,'Λİ'),inputText=inputText['replace'](/trể/g,'ΛϜ'),inputText=inputText[_0x1c353d(0x220)](/trế/g,'ΛĞ'),inputText=inputText[_0x1c353d(0x220)](/trễ/g,'Λğ'),inputText=inputText[_0x1c353d(0x220)](/re/g,'ς΄'),inputText=inputText[_0x1c353d(0x220)](/rè/g,'ς˝'),inputText=inputText[_0x1c353d(0x220)](/rẹ/g,'ς−'),inputText=inputText[_0x1c353d(0x220)](/rẻ/g,'ς˞'),inputText=inputText[_0x1c353d(0x220)](/ré/g,'ς˛'),inputText=inputText[_0x1c353d(0x220)](/rẽ/g,'ςˇ'),inputText=inputText[_0x1c353d(0x220)](/rê/g,'ςł'),inputText=inputText[_0x1c353d(0x220)](/rề/g,'ςϛ'),inputText=inputText[_0x1c353d(0x220)](/rệ/g,'ςİ'),inputText=inputText['replace'](/rể/g,'ςϜ'),inputText=inputText[_0x1c353d(0x220)](/rế/g,'ςĞ'),inputText=inputText['replace'](/rễ/g,'ςğ'),inputText=inputText['replace'](/ςe/g,'ς΄'),inputText=inputText[_0x1c353d(0x220)](/ςè/g,'ς˝'),inputText=inputText[_0x1c353d(0x220)](/ςẹ/g,'ς−'),inputText=inputText[_0x1c353d(0x220)](/ςẻ/g,'ς˞'),inputText=inputText[_0x1c353d(0x220)](/ςé/g,'ς˛'),inputText=inputText[_0x1c353d(0x220)](/ςẽ/g,'ςˇ'),inputText=inputText[_0x1c353d(0x220)](/ςê/g,'ςł'),inputText=inputText[_0x1c353d(0x220)](/ςề/g,'ςϛ'),inputText=inputText[_0x1c353d(0x220)](/ςệ/g,'ςİ'),inputText=inputText[_0x1c353d(0x220)](/ςể/g,'ςϜ'),inputText=inputText[_0x1c353d(0x220)](/ςế/g,'ςĞ'),inputText=inputText[_0x1c353d(0x220)](/ςễ/g,'ςğ'),inputText=inputText[_0x1c353d(0x220)](/xe/g,'Κ΄'),inputText=inputText[_0x1c353d(0x220)](/xè/g,'Κ˝'),inputText=inputText[_0x1c353d(0x220)](/xẹ/g,'Κ−'),inputText=inputText[_0x1c353d(0x220)](/xẻ/g,'Κ˞'),inputText=inputText['replace'](/xé/g,'Κ˛'),inputText=inputText[_0x1c353d(0x220)](/xẽ/g,'Κˇ'),inputText=inputText['replace'](/xê/g,'Κł'),inputText=inputText[_0x1c353d(0x220)](/xề/g,'Κϛ'),inputText=inputText[_0x1c353d(0x220)](/xệ/g,'Κİ'),inputText=inputText[_0x1c353d(0x220)](/xể/g,'ΚϜ'),inputText=inputText[_0x1c353d(0x220)](/xế/g,'ΚĞ'),inputText=inputText[_0x1c353d(0x220)](/xễ/g,'Κğ'),inputText=inputText[_0x1c353d(0x220)](/de/g,'Ύ΄'),inputText=inputText[_0x1c353d(0x220)](/dè/g,'Ύ˝'),inputText=inputText[_0x1c353d(0x220)](/dẹ/g,'Ύ−'),inputText=inputText[_0x1c353d(0x220)](/dẻ/g,'Ύ˞'),inputText=inputText[_0x1c353d(0x220)](/dé/g,'Ύ˛'),inputText=inputText[_0x1c353d(0x220)](/dẽ/g,'Ύˇ'),inputText=inputText[_0x1c353d(0x220)](/dê/g,'Ύł'),inputText=inputText[_0x1c353d(0x220)](/dề/g,'Ύϛ'),inputText=inputText['replace'](/dệ/g,'Ύİ'),inputText=inputText[_0x1c353d(0x220)](/dể/g,'ΎϜ'),inputText=inputText[_0x1c353d(0x220)](/dế/g,'ΎĞ'),inputText=inputText[_0x1c353d(0x220)](/dễ/g,'Ύğ'),inputText=inputText[_0x1c353d(0x220)](/ke/g,'Γ΄'),inputText=inputText[_0x1c353d(0x220)](/kè/g,'Γ˝'),inputText=inputText[_0x1c353d(0x220)](/kẹ/g,'Γ−'),inputText=inputText[_0x1c353d(0x220)](/kẻ/g,'Γ˞'),inputText=inputText[_0x1c353d(0x220)](/ké/g,'Γ˛'),inputText=inputText[_0x1c353d(0x220)](/kẽ/g,'Γˇ'),inputText=inputText[_0x1c353d(0x220)](/kê/g,'Γł'),inputText=inputText[_0x1c353d(0x220)](/kề/g,'Γϛ'),inputText=inputText[_0x1c353d(0x220)](/kệ/g,'Γİ'),inputText=inputText[_0x1c353d(0x220)](/kể/g,'ΓϜ'),inputText=inputText[_0x1c353d(0x220)](/kế/g,'ΓĞ'),inputText=inputText['replace'](/kễ/g,'Γğ'),inputText=inputText[_0x1c353d(0x220)](/we/g,'Ζ΄'),inputText=inputText[_0x1c353d(0x220)](/wè/g,'Ζ˝'),inputText=inputText['replace'](/wẹ/g,'Ζ−'),inputText=inputText['replace'](/wẻ/g,'Ζ˞'),inputText=inputText[_0x1c353d(0x220)](/wé/g,'Ζ˛'),inputText=inputText[_0x1c353d(0x220)](/wẽ/g,'Ζˇ'),inputText=inputText[_0x1c353d(0x220)](/wê/g,'Ζł'),inputText=inputText['replace'](/wề/g,'Ζϛ'),inputText=inputText[_0x1c353d(0x220)](/wệ/g,'Ζİ'),inputText=inputText[_0x1c353d(0x220)](/wể/g,'ΖϜ'),inputText=inputText[_0x1c353d(0x220)](/wế/g,'ΖĞ'),inputText=inputText[_0x1c353d(0x220)](/wễ/g,'Ζğ'),inputText=inputText['replace'](/gh/g,'θ'),inputText=inputText['replace'](/kh/g,'δ'),inputText=inputText[_0x1c353d(0x220)](/nh/g,'ζ'),inputText=inputText[_0x1c353d(0x220)](/ch/g,'ε'),inputText=inputText['replace'](/th/g,'κ'),inputText=inputText[_0x1c353d(0x220)](/ph/g,'ι'),inputText=inputText[_0x1c353d(0x220)](/si/g,'ǧ΅'),inputText=inputText[_0x1c353d(0x220)](/sì/g,'ǧŰ'),inputText=inputText[_0x1c353d(0x220)](/sị/g,'ǧŻ'),inputText=inputText[_0x1c353d(0x220)](/sỉ/g,'ǧű'),inputText=inputText['replace'](/sí/g,'ǧť'),inputText=inputText[_0x1c353d(0x220)](/sĩ/g,'ǧź'),inputText=inputText[_0x1c353d(0x220)](/sΗ/g,'ǧμ'),inputText=inputText[_0x1c353d(0x220)](/su/g,'ǧί'),inputText=inputText[_0x1c353d(0x220)](/sù/g,'ǧǽ'),inputText=inputText[_0x1c353d(0x220)](/sụ/g,'ǧẀ'),inputText=inputText[_0x1c353d(0x220)](/sủ/g,'ǧǾ'),inputText=inputText[_0x1c353d(0x220)](/sú/g,'ǧǼ'),inputText=inputText['replace'](/sũ/g,'ǧǿ'),inputText=inputText[_0x1c353d(0x220)](/sư/g,'ǧΰ'),inputText=inputText['replace'](/sừ/g,'ǧẂ'),inputText=inputText[_0x1c353d(0x220)](/sự/g,'ǧẅ'),inputText=inputText[_0x1c353d(0x220)](/sử/g,'ǧẃ'),inputText=inputText['replace'](/sứ/g,'ǧẁ'),inputText=inputText[_0x1c353d(0x220)](/sữ/g,'ǧẄ'),inputText=inputText[_0x1c353d(0x220)](/vi/g,'ν΅'),inputText=inputText[_0x1c353d(0x220)](/vì/g,'νŰ'),inputText=inputText[_0x1c353d(0x220)](/vị/g,'νŻ'),inputText=inputText[_0x1c353d(0x220)](/vỉ/g,'νű'),inputText=inputText[_0x1c353d(0x220)](/ví/g,'νť'),inputText=inputText['replace'](/vĩ/g,'νź'),inputText=inputText[_0x1c353d(0x220)](/vΗ/g,'νμ'),inputText=inputText[_0x1c353d(0x220)](/vu/g,'νί'),inputText=inputText[_0x1c353d(0x220)](/vù/g,'νǽ'),inputText=inputText[_0x1c353d(0x220)](/vụ/g,'νẀ'),inputText=inputText['replace'](/vủ/g,'νǾ'),inputText=inputText[_0x1c353d(0x220)](/vú/g,'νǼ'),inputText=inputText[_0x1c353d(0x220)](/vũ/g,'νǿ'),inputText=inputText['replace'](/vư/g,'νΰ'),inputText=inputText[_0x1c353d(0x220)](/vừ/g,'νẂ'),inputText=inputText[_0x1c353d(0x220)](/vự/g,'νẅ'),inputText=inputText[_0x1c353d(0x220)](/vử/g,'νẃ'),inputText=inputText['replace'](/vứ/g,'νẁ'),inputText=inputText[_0x1c353d(0x220)](/vữ/g,'νẄ'),inputText=inputText[_0x1c353d(0x220)](/bi/g,'λ΅'),inputText=inputText['replace'](/bì/g,'λŰ'),inputText=inputText[_0x1c353d(0x220)](/bị/g,'λŻ'),inputText=inputText[_0x1c353d(0x220)](/bỉ/g,'λű'),inputText=inputText[_0x1c353d(0x220)](/bí/g,'λť'),inputText=inputText[_0x1c353d(0x220)](/bĩ/g,'λź'),inputText=inputText['replace'](/bΗ/g,'λμ'),inputText=inputText[_0x1c353d(0x220)](/bu/g,'λί'),inputText=inputText['replace'](/bù/g,'λǽ'),inputText=inputText['replace'](/bụ/g,'λẀ'),inputText=inputText[_0x1c353d(0x220)](/bủ/g,'λǾ'),inputText=inputText['replace'](/bú/g,'λǼ'),inputText=inputText[_0x1c353d(0x220)](/bũ/g,'λǿ'),inputText=inputText[_0x1c353d(0x220)](/bư/g,'λΰ'),inputText=inputText[_0x1c353d(0x220)](/bừ/g,'λẂ'),inputText=inputText[_0x1c353d(0x220)](/bự/g,'λẅ'),inputText=inputText[_0x1c353d(0x220)](/bử/g,'λẃ'),inputText=inputText['replace'](/bứ/g,'λẁ'),inputText=inputText[_0x1c353d(0x220)](/bữ/g,'λẄ'),inputText=inputText[_0x1c353d(0x220)](/qi/g,'Ǖ΅'),inputText=inputText[_0x1c353d(0x220)](/qì/g,'ǕŰ'),inputText=inputText['replace'](/qị/g,'ǕŻ'),inputText=inputText['replace'](/qỉ/g,'Ǖű'),inputText=inputText[_0x1c353d(0x220)](/qí/g,'Ǖť'),inputText=inputText[_0x1c353d(0x220)](/qĩ/g,'Ǖź'),inputText=inputText[_0x1c353d(0x220)](/qΗ/g,'Ǖμ'),inputText=inputText[_0x1c353d(0x220)](/qu/g,'Ǖί'),inputText=inputText[_0x1c353d(0x220)](/qù/g,'Ǖǽ'),inputText=inputText[_0x1c353d(0x220)](/qụ/g,'ǕẀ'),inputText=inputText[_0x1c353d(0x220)](/qủ/g,'ǕǾ'),inputText=inputText[_0x1c353d(0x220)](/qú/g,'ǕǼ'),inputText=inputText[_0x1c353d(0x220)](/qũ/g,'Ǖǿ'),inputText=inputText[_0x1c353d(0x220)](/qư/g,'Ǖΰ'),inputText=inputText[_0x1c353d(0x220)](/qừ/g,'ǕẂ'),inputText=inputText[_0x1c353d(0x220)](/qự/g,'Ǖẅ'),inputText=inputText[_0x1c353d(0x220)](/qử/g,'Ǖẃ'),inputText=inputText['replace'](/qứ/g,'Ǖẁ'),inputText=inputText['replace'](/qữ/g,'ǕẄ'),inputText=inputText[_0x1c353d(0x220)](/qΜ/g,'Ǖί'),inputText=inputText[_0x1c353d(0x220)](/ t/g,'\x20Ǉ'),inputText=inputText[_0x1c353d(0x220)](/ ζ/g,'\x20η'),inputText=inputText[_0x1c353d(0x220)](/ u /g,_0x1c353d(0x219)),inputText=inputText[_0x1c353d(0x220)](/ ư /g,_0x1c353d(0x1da)),inputText=inputText[_0x1c353d(0x220)](/ u/g,'\x20Ď'),inputText=inputText[_0x1c353d(0x220)](/ ư/g,'\x20Ŕ'),inputText=inputText[_0x1c353d(0x220)](/ n/g,'\x20w'),inputText=inputText[_0x1c353d(0x220)](/ m/g,'\x20j'),inputText=inputText[_0x1c353d(0x220)](/Nh/g,'Nǖ'),inputText=inputText[_0x1c353d(0x220)](/Tr/g,'Tǟ'),inputText=inputText[_0x1c353d(0x220)](/Ǖί;/g,_0x1c353d(0x22e)),inputText=inputText['replace'](/Ǖί∆/g,_0x1c353d(0x227)),inputText=inputText[_0x1c353d(0x220)](/Ǖί/g,_0x1c353d(0x1d5)),inputText=inputText[_0x1c353d(0x220)](/Ǖί◊/g,_0x1c353d(0x237)),inputText=inputText['replace'](/Ǖί≈/g,_0x1c353d(0x22d)),inputText=inputText[_0x1c353d(0x220)](/Ǖί⁄/g,'ǕΜ⁄'),inputText=inputText[_0x1c353d(0x220)](/Ǖί/g,_0x1c353d(0x211)),inputText=inputText[_0x1c353d(0x220)](/Ǖίˉ/g,_0x1c353d(0x1ec)),inputText=inputText[_0x1c353d(0x220)](/ǕίŃ/g,_0x1c353d(0x1e4)),inputText=inputText[_0x1c353d(0x220)](/Ǖί˘/g,_0x1c353d(0x23a)),inputText=inputText[_0x1c353d(0x220)](/Ǖίı/g,_0x1c353d(0x213)),inputText=inputText[_0x1c353d(0x220)](/Ǖί˙/g,_0x1c353d(0x21c)),inputText=inputText['replace'](/ Ηł/g,_0x1c353d(0x1df)),inputText=inputText[_0x1c353d(0x220)](/ i/g,'\x20Ł'),inputText=inputText['replace'](/ í/g,'\x20Ş'),inputText=inputText[_0x1c353d(0x220)](/ ì/g,'\x20ş'),inputText=inputText[_0x1c353d(0x220)](/ ĩ/g,'\x20ć'),inputText=inputText[_0x1c353d(0x220)](/ ỉ/g,'\x20Ć'),inputText=inputText['replace'](/ ị/g,'\x20ő'),inputText=inputText[_0x1c353d(0x220)](/oe/g,'φϊ'),inputText=inputText[_0x1c353d(0x220)](/oè/g,'φĘ'),inputText=inputText[_0x1c353d(0x220)](/oẹ/g,'φě'),inputText=inputText[_0x1c353d(0x220)](/oẻ/g,'φϗ'),inputText=inputText[_0x1c353d(0x220)](/oé/g,'φď'),inputText=inputText['replace'](/oẽ/g,'φϘ'),inputText=inputText[_0x1c353d(0x220)](/oê/g,'φĹ'),inputText=inputText[_0x1c353d(0x220)](/oề/g,'φϙ'),inputText=inputText[_0x1c353d(0x220)](/oệ/g,'φệ'),inputText=inputText[_0x1c353d(0x220)](/oể/g,'φĽ'),inputText=inputText[_0x1c353d(0x220)](/oế/g,'φĺ'),inputText=inputText[_0x1c353d(0x220)](/oễ/g,'φľ'),inputText=inputText[_0x1c353d(0x220)](/õe/g,'Ůϊ'),inputText=inputText[_0x1c353d(0x220)](/õè/g,'ŮĘ'),inputText=inputText[_0x1c353d(0x220)](/õẹ/g,'Ůě'),inputText=inputText['replace'](/õẻ/g,'Ůϗ'),inputText=inputText['replace'](/õé/g,'Ůď'),inputText=inputText[_0x1c353d(0x220)](/õẽ/g,'ŮϘ'),inputText=inputText[_0x1c353d(0x220)](/õê/g,'ŮĹ'),inputText=inputText[_0x1c353d(0x220)](/õề/g,'Ůϙ'),inputText=inputText[_0x1c353d(0x220)](/õệ/g,'Ůệ'),inputText=inputText[_0x1c353d(0x220)](/õể/g,'ŮĽ'),inputText=inputText[_0x1c353d(0x220)](/õế/g,'Ůĺ'),inputText=inputText[_0x1c353d(0x220)](/õễ/g,'Ůľ'),inputText=inputText[_0x1c353d(0x220)](/ọe/g,'ůϊ'),inputText=inputText['replace'](/ọè/g,'ůĘ'),inputText=inputText['replace'](/ọẹ/g,'ůě'),inputText=inputText[_0x1c353d(0x220)](/ọẻ/g,'ůϗ'),inputText=inputText[_0x1c353d(0x220)](/ọé/g,'ůď'),inputText=inputText[_0x1c353d(0x220)](/ọẽ/g,'ůϘ'),inputText=inputText['replace'](/ọê/g,'ůĹ'),inputText=inputText['replace'](/ọề/g,'ůϙ'),inputText=inputText[_0x1c353d(0x220)](/ọệ/g,'ůệ'),inputText=inputText[_0x1c353d(0x220)](/ọể/g,'ůĽ'),inputText=inputText[_0x1c353d(0x220)](/ọế/g,'ůĺ'),inputText=inputText['replace'](/ọễ/g,'ůľ'),inputText=inputText['replace'](/òe/g,'ŀϊ'),inputText=inputText[_0x1c353d(0x220)](/òè/g,'ŀĘ'),inputText=inputText[_0x1c353d(0x220)](/òẹ/g,'ŀě'),inputText=inputText['replace'](/òẻ/g,'ŀϗ'),inputText=inputText[_0x1c353d(0x220)](/òé/g,'ŀď'),inputText=inputText[_0x1c353d(0x220)](/òẽ/g,'ŀϘ'),inputText=inputText[_0x1c353d(0x220)](/òê/g,'ŀĹ'),inputText=inputText['replace'](/òề/g,'ŀϙ'),inputText=inputText[_0x1c353d(0x220)](/òệ/g,'ŀệ'),inputText=inputText[_0x1c353d(0x220)](/òể/g,'ŀĽ'),inputText=inputText[_0x1c353d(0x220)](/òế/g,'ŀĺ'),inputText=inputText[_0x1c353d(0x220)](/òễ/g,'ŀľ'),inputText=inputText[_0x1c353d(0x220)](/óe/g,'Ŀϊ'),inputText=inputText[_0x1c353d(0x220)](/óè/g,'ĿĘ'),inputText=inputText[_0x1c353d(0x220)](/óẹ/g,'Ŀě'),inputText=inputText[_0x1c353d(0x220)](/óẻ/g,'Ŀϗ'),inputText=inputText[_0x1c353d(0x220)](/óé/g,'Ŀď'),inputText=inputText[_0x1c353d(0x220)](/óẽ/g,'ĿϘ'),inputText=inputText[_0x1c353d(0x220)](/óê/g,'ĿĹ'),inputText=inputText['replace'](/óề/g,'Ŀϙ'),inputText=inputText['replace'](/óệ/g,'Ŀệ'),inputText=inputText[_0x1c353d(0x220)](/óể/g,'ĿĽ'),inputText=inputText[_0x1c353d(0x220)](/óế/g,'Ŀĺ'),inputText=inputText[_0x1c353d(0x220)](/óễ/g,'Ŀľ'),inputText=inputText[_0x1c353d(0x220)](/õe/g,'Ůϊ'),inputText=inputText[_0x1c353d(0x220)](/õè/g,'ŮĘ'),inputText=inputText['replace'](/õẹ/g,'Ůě'),inputText=inputText[_0x1c353d(0x220)](/õẻ/g,'Ůϗ'),inputText=inputText[_0x1c353d(0x220)](/õé/g,'Ůď'),inputText=inputText[_0x1c353d(0x220)](/õẽ/g,'ŮϘ'),inputText=inputText['replace'](/õê/g,'ŮĹ'),inputText=inputText[_0x1c353d(0x220)](/õề/g,'Ůϙ'),inputText=inputText[_0x1c353d(0x220)](/õệ/g,'Ůệ'),inputText=inputText[_0x1c353d(0x220)](/õể/g,'ŮĽ'),inputText=inputText[_0x1c353d(0x220)](/õế/g,'Ůĺ'),inputText=inputText[_0x1c353d(0x220)](/õễ/g,'Ůľ'),inputText=inputText[_0x1c353d(0x220)](/ỏe/g,'Ťϊ'),inputText=inputText[_0x1c353d(0x220)](/ỏè/g,'ŤĘ'),inputText=inputText[_0x1c353d(0x220)](/ỏẹ/g,'Ťě'),inputText=inputText[_0x1c353d(0x220)](/ỏẻ/g,'Ťϗ'),inputText=inputText[_0x1c353d(0x220)](/ỏé/g,'Ťď'),inputText=inputText[_0x1c353d(0x220)](/ỏẽ/g,'ŤϘ'),inputText=inputText[_0x1c353d(0x220)](/ỏê/g,'ŤĹ'),inputText=inputText['replace'](/ỏề/g,'Ťϙ'),inputText=inputText[_0x1c353d(0x220)](/ỏệ/g,'Ťệ'),inputText=inputText[_0x1c353d(0x220)](/ỏể/g,'ŤĽ'),inputText=inputText['replace'](/ỏế/g,'Ťĺ'),inputText=inputText[_0x1c353d(0x220)](/ỏễ/g,'Ťľ'),inputText=inputText[_0x1c353d(0x220)](/ϊ /g,'ψ\x20'),inputText=inputText[_0x1c353d(0x220)](/Ę /g,'ǩ\x20'),inputText=inputText[_0x1c353d(0x220)](/ď /g,'≠\x20'),inputText=inputText[_0x1c353d(0x220)](/ϗ /g,'Ǫ\x20'),inputText=inputText['replace'](/Ϙ /g,'≥\x20'),inputText=inputText[_0x1c353d(0x220)](/ě /g,'ⁿ\x20'),inputText=inputText[_0x1c353d(0x220)](/Ĺ /g,'∂\x20'),inputText=inputText[_0x1c353d(0x220)](/ĺ /g,'∑\x20'),inputText=inputText['replace'](/Ľ /g,'∫\x20'),inputText=inputText[_0x1c353d(0x220)](/ľ /g,'Ω\x20'),inputText=inputText[_0x1c353d(0x220)](/Ϛ /g,'ǎ\x20'),inputText=inputText[_0x1c353d(0x220)](/Η;c/g,_0x1c353d(0x1fd)),inputText=inputText[_0x1c353d(0x220)](/Η∆c/g,_0x1c353d(0x1f3)),inputText=inputText[_0x1c353d(0x220)](/Ηc/g,'Η−c'),inputText=inputText[_0x1c353d(0x220)](/Η◊c/g,'Η˞c'),inputText=inputText[_0x1c353d(0x220)](/Η≈c/g,_0x1c353d(0x23e)),inputText=inputText['replace'](/Η⁄c/g,'Ηˇc'),inputText=inputText['replace'](/Ηc/g,_0x1c353d(0x21e)),inputText=inputText[_0x1c353d(0x220)](/Ηˉc/g,'Ηϛc'),inputText=inputText[_0x1c353d(0x220)](/ΗŃc/g,_0x1c353d(0x202)),inputText=inputText['replace'](/Η˘c/g,_0x1c353d(0x233)),inputText=inputText[_0x1c353d(0x220)](/Ηıc/g,_0x1c353d(0x221)),inputText=inputText[_0x1c353d(0x220)](/Η˙c/g,_0x1c353d(0x232)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ;/g,_0x1c353d(0x22e)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ∆/g,_0x1c353d(0x227)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ/g,_0x1c353d(0x1d5)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ◊/g,_0x1c353d(0x237)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ≈/g,'ǕΜ≈'),inputText=inputText['replace'](/ǕΜ⁄/g,_0x1c353d(0x22c)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ/g,_0x1c353d(0x211)),inputText=inputText[_0x1c353d(0x220)](/ǕΜˉ/g,_0x1c353d(0x1ec)),inputText=inputText[_0x1c353d(0x220)](/ǕΜŃ/g,_0x1c353d(0x1e4)),inputText=inputText[_0x1c353d(0x220)](/ǕΜ˘/g,_0x1c353d(0x23a)),inputText=inputText[_0x1c353d(0x220)](/ǕΜı/g,_0x1c353d(0x213)),inputText=inputText['replace'](/ǕΜ˙/g,_0x1c353d(0x21c)),inputText=inputText[_0x1c353d(0x220)](/kł/g,'Γł'),inputText=inputText[_0x1c353d(0x220)](/ΐłu /g,_0x1c353d(0x1f9)),inputText=inputText['replace'](/se /g,_0x1c353d(0x216)),inputText=inputText['replace'](/Ǘ;o/g,_0x1c353d(0x1f0)),inputText=inputText['replace'](/ĞΙ/g,'Ğt'),inputText=inputText[_0x1c353d(0x220)](/,  /g,',\x20'),inputText=inputText[_0x1c353d(0x220)](/ ,/g,','),inputText;}
+</script>
+
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e8bb7ec7dd91476',t:'MTc3NTU5MzA3NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"0568ec9ad70c47c0a3d2d9d9d82d983b","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+
+</html>

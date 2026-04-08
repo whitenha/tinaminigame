@@ -1,0 +1,233 @@
+.container {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  font-family: inherit;
+  color: #333;
+}
+
+.header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #666;
+}
+
+/* ── Glassmorphism Toolbar ─────────────────────────────────── */
+.toolbar {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 12px 24px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.toolGroup {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 999px;
+  gap: 2px;
+}
+
+.titleInput {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 6px 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  border-radius: 999px;
+  outline: none;
+  min-width: 150px;
+  max-width: 250px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-right: auto; /* Pushes other tools to the right if wanted, or keeps it separate */
+}
+
+.titleInput:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.titleInput:focus {
+  background: white;
+  border-color: #cbd5e1;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.toolButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.toolButton:hover:not(:disabled) {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.active {
+  background: white !important;
+  color: #3b82f6 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.export {
+  background: #10b981;
+  color: white;
+}
+.export:hover {
+  background: #059669 !important;
+}
+
+/* ── Page Navigation ───────────────────────────────────────── */
+.pageNav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.pageIndicator {
+  font-size: 13px;
+  font-weight: 700;
+  color: #4a5568;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 4px 12px;
+  border-radius: 999px;
+  min-width: 48px;
+  text-align: center;
+  user-select: none;
+}
+
+.toolButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── A4 Paper Container ────────────────────────────────────── */
+.paperContainer {
+  width: 100%;
+  min-height: calc(100vh - 65px);
+  background: white;
+  padding: 10px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Notebook Wrapper (contains both grid & text) ──────────── */
+.notebookWrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ── Font-Based Grid Layer ─────────────────────────────────── 
+   Uses the SAME font family & metrics as the original lophoc.net.
+   The character 'ǯ' (for 4 ô ly) or 'ǰ' (for 5 ô ly) draws the 
+   actual grid lines, guaranteeing perfect baseline alignment 
+   with the text layer because they share identical metrics. */
+.gridLayer {
+  color: #9E9E9E;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Text Layer (overlays grid) ────────────────────────────── */
+.textLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  z-index: 50;
+  color: #1e3a8a;
+  outline: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* ── Text Render (mapped output display) ───────────────────── */
+.textRender {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  color: #1e3a8a;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* ── Hidden Input (transparent, receives keystrokes) ───────── */
+.textInput {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  z-index: 3;
+  color: transparent !important;
+  caret-color: #f43f5e;
+  outline: none;
+  border: none;
+  resize: none;
+  background: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* ── English character fallback ────────────────────────────── */
+.englishChar {
+  font-family: 'Great Vibes', cursive, sans-serif !important;
+}
+
+/* ── Print mode ────────────────────────────────────────────── */
+@media print {
+  .toolbar, .header {
+    display: none;
+  }
+  .paperContainer {
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+  }
+}
