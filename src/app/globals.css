@@ -2,7 +2,7 @@
  * TINA MINIGAME — Global Reset & Base Styles
  * ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Baloo+2:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Baloo+2:wght@600;700;800&family=Great+Vibes&display=swap');
 
 /* ── Reset ───────────────────────────────────────────────────── */
 *,
@@ -180,5 +180,11 @@ h1, h2, h3, h4, h5, h6 {
 @font-face {
   font-family: 'tapviet5hang';
   src: url('/fonts/tapviet-hp/HP0015HB.ttf') format('truetype');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'tapvietenglish';
+  src: url('/fonts/tapviet-hp/hp001-b4h-chua.ttf') format('truetype');
   font-display: swap;
 }

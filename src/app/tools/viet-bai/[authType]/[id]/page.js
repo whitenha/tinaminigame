@@ -234,21 +234,39 @@ export default function HandwritingNotebook(props) {
     return parts.map((part, i) => {
       const englishChar = PUA_MAP[part];
       if (englishChar) {
+        if (englishChar === 'z' || englishChar === 'Z') {
+          return (
+            <span
+              key={`e-${i}`}
+              style={{
+                fontFamily: "'Great Vibes', cursive",
+                fontSize: `${fontSize * 1.1}px`,
+                lineHeight: '0px',
+                display: 'inline',
+                verticalAlign: 'baseline',
+                position: 'relative',
+                top: `0px`,
+                fontWeight: 'normal',
+                opacity: 0.9,
+                marginLeft: '4.8px',
+                marginRight: '4.8px',
+              }}
+            >
+              {englishChar}
+            </span>
+          );
+        }
+
         return (
           <span
             key={`e-${i}`}
             style={{
-              fontFamily: "'Great Vibes', cursive",
-              fontSize: `${fontSize * 1.1}px`,
-              lineHeight: '0px',
+              fontFamily: "'tapvietenglish', sans-serif",
+              fontSize: `${fontSize}px`,
               display: 'inline',
               verticalAlign: 'baseline',
               position: 'relative',
-              top: `0px`,
-              fontWeight: 'normal',
-              opacity: 0.9,
-              marginLeft: '4.8px',
-              marginRight: '4.8px',
+              fontWeight: 'normal'
             }}
           >
             {englishChar}
