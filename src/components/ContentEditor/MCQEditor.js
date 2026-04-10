@@ -55,7 +55,7 @@ export default function MCQEditor({ item, onChange }) {
   const filledCount = item.options.filter(o => o && o.trim()).length;
 
   return (
-    <div className={styles.editor}>
+    <div className={`${styles.editor} stack w-full`}>
       
       {/* ── QUESTION HERO ── */}
       <div className={styles.questionCard}>
@@ -71,7 +71,7 @@ export default function MCQEditor({ item, onChange }) {
       </div>
 
       {/* ── ANSWER CARDS GRID ── */}
-      <div className={styles.answersSection}>
+      <div className="stack w-full">
         <div className={styles.answersLabel}>
           <span>🎯 CÁC ĐÁP ÁN</span>
           <span className={styles.answersProgress}>
@@ -83,7 +83,7 @@ export default function MCQEditor({ item, onChange }) {
           </span>
         </div>
 
-        <div className={styles.optionsGrid}>
+        <div className="grid-auto w-full">
           {OPTION_THEMES.map((theme, idx) => {
             const isCorrect = idx === 0;
             const isOptional = idx >= 2;

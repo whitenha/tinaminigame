@@ -1,0 +1,145 @@
+/* ============================================================
+ * LAYOUT PRIMITIVES — Reusable structural classes
+ * Rule: These are global. Do NOT use CSS Modules for these.
+ * ============================================================ */
+
+/* ── CONTAINERS ─────────────────────────────────────────────── */
+.container {
+  width: min(100%, var(--max-width));
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+}
+
+.container-narrow {
+  width: min(100%, var(--max-width-narrow));
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+}
+
+.container-wide {
+  width: min(100%, var(--max-width-wide));
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+}
+
+/* ── SECTIONS ───────────────────────────────────────────────── */
+.section {
+  padding-block: var(--section-gap);
+}
+
+.section-alt {
+  padding-block: var(--section-gap);
+  background: var(--surface-1);
+}
+
+/* ── STACKS (vertical) ──────────────────────────────────────── */
+.stack      { display: flex; flex-direction: column; gap: var(--space-md); }
+.stack-sm   { display: flex; flex-direction: column; gap: var(--space-sm); }
+.stack-lg   { display: flex; flex-direction: column; gap: var(--space-lg); }
+.stack-xl   { display: flex; flex-direction: column; gap: var(--space-xl); }
+.stack-2xl  { display: flex; flex-direction: column; gap: var(--space-2xl); }
+
+/* ── ROWS (horizontal) ─────────────────────────────────────── */
+.row        { display: flex; align-items: center; gap: var(--space-md); }
+.row-sm     { display: flex; align-items: center; gap: var(--space-sm); }
+
+/* ── AUTO GRID (no media queries needed) ────────────────────── */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-auto-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.grid-auto-lg {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: var(--space-xl);
+}
+
+/* Fixed column grids */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+@media (min-width: 768px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+@media (min-width: 768px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+@media (min-width: 768px) {
+  .grid-4 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ── TEXT MEASURE ────────────────────────────────────────────── */
+.measure         { max-width: var(--measure-normal); }
+.measure-narrow  { max-width: var(--measure-narrow); }
+.measure-wide    { max-width: var(--measure-wide); }
+
+/* ── SECTION HEADER (reusable pattern) ──────────────────────── */
+.section-header {
+  text-align: center;
+  margin-bottom: var(--space-2xl);
+}
+
+.section-header h2 {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: var(--leading-tight);
+  margin-bottom: var(--space-sm);
+}
+
+.section-header p {
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+  line-height: var(--leading-relaxed);
+  max-width: var(--measure-normal);
+  margin-inline: auto;
+}
+
+/* ── MOBILE STICKY ACTION ───────────────────────────────────── */
+@media (max-width: 767px) {
+  .mobile-sticky-action {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--space-md);
+    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 16px));
+    background: var(--surface-1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 50;
+  }
+}
+
+/* ── UTILITY ────────────────────────────────────────────────── */
+.w-full       { width: 100%; }
+.text-center  { text-align: center; }
+.text-left    { text-align: left; }
+.mx-auto      { margin-inline: auto; }

@@ -34,7 +34,13 @@ export default function Navbar() {
           {mobileOpen ? '✕' : '☰'}
         </button>
 
+        {/* Backdrop for Mobile Menu */}
+        {mobileOpen && (
+          <div className={styles.backdrop} onClick={() => setMobileOpen(false)} aria-hidden="true" />
+        )}
+
         <div className={`${styles.navLinks} ${mobileOpen ? styles.mobileOpen : ''}`}>
+          <div className={styles.dragIndicator} onClick={() => setMobileOpen(false)}></div>
           {links.map(link => (
             <Link
               key={link.href}

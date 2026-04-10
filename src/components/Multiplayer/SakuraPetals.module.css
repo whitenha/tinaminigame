@@ -1,0 +1,195 @@
+/* ============================================================
+ * SAKURA PETALS — 3-Layer Parallax Ambient Effect
+ * Background / Mid / Foreground depth system
+ * Pure CSS animation — GPU-accelerated (transform + opacity only)
+ * 
+ * Architecture: Each petal uses a wrapper div for Y-fall + opacity,
+ * and an inner div for drift + spin + scale. This avoids the CSS
+ * limitation where multiple animations on the same element cannot
+ * compose transforms — they override each other.
+ * ============================================================ */
+
+/* ── LAYER CONTAINERS ────────────────────────────────────────── */
+.layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.layerBg {
+  composes: layer;
+  z-index: -1;
+}
+
+.layerMid {
+  composes: layer;
+  z-index: 0;
+}
+
+.layerFg {
+  composes: layer;
+  z-index: 4;
+}
+
+/* When settings sidebar is open on desktop, clip right 340px */
+.layerClipped {
+  clip-path: inset(0 340px 0 0);
+}
+
+/* ── PETAL: OUTER WRAPPER (Y-fall + opacity) ─────────────────── */
+.petal {
+  position: absolute;
+  top: -12%;
+  will-change: transform, opacity;
+  animation: petalFall var(--fall-dur) linear var(--fall-delay) infinite;
+  opacity: 0;
+}
+
+/* ── PETAL: INNER WRAPPER (drift + spin + scale) ─────────────── */
+.petalInner {
+  animation: petalDrift var(--drift-period) ease-in-out var(--fall-delay) infinite;
+}
+
+.petalInner img {
+  display: block;
+  width: var(--petal-size);
+  height: auto;
+  opacity: var(--petal-opacity);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  animation: petalSpin var(--spin-dur) linear var(--fall-delay) infinite;
+}
+
+/* Optional subtle blur for select background petals */
+.petalBlurred img {
+  filter: blur(0.8px);
+}
+
+/* ── KEYFRAMES ───────────────────────────────────────────────── */
+
+/* Y-axis fall: top → bottom with fade-in at start, fade-out at end */
+@keyframes petalFall {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(120vh);
+    opacity: 0;
+  }
+}
+
+/* X-axis drift: sine-like horizontal sway */
+@keyframes petalDrift {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(var(--drift-amp));
+  }
+  75% {
+    transform: translateX(calc(var(--drift-amp) * -1));
+  }
+}
+
+/* Z-axis rotation + scale: slow tumble */
+@keyframes petalSpin {
+  0% {
+    transform: rotate(0deg) scale(var(--petal-scale, 1));
+  }
+  100% {
+    transform: rotate(var(--spin-range)) scale(var(--petal-scale, 1));
+  }
+}
+
+/* ── JOIN BURST PETALS ───────────────────────────────────────── */
+.burstPetal {
+  position: absolute;
+  will-change: transform, opacity;
+  animation: petalBurst var(--burst-dur, 4s) ease-out forwards;
+  pointer-events: none;
+}
+
+.burstPetal img {
+  display: block;
+  width: var(--petal-size, 35px);
+  height: auto;
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes petalBurst {
+  0% {
+    transform: translateY(-20px) rotate(0deg) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(110vh) rotate(180deg) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ── PAUSED STATE (settings overlay on mobile, or tab hidden) ── */
+.paused .petal,
+.paused .petalInner,
+.paused .petalInner img,
+.paused .burstPetal {
+  animation-play-state: paused !important;
+}
+
+/* ── REDUCED MOTION ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .petal,
+  .burstPetal {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  .petalInner,
+  .petalInner img {
+    animation: none !important;
+  }
+  .staticFallback {
+    display: block;
+  }
+}
+
+/* The static fallback container — hidden by default */
+.staticFallback {
+  display: none;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.staticPetal {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+.staticPetal img {
+  display: block;
+  width: var(--petal-size, 30px);
+  height: auto;
+  opacity: var(--petal-opacity, 0.2);
+}
+
+/* ── RESPONSIVE: hide foreground on mobile ───────────────────── */
+@media (max-width: 767px) {
+  .layerFg {
+    display: none;
+  }
+}

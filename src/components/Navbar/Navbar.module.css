@@ -32,8 +32,10 @@
   transition: transform var(--transition-bounce);
 }
 
-.logo:hover {
-  transform: scale(1.05);
+@media (hover: hover) {
+  .logo:hover {
+    transform: scale(1.05);
+  }
 }
 
 .logoIcon {
@@ -73,9 +75,11 @@
   position: relative;
 }
 
-.navLink:hover {
-  color: var(--color-purple);
-  background: rgba(108, 92, 231, 0.08);
+@media (hover: hover) {
+  .navLink:hover {
+    color: var(--color-purple);
+    background: rgba(108, 92, 231, 0.08);
+  }
 }
 
 .navLinkActive {
@@ -96,9 +100,11 @@
   margin-left: var(--space-sm);
 }
 
-.ctaButton:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: var(--shadow-lg);
+@media (hover: hover) {
+  .ctaButton:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: var(--shadow-lg);
+  }
 }
 
 .authGroup {
@@ -114,29 +120,103 @@
   font-size: 24px;
   padding: var(--space-sm);
   border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.backdrop {
+  display: none;
+}
+
+.dragIndicator {
+  display: none;
 }
 
 @media (max-width: 768px) {
-  .navLinks {
-    display: none;
+  /* Tối ưu UX ngón tay (Touch) */
+  @media (hover: none) {
+    .navLink, .ctaButton {
+      padding: 16px; /* Thumb zone: nút bấm to hơn trên cảm ứng */
+    }
   }
 
-  .navLinks.mobileOpen {
+  .backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  .navLinks {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    top: var(--nav-height);
+    position: fixed;
+    bottom: 0;
     left: 0;
     right: 0;
     background: white;
-    padding: var(--space-md);
-    box-shadow: var(--shadow-lg);
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    gap: var(--space-xs);
-    animation: fadeInUp 0.3s ease;
+    /* Không gian Thumb Zone lý tưởng ở nửa dưới màn hình */
+    padding: var(--space-md) var(--space-md) calc(var(--space-2xl) + env(safe-area-inset-bottom, 20px));
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+    gap: var(--space-sm);
+    z-index: 1001;
+    /* Hiệu ứng Off-canvas (Bottom Sheet) */
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    pointer-events: none;
+  }
+
+  .navLinks.mobileOpen {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Kéo thả giả lập */
+  .dragIndicator {
+    display: block;
+    width: 40px;
+    height: 6px;
+    background: var(--color-border, #e2e8f0);
+    border-radius: var(--radius-full);
+    margin: 0 auto var(--space-md);
+    cursor: grab;
+  }
+
+  .authGroup {
+    flex-direction: column;
+    margin-top: var(--space-md);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+    width: 100%;
+  }
+
+  .authGroup .ctaButton,
+  .authGroup .navLink {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+    justify-content: center;
+    display: flex;
   }
 
   .mobileToggle {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
