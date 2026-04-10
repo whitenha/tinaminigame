@@ -1,0 +1,720 @@
+/* ═══════════════════════════════════════════════════════════════
+   PodiumScreen v2 — Premium Victory Ceremony
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Full-screen Page ─────────────────────────────────────────── */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #0a0a2e 0%, #1a1a4e 30%, #2d1b69 60%, #0f0c29 100%);
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Spotlight Rays ───────────────────────────────────────────── */
+.spotlights {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.spotlightRay {
+  position: absolute;
+  top: -20%;
+  width: 120px;
+  height: 140%;
+  background: linear-gradient(180deg, rgba(255,215,0,0.15) 0%, transparent 60%);
+  filter: blur(30px);
+  transform-origin: top center;
+  animation: rayPulse 4s ease-in-out infinite;
+}
+
+@keyframes rayPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+.ray1 { left: 20%; animation: swayLeft 8s ease-in-out infinite, rayPulse 4s ease-in-out infinite; }
+.ray2 { left: 50%; transform: translateX(-50%); animation: rayPulse 5s ease-in-out infinite; }
+.ray3 { right: 20%; animation: swayRight 7s ease-in-out infinite, rayPulse 4s ease-in-out infinite; }
+
+@keyframes swayLeft {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(-5deg); }
+}
+
+@keyframes swayRight {
+  0%, 100% { transform: rotate(15deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* ── Floating Sparkles ───────────────────────────────────────── */
+.sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: var(--size, 6px);
+  height: var(--size, 6px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.9), rgba(255,150,50,0.4));
+  animation: sparkleFloat linear infinite;
+  opacity: 0;
+}
+
+@keyframes sparkleFloat {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; transform: scale(1); }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(-20vh) scale(0.3); opacity: 0; }
+}
+
+/* ── Phase: "Kết Quả Chung Cuộc" Title ────────────────────── */
+.titleSection {
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes titleReveal {
+  0% { opacity: 0; transform: scale(0.5) translateY(30px); }
+  60% { transform: scale(1.05) translateY(-5px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.titleIcon {
+  font-size: 64px;
+  display: block;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 6px 24px rgba(255, 215, 0, 0.6));
+  animation: trophySpin 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+@keyframes trophySpin {
+  0% { transform: rotateY(0deg) scale(0); }
+  50% { transform: rotateY(360deg) scale(1.2); }
+  100% { transform: rotateY(360deg) scale(1); }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffd700 0%, #ffaa00 30%, #ffffff 60%, #ffd700 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+  letter-spacing: 2px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── Podium Stage ─────────────────────────────────────────── */
+.stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  perspective: 800px;
+}
+
+/* ── Podium Place (container for each) ────────────────────── */
+.place {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(100px) scale(0.8);
+}
+
+.place.visible {
+  animation: placeReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes placeReveal {
+  0% { opacity: 0; transform: translateY(100px) scale(0.8); }
+  60% { transform: translateY(-10px) scale(1.05); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Crown (1st place only) ───────────────────────────────── */
+.crown {
+  font-size: 36px;
+  animation: crownBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 4px 16px rgba(255, 215, 0, 0.6));
+}
+
+@keyframes crownBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-8px) rotate(-5deg); }
+  75% { transform: translateY(-8px) rotate(5deg); }
+}
+
+/* ── Avatar Container WITH Breathing Animation ──────────────── */
+.avatarContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatBreathing 4s ease-in-out infinite;
+}
+
+@keyframes floatBreathing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.avatarRing {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.avatarRing.gold {
+  width: 110px;
+  height: 110px;
+  background: conic-gradient(from 0deg, #ffd700, #ffaa00, #ffd700, #fff8dc, #ffd700);
+  padding: 5px;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.2);
+  animation: ringPulseGold 2s ease-in-out infinite;
+}
+
+.avatarRing.silver {
+  width: 90px;
+  height: 90px;
+  background: conic-gradient(from 0deg, #c0c0c0, #e8e8e8, #c0c0c0, #fafafa, #c0c0c0);
+  padding: 4px;
+  box-shadow: 0 0 20px rgba(192, 192, 192, 0.4);
+}
+
+.avatarRing.bronze {
+  width: 90px;
+  height: 90px;
+  background: conic-gradient(from 0deg, #cd7f32, #e8a84c, #cd7f32, #f0c87a, #cd7f32);
+  padding: 4px;
+  box-shadow: 0 0 20px rgba(205, 127, 50, 0.4);
+}
+
+@keyframes ringPulseGold {
+  0%, 100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), 0 0 60px rgba(255, 215, 0, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 80px rgba(255, 215, 0, 0.3); }
+}
+
+.avatarInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #1a1a4e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatarEmoji {
+  font-size: 48px;
+}
+
+.avatarEmoji.small {
+  font-size: 38px;
+}
+
+/* ── Player Name ──────────────────────────────────────────── */
+.playerName {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  max-width: 130px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.playerName.champion {
+  font-size: 20px;
+  max-width: 160px;
+  text-shadow: 0 2px 12px rgba(255, 215, 0, 0.4);
+}
+
+/* ── Score ─────────────────────────────────────────────────── */
+.playerScore {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.playerScore.gold { color: #ffd700; }
+.playerScore.silver { color: #c0c0c0; }
+.playerScore.bronze { color: #cd7f32; }
+
+.playerScore.champion {
+  font-size: 24px;
+}
+
+/* ── Podium Block (the rising column) ─────────────────────── */
+.block {
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  transform-origin: bottom center;
+  opacity: 0;
+  transform: scaleY(0);
+}
+
+.block.visible {
+  animation: blockRise 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes blockRise {
+  0% { opacity: 0; transform: scaleY(0); }
+  60% { transform: scaleY(1.05); }
+  100% { opacity: 1; transform: scaleY(1); }
+}
+
+/* 3D Top Surface Specular Highlight */
+.block::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+  border-radius: 20px 20px 0 0;
+  pointer-events: none;
+}
+
+/* Base Heights & Premium Solid Metallic Colors */
+.block.first {
+  height: 180px;
+  background: linear-gradient(135deg, #f1c40f 0%, #f39c12 50%, #d35400 100%);
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.6), inset -12px 0 24px rgba(0,0,0,0.2), 0 -10px 50px rgba(241, 196, 15, 0.5);
+  border-top: 2px solid #fff;
+  border-left: 1px solid rgba(255,255,255,0.7);
+}
+
+.block.second {
+  height: 130px;
+  background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 50%, #7f8c8d 100%);
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.8), inset -12px 0 24px rgba(0,0,0,0.2), 0 -8px 40px rgba(189, 195, 199, 0.3);
+  border-top: 2px solid #fff;
+  border-left: 1px solid rgba(255,255,255,0.7);
+}
+
+.block.third {
+  height: 100px;
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 50%, #a04000 100%);
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.4), inset -12px 0 24px rgba(0,0,0,0.3), 0 -8px 30px rgba(211, 84, 0, 0.4);
+  border-top: 2px solid rgba(255,255,255,0.6);
+  border-left: 1px solid rgba(255,255,255,0.4);
+}
+
+/* ── Premium Rank Badge ───────────────────────────────────── */
+.rankBadge {
+  position: absolute;
+  top: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transform: perspective(600px) rotateX(10deg);
+  border: 3px solid white;
+}
+
+/* Outer Spinning Holographic Ring */
+.rankBadge::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  animation: spinSlow 8s linear infinite;
+  z-index: -1;
+}
+
+@keyframes spinSlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rankNumber {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* Rank-Specific Styling */
+.rankBadge.gold {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 50%, #e17055 100%);
+  color: #d35400;
+  box-shadow: 0 10px 20px rgba(241, 196, 15, 0.4), inset 0 4px 10px rgba(255,255,255,0.9);
+  text-shadow: 0 1px 1px rgba(255,255,255,0.9);
+}
+
+.rankBadge.silver {
+  background: linear-gradient(135deg, #ffffff 0%, #dfe6e9 50%, #b2bec3 100%);
+  color: #2c3e50;
+  box-shadow: 0 10px 20px rgba(189, 195, 199, 0.4), inset 0 4px 10px rgba(255,255,255,0.9);
+  text-shadow: 0 1px 1px rgba(255,255,255,0.9);
+}
+
+.rankBadge.bronze {
+  background: linear-gradient(135deg, #fab1a0 0%, #e17055 50%, #c0392b 100%);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(211, 84, 0, 0.4), inset 0 4px 10px rgba(255,255,255,0.6);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ── Runners Up (4th, 5th) ────────────────────────────────── */
+.runnersUp {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.runnersUp.visible {
+  animation: runnersReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes runnersReveal {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.runnerRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.runnerRow.visible {
+  animation: runnerSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes runnerSlide {
+  0% { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+.runnerRank {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.runnerAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.runnerAvatarEmoji {
+  font-size: 24px;
+}
+
+.runnerName {
+  flex: 1;
+  font-weight: 700;
+  font-size: 15px;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.runnerScore {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.myRankRow {
+  background: rgba(241, 196, 15, 0.15);
+  border: 1px solid rgba(241, 196, 15, 0.4) !important;
+  box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
+}
+
+/* ── Actions ──────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.actions.visible {
+  animation: actionsReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes actionsReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rematchButton, .statsButton, .exitButton {
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.rematchButton {
+  background: linear-gradient(135deg, #1abc9c, #16a085);
+  color: white;
+  box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+}
+
+.statsButton {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+}
+
+.exitButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.rematchButton:hover, .statsButton:hover, .exitButton:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: brightness(1.1);
+}
+
+.rematchButton:active, .statsButton:active, .exitButton:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* ── Stats Modal ────────────────────────────────────────── */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent {
+  background: linear-gradient(145deg, #2c3e50, #1a252f);
+  width: 90%;
+  max-width: 500px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modalHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modalClose:hover {
+  color: white;
+  transform: scale(1.1);
+}
+
+.modalBody {
+  padding: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 6px;
+}
+.modalBody::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: 0.2s;
+}
+.statRow:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.statRank {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.statAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.statName {
+  flex: 1;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statScore {
+  color: #f1c40f;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+
+.statCorrect {
+  font-weight: 700;
+  font-family: var(--font-display);
+  background: rgba(0,0,0,0.3);
+  padding: 4px 8px;
+  border-radius: 8px;
+  min-width: 60px;
+  text-align: right;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .page { padding: 24px 16px; }
+  .title { font-size: 26px; }
+  .titleIcon { font-size: 48px; }
+  .stage { gap: 8px; }
+  .block { width: 90px; }
+  .block.first { height: 120px; }
+  .block.second { height: 90px; }
+  .block.third { height: 65px; }
+  .avatarRing.gold { width: 80px; height: 80px; }
+  .avatarRing.silver, .avatarRing.bronze { width: 70px; height: 70px; }
+  .avatarEmoji { font-size: 36px; }
+  .avatarEmoji.small { font-size: 28px; }
+  .playerName { font-size: 13px; max-width: 90px; }
+  .playerName.champion { font-size: 15px; max-width: 100px; }
+  .playerScore { font-size: 15px; }
+  .playerScore.champion { font-size: 18px; }
+  .btn { padding: 12px 20px; font-size: 14px; }
+}

@@ -24,6 +24,7 @@ export function useOrderingEngine(items, options = {}) {
     defaultTimeLimit = 30,
     hasCountdown = true,
     feedbackDelay = 2000,
+    isPaused = false,
   } = options;
 
   const { emit } = useGameEvents(musicType);
@@ -38,6 +39,7 @@ export function useOrderingEngine(items, options = {}) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const timerRef = useRef(null);
+  const isSubmittingRef = useRef(false);
 
   // ── Puzzle State ────────────────────────────────────────
   const [pieces, setPieces] = useState([]);      // Current arrangement (user moves)
@@ -84,6 +86,7 @@ export function useOrderingEngine(items, options = {}) {
     setShowFeedback(false);
     setIsCorrect(false);
     setHintUsed(false);
+    isSubmittingRef.current = false;
     setTimeLeft(item?.extra_data?.time_limit || defaultTimeLimit);
   }, [items, mode, defaultTimeLimit]);
 
@@ -106,7 +109,7 @@ export function useOrderingEngine(items, options = {}) {
 
   // ── Timer ───────────────────────────────────────────────
   useEffect(() => {
-    if (phase !== 'playing' || showFeedback) return;
+    if (phase !== 'playing' || showFeedback || isPaused) return;
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 5 && prev > 1) emit(GameEvent.TIMER_WARNING);
@@ -165,7 +168,8 @@ export function useOrderingEngine(items, options = {}) {
 
   // ── Check Order ─────────────────────────────────────────
   const checkOrder = useCallback(() => {
-    if (showFeedback) return;
+    if (showFeedback || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
     clearInterval(timerRef.current);
 
     const s = stateRef.current;
@@ -183,10 +187,21 @@ export function useOrderingEngine(items, options = {}) {
 
     if (correct) {
       emit(GameEvent.ORDER_CORRECT);
-      const base = 1000;
-      const speed = Math.round((s.timeLeft / s.defaultTimeLimit) * 500);
-      const hintPenalty = hintUsed ? -300 : 0;
-      setScore(prev => prev + Math.max(base + speed + hintPenalty, 100));
+      let points = 0;
+      const tl = s.items[s.currentQ]?.extra_data?.time_limit || s.defaultTimeLimit;
+      if (tl > 0) {
+        const timePercent = s.timeLeft / tl;
+        if (timePercent >= 0.95) {
+          points = 1000;
+        } else if (s.timeLeft > 0) {
+          points = Math.round(200 + (timePercent / 0.95) * 800);
+        } else {
+          points = 0;
+        }
+      } else {
+        points = 1000;
+      }
+      setScore(prev => prev + points);
       setStreak(prev => prev + 1);
     } else {
       emit(GameEvent.WRONG);

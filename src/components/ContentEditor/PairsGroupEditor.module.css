@@ -1,0 +1,157 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.addBtn {
+  background: rgba(108, 92, 231, 0.2);
+  color: #a29bfe;
+  border: 1px solid rgba(162, 155, 254, 0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.addBtn:hover {
+  background: rgba(108, 92, 231, 0.4);
+  transform: translateY(-1px);
+}
+
+.pairsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pairRow {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+
+.pairRow:focus-within {
+  border-color: rgba(108, 92, 231, 0.5);
+  background: rgba(108, 92, 231, 0.05);
+}
+
+.indexNum {
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+  flex-shrink: 0;
+  margin-top: 26px; /* Align with input */
+}
+
+.inputGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inputGroup label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 44px;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.input:focus {
+  border-color: #6C5CE7;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.linkIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  opacity: 0.3;
+  margin-top: 14px;
+}
+
+.delBtn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: 18px;
+  transition: all 0.2s;
+}
+
+.delBtn:hover {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff6b6b;
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .pairRow {
+    flex-wrap: wrap;
+  }
+  .inputGroup {
+    min-width: 100%;
+  }
+  .linkIcon, .indexNum {
+    display: none;
+  }
+  .delBtn {
+    margin-top: 0;
+    width: 100%;
+    margin-bottom: -4px;
+  }
+}

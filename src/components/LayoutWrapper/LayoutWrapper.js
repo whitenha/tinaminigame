@@ -8,8 +8,9 @@ import FloatingShapes from '@/components/FloatingShapes/FloatingShapes';
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
   
-  // Hide UI chunks if we are in fullscreen modes (like the editor or playing a game)
-  const isFullScreen = pathname?.startsWith('/create') || pathname?.startsWith('/play');
+  const isRoomCode = pathname && /^\/[A-Za-z0-9]{6}$/.test(pathname);
+  // Hide UI chunks if we are in fullscreen modes (like the editor, playing a game, or joining a room)
+  const isFullScreen = pathname?.startsWith('/create') || pathname?.startsWith('/play') || isRoomCode;
 
   return (
     <>

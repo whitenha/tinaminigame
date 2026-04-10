@@ -172,7 +172,55 @@ function initParticles(container) {
 }
 
 // ══════════════════════════════════════════════════════════════
-export default function MatchingPairsPlayer({ items, activity, playerName, onFinish }) {
+export default function MatchingPairsPlayer({ items: rawItems, activity, playerName, onFinish }) {
+  const [currentRound, setCurrentRound] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+
+  // Normalize legacy PAIRS items into a single round if missing .pairs
+  const items = useMemo(() => {
+    if (rawItems.length > 0 && !rawItems[0].pairs) {
+      return [{ pairs: rawItems, time_limit: rawItems[0].time_limit || 60 }];
+    }
+    return rawItems;
+  }, [rawItems]);
+
+  const pairList = useMemo(() => {
+    const roundItem = items[currentRound] || { pairs: [] };
+    return roundItem.pairs || [];
+  }, [items, currentRound]);
+
+  const isLastRound = currentRound >= items.length - 1;
+
+  const handleNextRound = (roundScore) => {
+    setTotalScore(prev => prev + roundScore);
+    setCurrentRound(r => r + 1);
+  };
+
+  const handleFinish = (roundScore) => {
+    if (onFinish) onFinish(totalScore + roundScore);
+  };
+
+  const handleRestartGame = () => {
+    setCurrentRound(0);
+    setTotalScore(0);
+  };
+
+  return (
+    <MatchingPairsRound
+      key={currentRound} // Forces remount, resetting usePairingEngine state cleanly!
+      items={pairList}
+      totalScore={totalScore}
+      isLastRound={isLastRound}
+      onNextRound={handleNextRound}
+      onRestartGame={handleRestartGame}
+      onFinish={onFinish ? handleFinish : null}
+      title={`${activity?.title || 'Matching Pairs'} ${items.length > 1 ? `(Vòng ${currentRound + 1}/${items.length})` : ''}`}
+    />
+  );
+}
+
+// ── Inner Round Component ─────────────────────────────────────
+function MatchingPairsRound({ items, totalScore, isLastRound, onNextRound, onRestartGame, onFinish, title }) {
   const engine = usePairingEngine(items, {
     musicType: 'calm',
     mode: 'memory',
@@ -186,7 +234,7 @@ export default function MatchingPairsPlayer({ items, activity, playerName, onFin
   const prevMatchedRef = useRef(0);
   const prevPhaseRef = useRef('countdown');
   const prevFailRef = useRef('');
-  const [feedbackMsg, setFeedbackMsg] = useState(null);  // {text, type} for floating center msg
+  const [feedbackMsg, setFeedbackMsg] = useState(null);
 
   const ensureAudio = useCallback(() => {
     if (!audioRef.current) audioRef.current = createAudioCtx();
@@ -312,8 +360,30 @@ export default function MatchingPairsPlayer({ items, activity, playerName, onFin
             </div>
           </div>
           <div className={styles.resultBtns}>
-            <button className={styles.btnPrimary} onClick={() => window.location.reload()}>Chơi lại</button>
-            {onFinish && <button className={styles.btnSecondary} onClick={onFinish}>Thoát</button>}
+            {!isLastRound ? (
+              <button 
+                className={styles.btnPrimary}
+                onClick={() => { sfx(audioRef.current, 'flip'); onNextRound(engine.score); }}
+              >
+                Vòng kế tiếp
+              </button>
+            ) : (
+              <button 
+                className={styles.btnPrimary}
+                onClick={() => { sfx(audioRef.current, 'flip'); onRestartGame(); }}
+              >
+                Chơi lại
+              </button>
+            )}
+            
+            {isLastRound && onFinish && (
+              <button 
+                className={styles.btnSecondary}
+                onClick={() => onFinish(engine.score)}
+              >
+                Lưu kết quả
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -327,11 +397,15 @@ export default function MatchingPairsPlayer({ items, activity, playerName, onFin
 
       {/* Header */}
       <header className={styles.header}>
-        <div className={styles.timerBlock}>
-          <span className={styles.timerDot} />
-          <span className={styles.timerValue}>{formatTime(engine.timeLeft)}</span>
+        <div className={styles.headerLeft}>
+          <div className={styles.iconCircle}>
+            <span role="img" aria-label="brain">🧠</span>
+          </div>
+          <div>
+            <h1 className={styles.gameTitle}>{title}</h1>
+            <p className={styles.gameSub}>Lật thẻ để tìm cặp phù hợp</p>
+          </div>
         </div>
-        <h1 className={styles.gameTitle}>{activity?.title || 'Matching Pairs'}</h1>
         <div className={styles.headerRight}>
           <span className={styles.matchCount}>
             {engine.matchedCount}/{engine.totalPairs}
@@ -423,8 +497,8 @@ export default function MatchingPairsPlayer({ items, activity, playerName, onFin
           <span className={styles.footerValue}>{engine.attempts}</span>
         </div>
         <div className={styles.footerStat}>
-          <span className={styles.footerLabel}>Điểm</span>
-          <span className={styles.footerValue} key={engine.score}>{engine.score}</span>
+          <span className={styles.footerLabel}>Tổng Điểm</span>
+          <span className={styles.footerValue} key={totalScore + engine.score}>{totalScore + engine.score}</span>
         </div>
         <div className={styles.footerStat}>
           <span className={styles.footerLabel}>Chính xác</span>

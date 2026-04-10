@@ -159,6 +159,20 @@ export function parseImportText(text, contentFormat) {
       });
     }
 
+    case 'PAIRS_GROUP': {
+      // Group by empty lines for rounds
+      const groups = text.split(/\n\s*\n/).filter(g => g.trim());
+      if (groups.length === 0) return [];
+      
+      return groups.map(group => {
+        const pairs = group.split('\n').filter(l => l.trim()).map(line => {
+          const parts = line.split(/->|→|:|\t/).map(s => s.trim());
+          return { term: parts[0] || '', definition: parts[1] || '' };
+        });
+        return { pairs, image_url: null, time_limit: 45 };
+      });
+    }
+
     case 'LIST': {
       return lines.map(line => {
         const parts = line.split(/->|→/).map(s => s.trim());

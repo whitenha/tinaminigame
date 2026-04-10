@@ -25,6 +25,7 @@ export function usePairingEngine(items, options = {}) {
     defaultTimeLimit = 120,   // Global time for entire game
     hasCountdown = true,
     columns = 4,              // Grid columns for memory mode
+    onPairMatch,              // Callback when a pair is successfully matched
   } = options;
 
   const { emit } = useGameEvents(musicType);
@@ -134,6 +135,7 @@ export function usePairingEngine(items, options = {}) {
       if (card1.pairId === card2.pairId && card1.type !== card2.type) {
         // Match!
         emit(GameEvent.PAIR_MATCH);
+        onPairMatch?.(card1.pairId);
         const newMatched = new Set([...matchedPairs, card1.pairId]);
         setMatchedPairs(newMatched);
         setStreak(prev => prev + 1);
@@ -176,6 +178,7 @@ export function usePairingEngine(items, options = {}) {
     if (selectedTerm === defIdx) {
       // Correct match!
       emit(GameEvent.PAIR_MATCH);
+      onPairMatch?.(selectedTerm);
       const newMatched = new Set([...matchedItems, defIdx]);
       setMatchedItems(newMatched);
       setStreak(prev => prev + 1);

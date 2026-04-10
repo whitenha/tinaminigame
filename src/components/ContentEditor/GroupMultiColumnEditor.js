@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styles from './GroupMultiColumnEditor.module.css';
 
 function AutoScalingTextarea({ id, value, onChange, onKeyDown, defaultSize, className, placeholder, rows }) {
@@ -28,6 +28,8 @@ function AutoScalingTextarea({ id, value, onChange, onKeyDown, defaultSize, clas
 
 export default function GroupMultiColumnEditor({ items, onChange }) {
   if (!items) return null;
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Add column
   const addColumn = () => {
@@ -144,8 +146,60 @@ export default function GroupMultiColumnEditor({ items, onChange }) {
     }
   };
 
+  const handleTimeChange = (val) => {
+    const timeLimit = parseInt(val, 10) || 0;
+    const newItems = items.map(it => ({
+      ...it,
+      time_limit: timeLimit,
+      extra_data: { ...it.extra_data, time_limit: timeLimit }
+    }));
+    onChange(newItems);
+  };
+
+  const globalTime = items[0]?.time_limit || items[0]?.extra_data?.time_limit || 60;
+
   return (
     <div className={styles.boardContainer}>
+      
+      <button 
+        className={styles.settingsFab}
+        onClick={() => setIsSettingsOpen(true)}
+        title="Cài đặt game"
+      >
+        ⚙️
+      </button>
+
+      {isSettingsOpen && (
+        <div className={styles.modalOverlay} onClick={() => setIsSettingsOpen(false)}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <button className={styles.closeModalBtn} onClick={() => setIsSettingsOpen(false)}>✕</button>
+            <div className={styles.modalTitle}>⚙️ Cài đặt chung</div>
+            
+            <div className={styles.settingRow}>
+              <label>⏳ Giới hạn thời gian (tổng số giây)</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <input 
+                  type="number"
+                  className={styles.timeSelect} 
+                  style={{ width: '100px' }}
+                  value={globalTime || ''} 
+                  onChange={(e) => handleTimeChange(e.target.value)}
+                  min="5"
+                  max="3600"
+                  placeholder="Ví dụ: 60"
+                />
+                <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', fontWeight: '500' }}>
+                  {globalTime >= 60 && `${Math.floor(globalTime / 60)} phút `}
+                  {globalTime % 60 > 0 && `${globalTime % 60} giây`}
+                  {!globalTime && '0 giây'}
+                </span>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      )}
+
       <div className={styles.boardScroll}>
         {items.map((col, colIdx) => {
           const opts = getNormalizedOptions(colIdx);

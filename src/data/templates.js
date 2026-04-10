@@ -164,7 +164,7 @@ export const TEMPLATES = [
     description: 'Tự kiểm tra bằng thẻ gợi ý ở trước và đáp án ở sau.',
     howToPlay: 'Đọc mặt trước, thử trả lời, lật thẻ kiểm tra.',
     category: 'card', tier: 'standard', color: COLORS.yellow,
-    badges: [], difficulty: 1, playerCount: '1',
+    badges: [], difficulty: 1, playerCount: '1', isTool: true,
     engine: {
       contentFormat: 'PAIRS', playerType: 'flashcards', musicType: 'calm',
       engineType: 'reveal', scoringPolicy: 'none',
@@ -178,7 +178,7 @@ export const TEMPLATES = [
     description: 'Rút thẻ ngẫu nhiên từ bộ bài đã xáo.',
     howToPlay: 'Nhấn để rút thẻ. Mỗi thẻ chứa chủ đề để thảo luận.',
     category: 'card', tier: 'standard', color: COLORS.orange,
-    badges: ['NEW'], difficulty: 1, playerCount: '2-30',
+    badges: ['NEW'], difficulty: 1, playerCount: '2-30', isTool: true,
     engine: {
       contentFormat: 'LIST', playerType: 'speakingcards', musicType: 'calm',
       engineType: 'action', scoringPolicy: 'none',
@@ -193,7 +193,7 @@ export const TEMPLATES = [
     description: 'Rút thẻ ngẫu nhiên từ bộ bài đã xáo.',
     howToPlay: 'Nhấn nút để rút một thẻ ngẫu nhiên.',
     category: 'card', tier: 'standard', color: COLORS.teal,
-    badges: [], difficulty: 1, playerCount: '1-30',
+    badges: [], difficulty: 1, playerCount: '1-30', isTool: true,
     engine: {
       contentFormat: 'PAIRS', playerType: 'flashcards', musicType: 'fun',
       engineType: 'reveal', scoringPolicy: 'none',
@@ -227,7 +227,7 @@ export const TEMPLATES = [
     description: 'Quay vòng quay để xem mục nào sẽ xuất hiện tiếp theo.',
     howToPlay: 'Nhấn nút quay để bắt đầu. Vòng quay dừng ngẫu nhiên.',
     category: 'wheel', tier: 'standard', color: COLORS.teal,
-    badges: ['POPULAR'], difficulty: 1, playerCount: '1-40',
+    badges: ['POPULAR'], difficulty: 1, playerCount: '1-40', isTool: true,
     engine: {
       contentFormat: 'LIST', playerType: 'spinwheel', musicType: 'fun',
       engineType: 'reveal', scoringPolicy: 'none',
@@ -241,7 +241,7 @@ export const TEMPLATES = [
     description: 'Quay vòng quay để xem mục nào xuất hiện tiếp theo.',
     howToPlay: 'Nhấn vào vòng quay để quay. Có thể quay nhiều lần.',
     category: 'wheel', tier: 'standard', color: COLORS.pink,
-    badges: ['POPULAR'], difficulty: 1, playerCount: '1-40',
+    badges: ['POPULAR'], difficulty: 1, playerCount: '1-40', isTool: true,
     engine: {
       contentFormat: 'LIST', playerType: 'spinwheel', musicType: 'fun',
       engineType: 'reveal', scoringPolicy: 'none',
@@ -275,7 +275,7 @@ export const TEMPLATES = [
     category: 'matching', tier: 'standard', color: COLORS.blue,
     badges: ['POPULAR'], difficulty: 2, playerCount: '1-30',
     engine: {
-      contentFormat: 'PAIRS', playerType: 'matchingpairs', musicType: 'calm',
+      contentFormat: 'PAIRS_GROUP', playerType: 'matchingpairs', musicType: 'calm',
       engineType: 'pairing', scoringPolicy: 'time-speed',
       hasLeaderboard: true, hasTimer: true, inputMode: 'tap',
       supportedFormats: ['PAIRS'],
@@ -289,7 +289,7 @@ export const TEMPLATES = [
     category: 'matching', tier: 'standard', color: COLORS.pink,
     badges: [], difficulty: 2, playerCount: '1-30',
     engine: {
-      contentFormat: 'PAIRS', playerType: 'matchup', musicType: 'calm',
+      contentFormat: 'PAIRS_GROUP', playerType: 'matchup', musicType: 'calm',
       engineType: 'pairing', scoringPolicy: 'time-speed',
       hasLeaderboard: true, hasTimer: true, inputMode: 'drag',
       supportedFormats: ['PAIRS'],
@@ -687,16 +687,17 @@ export const TEMPLATES = [
 //  HELPER FUNCTIONS (auto-derived from data)
 // ═══════════════════════════════════════════════════════════
 
-/** Get all unique categories that have at least one template */
+/** Get all unique categories that have at least one template (excluding tools) */
 export function getActiveCategories() {
-  const activeCatIds = new Set(TEMPLATES.map(t => t.category));
+  const activeCatIds = new Set(TEMPLATES.filter(t => !t.isTool).map(t => t.category));
   return CATEGORIES.filter(c => c.id === 'all' || activeCatIds.has(c.id));
 }
 
 /** Filter templates by category */
 export function filterByCategory(categoryId) {
-  if (categoryId === 'all') return TEMPLATES;
-  return TEMPLATES.filter(t => t.category === categoryId);
+  const games = TEMPLATES.filter(t => !t.isTool);
+  if (categoryId === 'all') return games;
+  return games.filter(t => t.category === categoryId);
 }
 
 /** Filter templates by tier */

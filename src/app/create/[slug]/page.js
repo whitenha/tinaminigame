@@ -10,6 +10,7 @@ import { getContentFormat, parseImportText } from '@/lib/gameRegistry';
 import { speak as ttsSpeak, cancelSpeech, preloadVoices, detectLang } from '@/lib/tts';
 import MCQEditor from '@/components/ContentEditor/MCQEditor';
 import PairsEditor from '@/components/ContentEditor/PairsEditor';
+import PairsGroupEditor from '@/components/ContentEditor/PairsGroupEditor';
 import ListEditor from '@/components/ContentEditor/ListEditor';
 import TrueFalseEditor from '@/components/ContentEditor/TrueFalseEditor';
 import TypeAnswerEditor from '@/components/ContentEditor/TypeAnswerEditor';
@@ -129,7 +130,11 @@ export default function CreateActivityPage({ params }) {
               options: (item.options && item.options.length > 0) ? item.options : ['', '', '', ''],
               image_url: item.image_url || null,
               audio_url: item.audio_url || null,
-              time_limit: item.extra_data?.time_limit || 20
+              time_limit: item.extra_data?.time_limit || 20,
+              // Restore wheel MCQ answers from extra_data
+              wrong1: item.extra_data?.wrong1 || '',
+              wrong2: item.extra_data?.wrong2 || '',
+              wrong3: item.extra_data?.wrong3 || '',
             }));
             setContentItems(mappedItems);
             // After loading, we can optionally go to the settings page or stay on slide 0
@@ -301,11 +306,17 @@ export default function CreateActivityPage({ params }) {
         activity_id: currentActId,
         position_index: idx,
         term: item.question || item.term || '',
-        definition: item.options ? (typeof item.options[0] === 'string' ? item.options[0] : item.options[0]?.text) : (item.definition || ''),
+        definition: item.definition || (item.options ? (typeof item.options[0] === 'string' ? item.options[0] : item.options[0]?.text) : ''),
         options: item.options || [],
         image_url: item.image_url || null,
         audio_url: item.audio_url || null,
-        extra_data: { time_limit: item.time_limit || 20 }
+        extra_data: {
+          time_limit: item.time_limit || 20,
+          // Persist wheel MCQ wrong answers
+          ...(item.wrong1 ? { wrong1: item.wrong1 } : {}),
+          ...(item.wrong2 ? { wrong2: item.wrong2 } : {}),
+          ...(item.wrong3 ? { wrong3: item.wrong3 } : {}),
+        }
       }));
 
       const { error: itemsError } = await supabase
@@ -318,7 +329,7 @@ export default function CreateActivityPage({ params }) {
       setLastSavedTime(timeStr);
 
       if (!isAuto) {
-        router.push('/activity/' + currentActId);
+        router.push('/' + currentActId);
       }
       
     } catch (err) {
@@ -495,6 +506,7 @@ export default function CreateActivityPage({ params }) {
       'MCQ':        { question: '', options: ['', '', '', ''], image_url: null, time_limit: 20 },
       'TRUE_FALSE': { question: '', options: ['Đúng', 'Sai', '', ''], image_url: null, time_limit: 15 },
       'PAIRS':      { term: '', definition: '', image_url: null },
+      'PAIRS_GROUP':{ pairs: [{term: '', definition: ''}, {term: '', definition: ''}], time_limit: 60, image_url: null },
       'LIST':       { term: '', definition: '', image_url: null },
       'WORD':       { term: '', definition: '', image_url: null },
       'WORDLIST':   { term: '', definition: '', image_url: null },
@@ -592,6 +604,8 @@ export default function CreateActivityPage({ params }) {
       case 'PAIRS':
       case 'WORDLIST':
         return <PairsEditor item={currentItem} onChange={updateCurrentItem} />;
+      case 'PAIRS_GROUP':
+        return <PairsGroupEditor item={currentItem} onChange={updateCurrentItem} />;
       case 'WORD':
         if (slug === 'spell-the-word') {
           return <SpellWordEditor item={currentItem} onChange={updateCurrentItem} />;
@@ -612,7 +626,7 @@ export default function CreateActivityPage({ params }) {
   };
 
   const getAddSlideLabel = () => {
-    const labels = { 'MCQ': '+ Thêm câu hỏi', 'TRUE_FALSE': '+ Thêm phát biểu', 'PAIRS': '+ Thêm thẻ', 'LIST': '+ Thêm mục', 'WORD': '+ Thêm từ', 'SENTENCE': '+ Thêm câu', 'GROUP': '+ Thêm mục', 'DIAGRAM': '+ Thêm nhãn', 'MATH': '+ Thêm bài' };
+    const labels = { 'MCQ': '+ Thêm câu hỏi', 'TRUE_FALSE': '+ Thêm phát biểu', 'PAIRS': '+ Thêm thẻ', 'PAIRS_GROUP': '+ Thêm Vòng', 'LIST': '+ Thêm mục', 'WORD': '+ Thêm từ', 'SENTENCE': '+ Thêm câu', 'GROUP': '+ Thêm mục', 'DIAGRAM': '+ Thêm nhãn', 'MATH': '+ Thêm bài' };
     return labels[contentFormat] || '+ Thêm mục';
   };
 
@@ -795,6 +809,10 @@ export default function CreateActivityPage({ params }) {
                 <div className={styles.slidePreview}>
                   {(item.question || item.term).substring(0, 15)}...
                 </div>
+              ) : item.pairs ? (
+                <div className={styles.slidePreview}>
+                  {item.pairs.length} cặp
+                </div>
               ) : (
                 <div className={styles.slideIcon}>🖼️</div>
               )}
@@ -871,6 +889,7 @@ export default function CreateActivityPage({ params }) {
               {contentFormat === 'MCQ' && 'Trí tuệ nhân tạo sẽ tự động đọc, bóc tách và phân loại câu hỏi/đáp án.'}
               {contentFormat === 'TRUE_FALSE' && 'Mỗi dòng: Phát biểu -> Đúng hoặc Sai'}
               {['PAIRS', 'WORD', 'GROUP'].includes(contentFormat) && 'Mỗi dòng: Từ -> Nghĩa/Nhóm (phân tách bằng -> hoặc tab)'}
+              {contentFormat === 'PAIRS_GROUP' && 'Mỗi dòng: Từ -> Nghĩa. Tách các vòng chơi bằng một dòng trống.'}
               {['LIST', 'SENTENCE', 'WORDLIST', 'DIAGRAM', 'MATH'].includes(contentFormat) && 'Mỗi dòng là 1 mục. Có thể thêm mô tả bằng dấu ->'}
             </p>
 
@@ -879,6 +898,7 @@ export default function CreateActivityPage({ params }) {
                 <strong>Ví dụ:</strong>{'\n'}
                 {contentFormat === 'TRUE_FALSE' && 'Trái đất quay quanh mặt trời. -> Đúng\nMặt trăng lớn hơn trái đất. -> Sai\nNước sôi ở 100°C. -> Đúng'}
                 {['PAIRS', 'WORD'].includes(contentFormat) && 'Apple -> Quả táo\nBanana -> Quả chuối\nCherry -> Quả anh đào'}
+                {contentFormat === 'PAIRS_GROUP' && 'Vòng 1:\nApple -> Quả táo\nBanana -> Quả chuối\n\nVòng 2:\nHello -> Xin chào\nGoodbye -> Tạm biệt'}
                 {contentFormat === 'GROUP' && 'Táo -> Trái cây\nChó -> Động vật\nCà rốt -> Rau củ'}
                 {['LIST', 'SENTENCE', 'WORDLIST', 'DIAGRAM', 'MATH'].includes(contentFormat) && 'Mục 1\nMục 2\nMục 3\nMục 4'}
               </div>

@@ -53,10 +53,11 @@ export function GameTopBar({ counter, playerName, score, streak = 0, extra }) {
         </svg>
       </button>
       <div className={`${styles.topBarPill} ${styles.counterPill}`}>{counter}</div>
-      <div className={`${styles.topBarPill} ${styles.namePill}`}>👤 {playerName}</div>
+      {playerName && (
+        <div className={`${styles.topBarPill} ${styles.namePill}`}>{playerName}</div>
+      )}
       <div className={`${styles.topBarPill} ${styles.scorePill}`}>
-        ⭐ {(score || 0).toLocaleString()}
-        {streak >= 3 && <span className={styles.streakBadge}>🔥{streak}</span>}
+        {(score || 0).toLocaleString()}⭐
       </div>
       {extra}
     </div>

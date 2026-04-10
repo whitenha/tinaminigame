@@ -14,9 +14,39 @@ class SoundManager {
     this.ctx = null;
     this.enabled = true;
     this.musicEnabled = true;
-    this.volume = 0.6;
-    this.musicVolume = 0.3;
+
+    // Default reference volumes (max scale)
+    this.baseVolume = 0.6;
+    this.baseMusicVolume = 0.3;
+    
+    this.volume = this.baseVolume;
+    this.musicVolume = this.baseMusicVolume;
     this.currentMusic = null;
+    
+    // Attempt to load saved volumes
+    this._loadSavedVolumes();
+  }
+
+  _loadSavedVolumes() {
+    try {
+      if (typeof window !== 'undefined') {
+        const savedMusic = localStorage.getItem('tina_musicVol');
+        if (savedMusic !== null) this.setMusicVolume(parseInt(savedMusic, 10));
+
+        const savedEffects = localStorage.getItem('tina_effectsVol');
+        if (savedEffects !== null) this.setEffectsVolume(parseInt(savedEffects, 10));
+      }
+    } catch(e) {}
+  }
+
+  setEffectsVolume(percent) {
+    this.volume = (Math.max(0, Math.min(100, percent)) / 100) * this.baseVolume;
+  }
+
+  setMusicVolume(percent) {
+    this.musicVolume = (Math.max(0, Math.min(100, percent)) / 100) * this.baseMusicVolume;
+    // Note: Since music loops are scheduled into the future with dynamic createGain nodes, 
+    // the next beat scheduled will automatically adopt the new this.musicVolume.
   }
 
   _getCtx() {
@@ -35,7 +65,7 @@ class SoundManager {
   // ── CORE SOUND PRIMITIVES ──────────────────────────────
 
   _playTone(freq, duration, type = 'sine', vol = 0.3, delay = 0) {
-    if (!this.enabled) return;
+    if (!this.enabled || this.volume <= 0) return;
     const ctx = this._resumeCtx();
     if (!ctx) return;
 
@@ -43,7 +73,8 @@ class SoundManager {
     const gain = ctx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-    gain.gain.setValueAtTime(vol * this.volume, ctx.currentTime + delay);
+    const startGain = Math.max(0.002, vol * this.volume);
+    gain.gain.setValueAtTime(startGain, ctx.currentTime + delay);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -52,7 +83,7 @@ class SoundManager {
   }
 
   _playNoise(duration, vol = 0.1, delay = 0) {
-    if (!this.enabled) return;
+    if (!this.enabled || this.volume <= 0) return;
     const ctx = this._resumeCtx();
     if (!ctx) return;
 
@@ -65,7 +96,7 @@ class SoundManager {
     const source = ctx.createBufferSource();
     source.buffer = buffer;
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(vol * this.volume, ctx.currentTime + delay);
+    gain.gain.setValueAtTime(Math.max(0.002, vol * this.volume), ctx.currentTime + delay);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
     source.connect(gain);
     gain.connect(ctx.destination);
@@ -363,19 +394,23 @@ class SoundManager {
 
       const playBeat = () => {
         if (!this.currentMusic) return;
-        const chord = progression[beatIndex % progression.length];
-        chord.forEach(freq => {
-          const osc = ctx.createOscillator();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime);
-          const g = ctx.createGain();
-          g.gain.setValueAtTime(this.musicVolume * 0.06, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
-          osc.connect(g);
-          g.connect(ctx.destination);
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 2);
-        });
+        
+        if (this.musicEnabled && this.musicVolume > 0) {
+          const chord = progression[beatIndex % progression.length];
+          chord.forEach(freq => {
+            const osc = ctx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            const g = ctx.createGain();
+            const startGain = Math.max(0.002, this.musicVolume * 0.06);
+            g.gain.setValueAtTime(startGain, ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 2);
+          });
+        }
         beatIndex++;
         this.currentMusic = setTimeout(playBeat, 2000);
       };

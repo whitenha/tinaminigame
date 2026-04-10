@@ -55,6 +55,7 @@ export default function SpellTheWordPlayer({ items, activity, playerName }) {
     mode: 'letters',
     defaultTimeLimit: 120, // 2 minutes default
     feedbackDelay: 2800,
+    isPaused: localPhase === 'preview', // Pause timer during preview
   });
 
   // ── Text-To-Speech Helpers ─────────────────────────────────

@@ -27,10 +27,16 @@ function TemplatesContent() {
   }, []);
 
   const filteredTemplates = useMemo(() => {
-    let result = TEMPLATES;
+    let result = TEMPLATES.filter(t => !t.isTool);
 
     if (search) {
-      result = searchTemplates(search);
+      // Re-implement search locally or filter the returned result
+      const q = search.toLowerCase().trim();
+      result = result.filter(t =>
+        t.name.toLowerCase().includes(q) ||
+        t.nameVi.toLowerCase().includes(q) ||
+        t.description.toLowerCase().includes(q)
+      );
     }
 
     if (category !== 'all') {
@@ -83,7 +89,7 @@ function TemplatesContent() {
       <CategoryTabs activeCategory={category} onCategoryChange={handleCategoryChange} />
 
       <p className={styles.resultCount}>
-        Hiển thị {filteredTemplates.length} / {TEMPLATES.length} templates
+        Hiển thị {filteredTemplates.length} / {TEMPLATES.filter(t => !t.isTool).length} templates
       </p>
 
       {filteredTemplates.length > 0 ? (

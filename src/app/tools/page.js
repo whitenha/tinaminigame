@@ -4,6 +4,8 @@ import { Suspense } from 'react';
 import TemplateCard from '@/components/TemplateCard/TemplateCard';
 import styles from '../templates/templates.module.css';
 
+import { TEMPLATES } from '@/data/templates';
+
 // Mock data definition for tools (can be moved to a data file later)
 const TOOLS = [
   {
@@ -16,7 +18,12 @@ const TOOLS = [
     badges: ['NEW', 'POPULAR'],
     difficulty: 1,
     playerCount: '1',
-  }
+    basePath: '/tools',
+  },
+  ...TEMPLATES.filter(template => template.isTool).map(template => ({
+    ...template,
+    basePath: '/templates',
+  }))
 ];
 
 export default function ToolsPage() {
@@ -35,7 +42,7 @@ export default function ToolsPage() {
         {TOOLS.length > 0 ? (
           <div className={styles.grid}>
             {TOOLS.map((tool, i) => (
-              <TemplateCard key={tool.id} template={tool} index={i} basePath="/tools" />
+              <TemplateCard key={tool.id} template={tool} index={i} basePath={tool.basePath || "/tools"} />
             ))}
           </div>
         ) : (

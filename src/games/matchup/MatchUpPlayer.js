@@ -109,9 +109,20 @@ const CARD_COLORS = [
 
 // ══════════════════════════════════════════════════════════════
 export default function MatchUpPlayer({ items: rawItems = [], activity, playerName, onFinish }) {
-  // Parse pairs from content items
+  const [currentRound, setCurrentRound] = useState(0);
+
+  // Normalize legacy PAIRS items into a single round if missing .pairs
+  const items = useMemo(() => {
+    if (rawItems.length > 0 && !rawItems[0].pairs) {
+      return [{ pairs: rawItems, time_limit: rawItems[0].time_limit || 60 }];
+    }
+    return rawItems;
+  }, [rawItems]);
+
+  // Parse pairs for the current round
   const pairs = useMemo(() => {
-    return rawItems
+    const roundItem = items[currentRound] || { pairs: [] };
+    return (roundItem.pairs || [])
       .filter(it => (it.term || it.question) && (it.definition || ''))
       .map((it, idx) => ({
         id: idx,
@@ -119,9 +130,10 @@ export default function MatchUpPlayer({ items: rawItems = [], activity, playerNa
         definition: it.definition || '',
         color: CARD_COLORS[idx % CARD_COLORS.length],
       }));
-  }, [rawItems]);
+  }, [items, currentRound]);
 
   const total = pairs.length;
+  const isLastRound = currentRound >= items.length - 1;
 
   // Shuffled terms (the draggable side)
   const shuffledTerms = useMemo(() => shuffle(pairs.map(p => ({ id: p.id, term: p.term, color: p.color }))), [pairs]);
@@ -331,7 +343,7 @@ export default function MatchUpPlayer({ items: rawItems = [], activity, playerNa
       sfx(audioRef.current, 'complete');
       setTimeout(() => {
         setPhase('result');
-        setScore(Math.max(0, Math.round(1000 - timer * 5 + correct * 100)));
+        setScore(prev => prev + Math.max(0, Math.round(1000 - timer * 5 + correct * 100)));
         if (containerRef.current) spawnConfetti(containerRef.current);
       }, 1500);
     } else {
@@ -361,6 +373,7 @@ export default function MatchUpPlayer({ items: rawItems = [], activity, playerNa
   // ── Reset ──────────────────────────────────────────────────
   const handleReset = () => {
     clearInterval(timerRef.current);
+    setCurrentRound(0);
     setAvailableTerms(shuffledTerms.map(t => t.id));
     setPlacements({});
     setResults({});
@@ -368,6 +381,13 @@ export default function MatchUpPlayer({ items: rawItems = [], activity, playerNa
     setTimer(0);
     setScore(0);
     timerRef.current = setInterval(() => setTimer(t => t + 1), 1000);
+  };
+
+  // ── Next Round ──────────────────────────────────────────────
+  const handleNextRound = () => {
+    clearInterval(timerRef.current);
+    setCurrentRound(r => r + 1);
+    // Note: UseEffects will trigger re-calculation of shuffledTerms based on the new round
   };
 
   // ── Helpers ────────────────────────────────────────────────
@@ -412,8 +432,12 @@ export default function MatchUpPlayer({ items: rawItems = [], activity, playerNa
             </div>
           </div>
           <div className={styles.resultBtns}>
-            <button className={styles.btnPrimary} onClick={handleReset}>Chơi lại</button>
-            {onFinish && <button className={styles.btnSecondary} onClick={onFinish}>Thoát</button>}
+            {!isLastRound ? (
+              <button className={styles.btnPrimary} onClick={handleNextRound}>Vòng kế tiếp</button>
+            ) : (
+              <button className={styles.btnPrimary} onClick={handleReset}>Chơi lại</button>
+            )}
+            {onFinish && isLastRound && <button className={styles.btnSecondary} onClick={() => onFinish(score)}>Lưu KQ & Thoát</button>}
           </div>
         </div>
       </div>
@@ -430,7 +454,7 @@ export default function MatchUpPlayer({ items: rawItems = [], activity, playerNa
           <span className={styles.timerDot} />
           <span className={styles.timerValue}>{formatTime(timer)}</span>
         </div>
-        <h1 className={styles.gameTitle}>{activity?.title || 'Match Up'}</h1>
+        <h1 className={styles.gameTitle}>{activity?.title || 'Match Up'} {items.length > 1 ? `(Vòng ${currentRound + 1}/${items.length})` : ''}</h1>
         <div className={styles.headerRight}>
           <span className={styles.matchCount}>
             {Object.values(results).filter(r => r === 'correct').length}/{total}

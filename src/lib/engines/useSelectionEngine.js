@@ -44,6 +44,7 @@ export function useSelectionEngine(items, options = {}) {
   const [timeLeft, setTimeLeft] = useState(0);
   const [shuffledOptions, setShuffledOptions] = useState([]);
   const timerRef = useRef(null);
+  const isSubmittingRef = useRef(false);
 
   // ✅ FIX Bug #1: useRef for mutable values to avoid stale closures
   const stateRef = useRef({});
@@ -61,6 +62,7 @@ export function useSelectionEngine(items, options = {}) {
       shuffleOptionsForQuestion(0);
       const tl = items[0]?.extra_data?.time_limit || defaultTimeLimit;
       setTimeLeft(tl);
+      isSubmittingRef.current = false;
       emit(GameEvent.GAME_START);
       return;
     }
@@ -120,7 +122,8 @@ export function useSelectionEngine(items, options = {}) {
   // ✅ FIX Bug #1: Read mutable state from ref, not closure
   const handleSubmitAnswer = useCallback((selectedOriginalIndex) => {
     const s = stateRef.current;
-    if (s.showFeedback || s.selectedAnswer !== null) return;
+    if (s.showFeedback || s.selectedAnswer !== null || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
     clearInterval(timerRef.current);
 
     const item = s.items[s.currentQ];
@@ -133,13 +136,17 @@ export function useSelectionEngine(items, options = {}) {
     if (isCorrect) {
       emit(GameEvent.CORRECT);
       let points = 0;
-      if (s.scoringPolicy === 'time-speed') {
-        const base = 1000;
-        const speed = Math.round((s.timeLeft / tl) * 500);
-        const streakBonus = s.streak >= 3 ? 200 : 0;
-        points = base + speed + streakBonus;
-      } else if (s.scoringPolicy === 'none') {
+      if (s.scoringPolicy === 'none') {
         points = 0;
+      } else if (tl > 0) {
+        const timePercent = s.timeLeft / tl;
+        if (timePercent >= 0.95) {
+          points = 1000;
+        } else if (s.timeLeft > 0) {
+          points = Math.round(200 + (timePercent / 0.95) * 800);
+        } else {
+          points = 0;
+        }
       } else {
         points = 1000;
       }
@@ -167,6 +174,7 @@ export function useSelectionEngine(items, options = {}) {
       setCurrentQ(next);
       setSelectedAnswer(null);
       setShowFeedback(false);
+      isSubmittingRef.current = false;
       // Inline shuffle to avoid stale function ref
       const opts = s.items[next]?.options
         ?.map((opt, i) => ({ text: opt, originalIndex: i }))

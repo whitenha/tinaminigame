@@ -134,6 +134,11 @@
   filter: drop-shadow(0 0 15px rgba(214,48,49,0.4));
   filter: grayscale(0.5);
 }
+.boxOpened {
+  opacity: 0.4;
+  filter: grayscale(0.8);
+  pointer-events: none;
+}
 
 /* Particles on click */
 .boxParticle {

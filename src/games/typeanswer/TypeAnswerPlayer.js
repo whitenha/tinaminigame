@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelectionEngine } from '@/lib/engines/useSelectionEngine';
 import { CountdownScreen, GameTopBar, TimerBar, TimerBubble, ResultScreen } from '@/components/GameShell';
+import { getEditDistance } from '@/lib/stringUtils';
 import styles from './TypeAnswerPlayer.module.css';
 
 export default function TypeAnswerPlayer({ items, activity, playerName }) {
@@ -16,6 +17,7 @@ export default function TypeAnswerPlayer({ items, activity, playerName }) {
 
   const [typedAnswer, setTypedAnswer] = useState('');
   const [isCorrect, setIsCorrect] = useState(false);
+  const [nearMissHint, setNearMissHint] = useState(false);
   const [hintLevel, setHintLevel] = useState(0);
   const inputRef = useRef(null);
 
@@ -29,6 +31,7 @@ export default function TypeAnswerPlayer({ items, activity, playerName }) {
   useEffect(() => {
     setTypedAnswer('');
     setIsCorrect(false);
+    setNearMissHint(false);
     setHintLevel(0);
   }, [engine.currentQ]);
 
@@ -45,12 +48,35 @@ export default function TypeAnswerPlayer({ items, activity, playerName }) {
       (normalizedTyped.length > 3 && normalizedTyped.includes(normalizedCorrect));
 
     setIsCorrect(correct);
+    
+    if (!correct) {
+      const distance = getEditDistance(normalizedTyped, normalizedCorrect);
+      if (distance <= 2 && normalizedTyped.length >= 3) {
+        setNearMissHint(true);
+        import('@/lib/sounds').then(({ getSoundManager }) => getSoundManager().click());
+        setTypedAnswer('');
+      } else {
+        setNearMissHint(false);
+        import('@/lib/sounds').then(({ getSoundManager }) => getSoundManager().click());
+        setTypedAnswer('');
+      }
+
+      const el = inputRef.current;
+      if (el) {
+         el.style.borderColor = '#ef4444';
+         setTimeout(() => { if (el) el.style.borderColor = 'rgba(255,255,255,0.2)'; }, 300);
+      }
+      return; // Do not submit wrong answers, let player try again
+    }
+
+    setNearMissHint(false);
+
     // Adjust score based on hints used
-    if (correct && hintLevel > 0) {
+    if (hintLevel > 0) {
       const penalty = hintLevel * 100;
       engine.setScore(prev => Math.max(prev - penalty, 0));
     }
-    engine.submitAnswer(correct ? 0 : 1);
+    engine.submitAnswer(0);
   };
 
   const getHint = () => {
@@ -94,13 +120,27 @@ export default function TypeAnswerPlayer({ items, activity, playerName }) {
       <div className={styles.answerSection}>
         {!engine.showFeedback ? (
           <>
-            <div className={styles.inputRow}>
+            <div className={styles.inputRow} style={{ position: 'relative' }}>
               <input ref={inputRef} type="text" className={styles.answerInput} placeholder="Gõ đáp án của bạn..."
-                value={typedAnswer} onChange={(e) => setTypedAnswer(e.target.value)}
+                value={typedAnswer} onChange={(e) => {
+                  setTypedAnswer(e.target.value);
+                  if (nearMissHint) setNearMissHint(false);
+                }}
                 onKeyDown={(e) => { if (e.key === 'Enter' && typedAnswer.trim()) submitTypedAnswer(); }}
                 autoFocus autoComplete="off" spellCheck="false"
               />
               <button className={styles.submitBtn} onClick={submitTypedAnswer} disabled={!typedAnswer.trim()}>Gửi ➜</button>
+              {nearMissHint && (
+                <div style={{
+                  position: 'absolute', top: -35, left: '50%', transform: 'translateX(-50%)',
+                  background: '#f1c40f', color: '#8e44ad', padding: '6px 14px', borderRadius: 16,
+                  fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 16,
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.2)', animation: 'bounce 0.5s', pointerEvents: 'none',
+                  whiteSpace: 'nowrap'
+                }}>
+                  Gần đúng rồi!
+                </div>
+              )}
             </div>
             <button className={`${styles.hintBtn} ${hintLevel >= 3 ? styles.hintUsed : ''}`} onClick={getHint} disabled={hintLevel >= 3}>
               💡 Gợi ý ({3 - hintLevel} lần còn lại)

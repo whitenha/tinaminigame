@@ -93,6 +93,14 @@ export function speak(text, options = {}) {
   utterance.lang = lang;
   utterance.rate = rate;
 
+  // Read global voice volume from localStorage if set (default to 1.0)
+  try {
+    const savedVoiceReq = localStorage.getItem('tina_voiceVol');
+    if (savedVoiceReq !== null) {
+      utterance.volume = parseInt(savedVoiceReq, 10) / 100;
+    }
+  } catch(e) {}
+
   // Apply female Vietnamese voice
   if (lang === 'vi-VN') {
     const viVoice = getVietnameseFemaleVoice();

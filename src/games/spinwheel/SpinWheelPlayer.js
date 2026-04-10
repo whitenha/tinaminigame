@@ -218,7 +218,7 @@ export default function SpinWheelPlayer({ items, activity, playerName }) {
   }, []);
 
   // Check MCQ
-  const hasMCQ = (entry) => entry.definition && entry.wrong1 && entry.wrong2 && entry.wrong3;
+  const hasMCQ = (entry) => entry.definition && entry.extra_data?.wrong1 && entry.extra_data?.wrong2 && entry.extra_data?.wrong3;
 
   // Shuffle helper
   const shuffleArray = (arr) => {
@@ -286,9 +286,9 @@ export default function SpinWheelPlayer({ items, activity, playerName }) {
       if (hasMCQ(won)) {
         const options = shuffleArray([
           { text: won.definition, correct: true },
-          { text: won.wrong1, correct: false },
-          { text: won.wrong2, correct: false },
-          { text: won.wrong3, correct: false },
+          { text: won.extra_data?.wrong1, correct: false },
+          { text: won.extra_data?.wrong2, correct: false },
+          { text: won.extra_data?.wrong3, correct: false },
         ]);
         setQuizState({ entry: won, options, selected: null, answered: false });
       } else {
