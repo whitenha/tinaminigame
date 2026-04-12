@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-const pdfParseWrapper = require('pdf-parse');
-const pdfParse = pdfParseWrapper.PDFParse || pdfParseWrapper;
+// Lazy require for pdf-parse to avoid Vercel build crashes
 
 const cleanText = (text) => {
   return text.replace(/\s+/g, ' ').trim();
@@ -133,6 +132,14 @@ export async function POST(request) {
       const buffer = Buffer.from(bytes);
       
       try {
+        if (typeof global.DOMMatrix === 'undefined') {
+          global.DOMMatrix = class DOMMatrix {
+            constructor() {}
+          };
+        }
+        const pdfParseWrapper = require('pdf-parse');
+        const pdfParse = pdfParseWrapper.PDFParse || pdfParseWrapper;
+
         const pdfData = await pdfParse(buffer);
         fullText = pdfData.text;
       } catch (e) {
