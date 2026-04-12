@@ -301,6 +301,18 @@ export default function SmartRoutePage({ params }) {
 
   const handleSoloGame = () => {
     setViewMode('solo_player');
+    
+    if (data?.settings?.shuffle_questions) {
+      setItems(prevItems => {
+        const shuffled = [...prevItems];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+      });
+    }
+
     try {
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();

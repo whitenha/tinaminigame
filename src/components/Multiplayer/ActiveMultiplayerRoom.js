@@ -25,13 +25,20 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
   const playerType = templateSlug ? resolvePlayerType(templateSlug) : 'quiz';
 
   const items = useMemo(() => {
+    let finalItems = rawItems;
     if (playerType === 'matchup' || playerType === 'matchingpairs') {
       if (rawItems.length > 0 && !rawItems[0].pairs) {
-        return [{ pairs: rawItems, time_limit: rawItems[0].time_limit || 60 }];
+        finalItems = [{ pairs: rawItems, time_limit: rawItems[0].time_limit || 60 }];
       }
     }
-    return rawItems;
-  }, [rawItems, playerType]);
+    
+    // Map globally if host generated a shuffled map
+    if (mp.roomSettings?.shuffledMap && mp.roomSettings.shuffledMap.length === finalItems.length) {
+       finalItems = mp.roomSettings.shuffledMap.map(idx => finalItems[idx]);
+    }
+    
+    return finalItems;
+  }, [rawItems, playerType, mp.roomSettings?.shuffledMap]);
 
   // ── Local game state ──────────────────────────────────────
   const [selectedAnswer, setSelectedAnswer] = useState(null);

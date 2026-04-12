@@ -9,7 +9,8 @@ export default function SettingsEditor({
   coverImage, setCoverImage, 
   applyTimeToAll,
   readQuestion, setReadQuestion,
-  readOptions, setReadOptions
+  readOptions, setReadOptions,
+  shuffleQuestions, setShuffleQuestions
 }) {
   const [globalTime, setGlobalTime] = useState(20);
   return (
@@ -190,6 +191,29 @@ export default function SettingsEditor({
             </label>
           </div>
 
+        </div>
+
+        {/* Card 5: Gameplay Settings */}
+        <div className={styles.settingCard}>
+          <div className={styles.cardHeader}>
+            <span className={styles.cardIcon}>🔀</span>
+            <div>
+              <h3 className={styles.cardTitle}>Luật Chơi Trắc Nghiệm</h3>
+              <p className={styles.cardSubtitle}>Tùy chỉnh các luật chơi mặc định cho bộ đề</p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '16px' }}>
+            <label className={styles.toggleRow}>
+              <div className={styles.toggleText}>
+                <strong>Đảo Vị Trí Câu Hỏi</strong>
+                <span>Xáo trộn ngẫu nhiên thứ tự các câu hỏi mỗi lần chơi</span>
+              </div>
+              <div className={`${styles.toggleSwitch} ${shuffleQuestions ? styles.toggleOn : ''}`} onClick={() => setShuffleQuestions(!shuffleQuestions)}>
+                <div className={styles.toggleKnob}></div>
+              </div>
+            </label>
+          </div>
         </div>
 
       </div>

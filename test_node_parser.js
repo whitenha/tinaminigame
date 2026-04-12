@@ -1,10 +1,4 @@
-import { NextResponse } from 'next/server';
-const pdfParseWrapper = require('pdf-parse');
-const pdfParse = pdfParseWrapper.PDFParse || pdfParseWrapper;
-
-const cleanText = (text) => {
-  return text.replace(/\s+/g, ' ').trim();
-};
+const cleanText = (text) => text.replace(/\s+/g, ' ').trim();
 
 const parseQuizText = (fullText) => {
   let normalizedText = cleanText(fullText);
@@ -22,7 +16,7 @@ const parseQuizText = (fullText) => {
   const lastQStartIdx = matches[matches.length - 1].index + matches[matches.length - 1][0].length;
   const lastQChunk = normalizedText.substring(lastQStartIdx);
   
-  const ansSectionPattern = /(?:bảng đáp án|answer key|đáp án chi tiết|đáp án|answers|đáp án đúng)[\s:\-\n]*(.*)/i;
+  const ansSectionPattern = /(?:bảng đáp án|answer key|đáp án chi tiết|đáp án|answers)\s*:\s*(.*)/i;
   const ansSectionMatch = lastQChunk.match(ansSectionPattern);
   
   if (ansSectionMatch) {
@@ -56,7 +50,7 @@ const parseQuizText = (fullText) => {
     }
     
     if (!correctAnswerLetter) {
-      const ansPattern = /(?:đáp án đúng|đáp án|\banswer\b|\bkey\b|\bcorrect\b|=>|->|[👉✓])\s*[:\-]?\s*([A-F])(?:\b|\.|\))/i;
+      const ansPattern = /(?:đáp án đúng|đáp án|answer|key|correct|=>|->|[👉✓])[\s:\-]*([A-F])/i;
       const ansMatch = qChunk.match(ansPattern);
       if (ansMatch) {
         correctAnswerLetter = ansMatch[1].toUpperCase();
@@ -101,58 +95,16 @@ const parseQuizText = (fullText) => {
     else if (correctAnswerLetter === 'C' && options.length >= 3) correctIndex = 2;
     else if (correctAnswerLetter === 'D' && options.length >= 4) correctIndex = 3;
     
-    let errorMsg = null;
-    if (!correctAnswerLetter) errorMsg = "Lỗi: Không tìm thấy đáp án hợp lệ";
-    else if (options.filter(o => o.trim() !== '').length < 2) errorMsg = "Cảnh báo: Lỗi trích xuất các câu lựa chọn A, B, C, D";
-    
     questionsData.push({
       question: questionText,
       options: options.slice(0, 4),
-      correct_answer: correctIndex,
-      _errorMsg: errorMsg
+      correct_answer: correctIndex
     });
   }
   
   return { data: questionsData };
 };
 
-export async function POST(request) {
-  try {
-    const formData = await request.formData();
-    const file = formData.get('file');
-    const textData = formData.get('text');
-
-    if (!file && !textData) {
-      return NextResponse.json({ error: 'No data provided' }, { status: 400 });
-    }
-
-    let fullText = '';
-
-    if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      
-      try {
-        const pdfData = await pdfParse(buffer);
-        fullText = pdfData.text;
-      } catch (e) {
-        console.error("PDF Parse error:", e);
-        return NextResponse.json({ error: 'Lỗi khi đọc file PDF. Định dạng không được hỗ trợ.' }, { status: 400 });
-      }
-    } else if (textData) {
-      fullText = textData;
-    }
-
-    const result = parseQuizText(fullText);
-    
-    if (result.error) {
-      return NextResponse.json({ error: result.error }, { status: 400 });
-    }
-    
-    return NextResponse.json({ data: result.data });
-
-  } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
-  }
-}
+const fs = require('fs');
+const text = fs.readFileSync('test_parse_2.txt', 'utf-8');
+console.log(JSON.stringify(parseQuizText(text), null, 2));

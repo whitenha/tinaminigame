@@ -36,6 +36,7 @@ export default function CreateActivityPage({ params }) {
   const [contentFormat, setContentFormat] = useState('');
   const [readQuestion, setReadQuestion] = useState(true);
   const [readOptions, setReadOptions] = useState(false);
+  const [shuffleQuestions, setShuffleQuestions] = useState(true);
   
   // Database State to enable Updating existing record and Auto-Save
   const [activityId, setActivityId] = useState(null);
@@ -54,6 +55,7 @@ export default function CreateActivityPage({ params }) {
   const [showImportModal, setShowImportModal] = useState(false);
   const [importText, setImportText] = useState('');
   const [dragReadyIndex, setDragReadyIndex] = useState(null);
+  const [importReport, setImportReport] = useState(null);
 
   // Drag and Drop Refs
   const dragItem = useRef();
@@ -111,6 +113,7 @@ export default function CreateActivityPage({ params }) {
             setCoverImage(actData.settings.cover_image || null);
             setReadQuestion(actData.settings.read_question ?? true);
             setReadOptions(actData.settings.read_options ?? false);
+            setShuffleQuestions(actData.settings.shuffle_questions ?? true);
           }
 
           // Fetch Items
@@ -213,9 +216,9 @@ export default function CreateActivityPage({ params }) {
   const autoSaveState = useRef({});
   useEffect(() => {
     autoSaveState.current = {
-      title, contentItems, coverImage, contentFormat, readQuestion, readOptions, activityId, user, template
+      title, contentItems, coverImage, contentFormat, readQuestion, readOptions, shuffleQuestions, activityId, user, template
     };
-  }, [title, contentItems, coverImage, contentFormat, readQuestion, readOptions, activityId, user, template]);
+  }, [title, contentItems, coverImage, contentFormat, readQuestion, readOptions, shuffleQuestions, activityId, user, template]);
 
   const performSave = async (isAuto = false) => {
     const s = autoSaveState.current;
@@ -268,7 +271,8 @@ export default function CreateActivityPage({ params }) {
             settings: { 
               cover_image: s.coverImage,
               read_question: s.readQuestion,
-              read_options: s.readOptions
+              read_options: s.readOptions,
+              shuffle_questions: s.shuffleQuestions
             }
           })
           .select()
@@ -286,7 +290,8 @@ export default function CreateActivityPage({ params }) {
             settings: { 
               cover_image: s.coverImage,
               read_question: s.readQuestion,
-              read_options: s.readOptions
+              read_options: s.readOptions,
+              shuffle_questions: s.shuffleQuestions
             }
           })
           .eq('id', currentActId);
@@ -452,12 +457,21 @@ export default function CreateActivityPage({ params }) {
            };
         });
         
-        if (contentItems.length === 1 && !contentItems[0].question) {
+        const isEmpty = contentItems.length === 1 && !contentItems[0].question;
+        const startIndex = isEmpty ? 0 : contentItems.length;
+
+        const report = {
+           total: newItems.length,
+           errors: newItems.map((item, i) => item._errorMsg ? { slideIndex: startIndex + i, msg: item._errorMsg } : null).filter(Boolean)
+        };
+        
+        if (isEmpty) {
            setContentItems(newItems);
         } else {
            setContentItems([...contentItems, ...newItems]);
         }
-        alert(`🎉 Đã bóc tách tự động ${newItems.length} câu hỏi! Vui lòng kiểm tra lại độ chính xác.`);
+        
+        setImportReport(report);
         setShowImportModal(false);
         setImportText('');
       } else {
@@ -591,6 +605,8 @@ export default function CreateActivityPage({ params }) {
           setReadQuestion={setReadQuestion}
           readOptions={readOptions}
           setReadOptions={setReadOptions}
+          shuffleQuestions={shuffleQuestions}
+          setShuffleQuestions={setShuffleQuestions}
         />
       );
     }
@@ -948,6 +964,59 @@ export default function CreateActivityPage({ params }) {
               >
                 {isSaving ? 'Đang xử lý...' : contentFormat === 'MCQ' ? 'Bắt Đầu Bóc Tách' : `Import ${contentFormat === 'LIST' ? 'mục' : contentFormat === 'TRUE_FALSE' ? 'phát biểu' : 'thẻ'}`}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import Report Modal */}
+      {importReport && (
+        <div className={styles.modalOverlay} onClick={() => setImportReport(null)}>
+          <div className={styles.importModalContent} onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <h3 className={styles.importHeaderTitle}>📊 Báo Cáo Bóc Tách</h3>
+            
+            <div style={{ textAlign: 'center', margin: '30px 0 20px 0' }}>
+               <h2 style={{ color: '#00b894', margin: '0 0 5px 0', fontSize: '48px', lineHeight: 1 }}>{importReport.total}</h2>
+               <p style={{ color: 'rgba(255,255,255,0.7)', margin: 0, fontSize: '15px' }}>câu hỏi đã được tạo!</p>
+            </div>
+            
+            {importReport.errors.length > 0 ? (
+               <div style={{ background: 'rgba(214, 48, 49, 0.15)', border: '1px solid rgba(214, 48, 49, 0.3)', borderRadius: '12px', padding: '16px' }}>
+                  <h4 style={{ color: '#ff7675', margin: '0 0 12px 0', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                     <span style={{ fontSize: '18px' }}>⚠️</span> Tính năng đang thử nghiệm, các câu này cần được kiểm tra:
+                  </h4>
+                  <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '250px', overflowY: 'auto' }}>
+                     {importReport.errors.map((err, idx) => (
+                        <li key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', background: 'rgba(0,0,0,0.3)', padding: '10px 14px', borderRadius: '8px' }}>
+                           <span style={{ flex: 1, paddingRight: '12px', color: 'rgba(255,255,255,0.8)' }}>
+                              <strong style={{color: 'white', display: 'inline-block', minWidth: '60px'}}>Slide {err.slideIndex + 1}:</strong> {err.msg}
+                           </span>
+                           <button 
+                              onClick={() => { setCurrentIndex(err.slideIndex); setImportReport(null); }} 
+                              style={{ background: 'rgba(9, 132, 227, 0.2)', color: '#74b9ff', border: '1px solid rgba(9, 132, 227, 0.5)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold', transition: 'all 0.2s ease' }}
+                              onMouseEnter={(e) => { e.target.style.background = '#0984e3'; e.target.style.color = 'white'; }}
+                              onMouseLeave={(e) => { e.target.style.background = 'rgba(9, 132, 227, 0.2)'; e.target.style.color = '#74b9ff'; }}
+                           >
+                              Đến sửa →
+                           </button>
+                        </li>
+                     ))}
+                  </ul>
+               </div>
+            ) : (
+               <div style={{ background: 'rgba(0, 184, 148, 0.1)', border: '1px solid rgba(0, 184, 148, 0.3)', borderRadius: '12px', padding: '16px', textAlign: 'center', color: '#55efc4', fontSize: '15px', fontWeight: '600' }}>
+                  🎉 Tất cả dữ liệu đều hoàn hảo, không phát hiện lỗi!
+               </div>
+            )}
+            
+            <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
+               <button 
+                className={styles.primaryImportBtn} 
+                onClick={() => setImportReport(null)}
+                style={{ minWidth: '150px' }}
+               >
+                  Đã Hiểu & Đóng
+               </button>
             </div>
           </div>
         </div>

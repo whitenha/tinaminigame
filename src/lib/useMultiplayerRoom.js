@@ -91,7 +91,7 @@ export function useMultiplayerRoom(activityId) {
   setErrorRef.current = setError;
 
   // ── Create Room (Host) ────────────────────────────────────
-  const createRoom = useCallback(async (playerName) => {
+  const createRoom = useCallback(async (playerName, extraSettings = {}) => {
     try {
       const code = generateRoomCode();
       const avatar = randomAvatar();
@@ -104,7 +104,7 @@ export function useMultiplayerRoom(activityId) {
           host_name: playerName,
           status: 'waiting',
           max_players: 40,
-          settings: { hostPacing: true, showLeaderboard: true },
+          settings: { hostPacing: true, showLeaderboard: true, ...extraSettings },
         });
 
       if (roomError) throw roomError;

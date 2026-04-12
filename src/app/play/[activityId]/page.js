@@ -56,10 +56,21 @@ export default function HostRoomPage({ params }) {
 
   // Create room automatically as Host
   useEffect(() => {
-    if (!activity || mp.roomId) return;
+    if (loading || !activity || mp.roomId) return;
+    
+    let extraSettings = {};
+    if (activity.settings?.shuffle_questions && items.length > 0) {
+      const shuffledMap = items.map((_, i) => i);
+      for (let i = shuffledMap.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledMap[i], shuffledMap[j]] = [shuffledMap[j], shuffledMap[i]];
+      }
+      extraSettings.shuffledMap = shuffledMap;
+    }
+    
     // Auto create room as "Host"
-    mp.createRoom('Host Teacher');
-  }, [activity, mp.roomId]);
+    mp.createRoom('Host Teacher', extraSettings);
+  }, [loading, activity, items, mp.roomId, mp.createRoom]);
 
   if (loading || (!mp.roomId && !error)) {
     return (
