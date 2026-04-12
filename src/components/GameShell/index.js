@@ -34,24 +34,8 @@ export function CountdownScreen({ num, label = 'Sẵn sàng!', emoji = '🎯' })
  * Props: counter, playerName, score, streak, extra (ReactNode)
  */
 export function GameTopBar({ counter, playerName, score, streak = 0, extra }) {
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(err => {
-        console.warn(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-    } else {
-      document.exitFullscreen();
-    }
-  };
-
   return (
     <div className={styles.topBar}>
-      <button onClick={toggleFullscreen} className={`${styles.topBarPill} ${styles.fsButton}`} title="Bật/Tắt Toàn Màn Hình">
-        {/* Simple fullscreen icon */}
-        <svg fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" width="20" height="20">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
-        </svg>
-      </button>
       <div className={`${styles.topBarPill} ${styles.counterPill}`}>{counter}</div>
       {playerName && (
         <div className={`${styles.topBarPill} ${styles.namePill}`}>{playerName}</div>

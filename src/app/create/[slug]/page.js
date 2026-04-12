@@ -670,7 +670,8 @@ export default function CreateActivityPage({ params }) {
             />
             {contentFormat && (
               <button className={styles.importBtnHeader} onClick={() => setShowImportModal(true)}>
-                🪄 Bóc Tách Tự Động
+                <span className={styles.importBtnIcon}>🪄</span>
+                <span className={styles.importBtnText}>Bóc Tách Tự Động</span>
               </button>
             )}
           </div>

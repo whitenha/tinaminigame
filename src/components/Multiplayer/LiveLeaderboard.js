@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import AvatarDisplay from './AvatarDisplay';
 import styles from './LiveLeaderboard.module.css';
 
@@ -122,7 +123,11 @@ export default function LiveLeaderboard({
     else if (change < 0) animClass = styles.rankDown;
 
     return (
-      <div
+      <motion.div
+        layout="position"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', bounce: 0.25, duration: 0.6 }}
         key={player.id}
         className={`${styles.row} ${isMe ? styles.isMe : ''} ${animClass} ${showRows ? styles.visible : ''}`}
         style={{ '--delay': `${i * 0.07}s`, '--rank-color': rank <= 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][rank - 1] : 'rgba(255,255,255,0.15)' }}
@@ -167,7 +172,7 @@ export default function LiveLeaderboard({
             +{rp}
           </span>
         </div>
-      </div>
+      </motion.div>
     );
   };
 

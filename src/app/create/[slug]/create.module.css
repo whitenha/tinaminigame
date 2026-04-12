@@ -912,3 +912,46 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(108,92,231,0.4);
 }
+
+/* ── RESPONSIVE COMPATIBILITY ────────────────────────────── */
+@media screen and (max-width: 768px) {
+  .header {
+    padding: 0 12px;
+  }
+  
+  .headerLeft {
+    gap: 8px;
+  }
+  
+  .titleGroup {
+    gap: 6px;
+  }
+  
+  .badge {
+    display: none; /* Hide template badge on small screens to save space */
+  }
+  
+  .editableTitle {
+    min-width: 80px;
+    max-width: 140px;
+  }
+  
+  .importBtnHeader {
+    margin-left: 4px;
+    padding: 8px 12px;
+    flex-shrink: 0;
+  }
+  
+  .importBtnText {
+    display: none; /* Collapse text, keep icon */
+  }
+
+  .importBtnHeader {
+    gap: 0; /* Remove gap if text is hidden */
+  }
+  
+  .saveBtn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}

@@ -77,11 +77,11 @@ export default function Navbar() {
             ) : (
               <div className={styles.authGroup}>
                 <Link
-                  href="/templates"
+                  href="/play"
                   className={styles.ctaButton}
                   onClick={() => setMobileOpen(false)}
                 >
-                  🎮 Chơi Thử Ngay
+                  🎯 Nhập Mã PIN
                 </Link>
                 <Link
                   href="/login"
@@ -89,7 +89,7 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   style={{ border: '2px solid var(--color-purple)', borderRadius: 'var(--radius-full)', padding: '0.4rem 1rem' }}
                 >
-                  👩‍🏫 GV Đăng nhập
+                  🔑 Đăng nhập
                 </Link>
               </div>
             )

@@ -7,6 +7,8 @@ const AuthContext = createContext({
   user: null,
   loading: true,
   signInWithEmail: async () => {},
+  signUpWithEmail: async () => {},
+  signInWithGoogle: async () => {},
   signOut: async () => {},
   isTeacher: false,
 });
@@ -48,6 +50,21 @@ export function AuthProvider({ children }) {
     return supabase.auth.signInWithPassword({ email, password });
   };
 
+  const signUpWithEmail = async (email, password, options = {}) => {
+    return supabase.auth.signUp({ email, password, ...options });
+  };
+
+  const signInWithGoogle = async () => {
+    // Determine the current URL to build the redirect URL dynamically
+    const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
+    return supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
+      },
+    });
+  };
+
   const signOut = async () => {
     return supabase.auth.signOut();
   };
@@ -56,6 +73,8 @@ export function AuthProvider({ children }) {
     user,
     loading,
     signInWithEmail,
+    signUpWithEmail,
+    signInWithGoogle,
     signOut,
     isTeacher: !!user, // Anyone logged in is considered a teacher/creator
   };

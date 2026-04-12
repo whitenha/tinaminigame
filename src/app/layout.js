@@ -4,6 +4,7 @@ import './utilities.css';
 import './globals.css';
 import LayoutWrapper from '@/components/LayoutWrapper/LayoutWrapper';
 import { AuthProvider } from '@/contexts/AuthContext';
+import QueryProvider from '@/components/Providers/QueryProvider';
 
 export const metadata = {
   title: 'Tina MiniGame — Học mà chơi, Chơi mà học!',
@@ -20,11 +21,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="vi" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <AuthProvider>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );

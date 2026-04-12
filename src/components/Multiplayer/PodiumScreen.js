@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ConfettiOverlay } from '@/components/GameShell';
 import AvatarDisplay from './AvatarDisplay';
 import styles from './PodiumScreen.module.css';
@@ -96,9 +97,11 @@ export default function PodiumScreen({ leaderboard, myPlayerId, totalQ = 0, onRe
     const isChampion = rank === 1;
 
     return (
-      <div
-        className={`${styles.place} ${isVisible ? styles.visible : ''}`}
-        style={{ animationDelay: isVisible ? '0s' : undefined }}
+      <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
+        transition={{ type: 'spring', bounce: 0.4, duration: 1 }}
+        className={styles.place}
       >
         {/* Crown for 1st */}
         {isChampion && <div className={styles.crown}>👑</div>}
@@ -126,15 +129,18 @@ export default function PodiumScreen({ leaderboard, myPlayerId, totalQ = 0, onRe
         </div>
 
         {/* Rising block */}
-        <div
-          className={`${styles.block} ${styles[rank === 1 ? 'first' : rank === 2 ? 'second' : 'third']} ${isVisible ? styles.visible : ''}`}
-          style={{ animationDelay: isVisible ? '0.3s' : undefined }}
+        <motion.div
+          initial={{ scaleY: 0 }}
+          animate={isVisible ? { scaleY: 1 } : { scaleY: 0 }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.8, delay: 0.2 }}
+          style={{ transformOrigin: 'bottom' }}
+          className={`${styles.block} ${styles[rank === 1 ? 'first' : rank === 2 ? 'second' : 'third']}`}
         >
           <div className={`${styles.rankBadge} ${styles[tierClass]}`}>
             <span className={styles.rankNumber}>{rank}</span>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     );
   };
 
@@ -185,24 +191,32 @@ export default function PodiumScreen({ leaderboard, myPlayerId, totalQ = 0, onRe
       </div>
 
       {/* Runners-Up: 4th & 5th */}
-      {runnersUp.length > 0 && (
-        <div className={`${styles.runnersUp} ${phase >= 4 ? styles.visible : ''}`}>
-          {runnersUp.map((player, i) => (
-            <div
-              key={player.id}
-              className={`${styles.runnerRow} ${phase >= 4 ? styles.visible : ''}`}
-              style={{ animationDelay: `${i * 0.15}s` }}
-            >
-              <div className={styles.runnerRank}>{i + 4}</div>
-              <div className={styles.runnerAvatar}>
-                <AvatarDisplay avatar={player.avatar_emoji} className={styles.runnerAvatarEmoji} />
-              </div>
-              <span className={styles.runnerName}>{player.player_name}</span>
-              <span className={styles.runnerScore}>{(player.score || 0).toLocaleString('vi-VN')}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {runnersUp.length > 0 && phase >= 4 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ staggerChildren: 0.15 }}
+            className={styles.runnersUp}
+          >
+            {runnersUp.map((player, i) => (
+              <motion.div
+                key={player.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className={styles.runnerRow}
+              >
+                <div className={styles.runnerRank}>{i + 4}</div>
+                <div className={styles.runnerAvatar}>
+                  <AvatarDisplay avatar={player.avatar_emoji} className={styles.runnerAvatarEmoji} />
+                </div>
+                <span className={styles.runnerName}>{player.player_name}</span>
+                <span className={styles.runnerScore}>{(player.score || 0).toLocaleString('vi-VN')}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Personal Rank (if outside top 5) */}
       {isOutsideTop5 && myPlayerInfo && (

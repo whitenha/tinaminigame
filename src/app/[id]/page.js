@@ -13,6 +13,8 @@ import joinStyles from './JoinRoom.module.css';
 import s from './activity.module.css';
 import AudioSettings from '@/components/AudioSettings/AudioSettings';
 import dynamic from 'next/dynamic';
+import { getActivity, getActivityItems } from '@/app/actions/activityActions';
+import { useQueryClient } from '@tanstack/react-query';
 
 // ── Tool Player Components (lazy loaded) ──────────────────
 const TOOL_PLAYERS = {
@@ -32,6 +34,7 @@ const SOLO_PLAYERS = {
   matchingpairs: dynamic(() => import('@/games/matchingpairs/MatchingPairsPlayer')),
   groupsort: dynamic(() => import('@/games/groupsort/GroupSortPlayer')),
   spelltheword: dynamic(() => import('@/games/spelltheword/SpellTheWordPlayer')),
+  mazechase: dynamic(() => import('@/games/mazechase/MazeChasePlayer')),
 };
 
 const AVATARS = [
@@ -54,6 +57,7 @@ const isTypeInputTemplate = (slug) => {
 export default function SmartRoutePage({ params }) {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const queryClient = useQueryClient();
   const [id, setId] = useState(null);
 
   // View states
@@ -96,8 +100,11 @@ export default function SmartRoutePage({ params }) {
 
       // Route 1: It's an Activity UUID
       if (isUUID(id)) {
-        const { data: act, error: actErr } = await supabase
-          .from('mg_activities').select('*').eq('id', id).single();
+        const { data: act, error: actErr } = await queryClient.fetchQuery({
+          queryKey: ['activity', id],
+          queryFn: () => getActivity(id),
+          staleTime: 5 * 60 * 1000,
+        });
 
         if (actErr || !act) {
           setError('Không tìm thấy Trò Chơi này.');
@@ -115,9 +122,11 @@ export default function SmartRoutePage({ params }) {
         }
 
         // Fetch items for preview / play
-        const { data: contentItems } = await supabase
-          .from('mg_content_items').select('*').eq('activity_id', act.id)
-          .order('position_index', { ascending: true });
+        const { data: contentItems } = await queryClient.fetchQuery({
+          queryKey: ['activityItems', act.id],
+          queryFn: () => getActivityItems(act.id),
+          staleTime: 5 * 60 * 1000,
+        });
         if (contentItems) setItems(contentItems);
       }
       // Route 2: It's a 6-char PIN (Student View)

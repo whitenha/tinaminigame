@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { QRCodeSVG } from 'qrcode.react';
+import { startMusic, stopMusic, playSound } from '@/lib/sounds';
 import AvatarDisplay from './AvatarDisplay';
 import SettingsPanel from './SettingsPanel';
 import SakuraPetals from './SakuraPetals';
@@ -346,7 +349,7 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
                 aria-label="Mã QR, nhấn để phóng to"
               >
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`${window.location.origin}/play/${roomId}`)}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`${window.location.origin}/${roomId}`)}`}
                   alt="QR Code"
                   className={styles.qrImg}
                 />
@@ -399,55 +402,70 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
             <div className={styles.playerGrid}>
               {!settings.teamMode ? (
                 /* Normal mode */
-                onlinePlayers.map((player, i) => (
-                  <div
-                    key={player.id}
-                    className={`${styles.playerCard} ${isHost && player.id !== playerId ? styles.playerCardClickable : ''} ${newPlayerIds.has(player.id) ? styles.playerCardNew : ''}`}
-                    role={isHost && player.id !== playerId ? "button" : undefined}
-                    tabIndex={isHost && player.id !== playerId ? 0 : undefined}
-                    aria-label={`Người chơi ${player.player_name}`}
-                    style={{ animationDelay: `${i * 0.04}s` }}
-                    onClick={() => { if (isHost && player.id !== playerId) setSelectedPlayerForKick(player); }}
-                  >
-                    <div className={styles.avatarWrap}>
-                      <AvatarDisplay avatar={player.avatar_emoji} className={styles.avatarImg} />
-                      <div className={styles.onlineDot} title="Đang online" />
-                    </div>
-                    <span className={styles.playerName}>{player.player_name}</span>
-                  </div>
-                ))
+                <AnimatePresence mode="popLayout">
+                  {onlinePlayers.map((player, i) => (
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+                      transition={{ type: 'spring', bounce: 0.4, duration: 0.6, delay: i * 0.05 }}
+                      key={player.id}
+                      className={`${styles.playerCard} ${isHost && player.id !== playerId ? styles.playerCardClickable : ''} ${newPlayerIds.has(player.id) ? styles.playerCardNew : ''}`}
+                      role={isHost && player.id !== playerId ? "button" : undefined}
+                      tabIndex={isHost && player.id !== playerId ? 0 : undefined}
+                      aria-label={`Người chơi ${player.player_name}`}
+                      onClick={() => { if (isHost && player.id !== playerId) setSelectedPlayerForKick(player); }}
+                    >
+                      <div className={styles.avatarWrap}>
+                        <AvatarDisplay avatar={player.avatar_emoji} className={styles.avatarImg} />
+                        <div className={styles.onlineDot} title="Đang online" />
+                      </div>
+                      <span className={styles.playerName}>{player.player_name}</span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               ) : (
                 /* Team mode */
-                Object.entries(
-                  onlinePlayers.reduce((acc, p) => {
-                    const t = teamAssignments[p.id] !== undefined ? teamAssignments[p.id] : 'unassigned';
-                    if (!acc[t]) acc[t] = [];
-                    acc[t].push(p);
-                    return acc;
-                  }, {})
-                ).map(([tIdx, members]) => (
-                  <div key={tIdx} className={styles.teamGroup}>
-                    <div className={styles.teamLabel}>
-                      {tIdx === 'unassigned' ? 'Đang xếp...' : `Đội ${parseInt(tIdx) + 1}`}
-                    </div>
-                    {members.map((player) => (
-                      <div
-                        key={player.id}
-                        className={`${styles.teamPlayerCard} ${isHost && player.id !== playerId ? styles.playerCardClickable : ''} ${newPlayerIds.has(player.id) ? styles.playerCardNew : ''}`}
-                        role={isHost && player.id !== playerId ? "button" : undefined}
-                        tabIndex={isHost && player.id !== playerId ? 0 : undefined}
-                        aria-label={`Người chơi ${player.player_name}`}
-                        onClick={() => { if (isHost && player.id !== playerId) setSelectedPlayerForKick(player); }}
-                      >
-                        <div className={styles.teamAvatarWrap}>
-                          <AvatarDisplay avatar={player.avatar_emoji} className={styles.avatarImg} />
-                          <div className={styles.onlineDot} title="Đang online" />
-                        </div>
-                        <span className={styles.teamPlayerName}>{player.player_name}</span>
+                <AnimatePresence mode="popLayout">
+                  {Object.entries(
+                    onlinePlayers.reduce((acc, p) => {
+                      const t = teamAssignments[p.id] !== undefined ? teamAssignments[p.id] : 'unassigned';
+                      if (!acc[t]) acc[t] = [];
+                      acc[t].push(p);
+                      return acc;
+                    }, {})
+                  ).map(([tIdx, members]) => (
+                    <motion.div layout key={tIdx} className={styles.teamGroup}>
+                      <div className={styles.teamLabel}>
+                        {tIdx === 'unassigned' ? 'Đang xếp...' : `Đội ${parseInt(tIdx) + 1}`}
                       </div>
-                    ))}
-                  </div>
-                ))
+                      <AnimatePresence>
+                        {members.map((player) => (
+                          <motion.div
+                            layout
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            transition={{ type: 'spring', bounce: 0.4 }}
+                            key={player.id}
+                            className={`${styles.teamPlayerCard} ${isHost && player.id !== playerId ? styles.playerCardClickable : ''} ${newPlayerIds.has(player.id) ? styles.playerCardNew : ''}`}
+                            role={isHost && player.id !== playerId ? "button" : undefined}
+                            tabIndex={isHost && player.id !== playerId ? 0 : undefined}
+                            aria-label={`Người chơi ${player.player_name}`}
+                            onClick={() => { if (isHost && player.id !== playerId) setSelectedPlayerForKick(player); }}
+                          >
+                            <div className={styles.teamAvatarWrap}>
+                              <AvatarDisplay avatar={player.avatar_emoji} className={styles.avatarImg} />
+                              <div className={styles.onlineDot} title="Đang online" />
+                            </div>
+                            <span className={styles.teamPlayerName}>{player.player_name}</span>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               )}
             </div>
           </div>
@@ -639,7 +657,7 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
             <div className={styles.qrModalContent}>
               <h2 className={styles.modalTitle}>Quét mã QR để tham gia</h2>
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/play/${roomId}`)}`}
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/${roomId}`)}`}
                 alt="QR Code phóng to"
                 className={styles.qrModalImg}
               />

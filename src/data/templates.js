@@ -681,6 +681,20 @@ export const TEMPLATES = [
       fallbackPlayer: 'quiz',
     },
   },
+  {
+    id: 999, slug: 'mazechase',
+    name: 'Maze Chase', nameVi: 'Mê cung rượt đuổi',
+    description: 'Chạy đua trong mê cung và săn điểm bằng cách ăn đáp án.',
+    howToPlay: 'Điều khiển bằng 4 phím mũi tên. Tránh kẻ địch và ăn đáp án đúng!',
+    category: 'action', tier: 'pro', color: COLORS.orange,
+    badges: ['NEW', 'PRO'], difficulty: 3, playerCount: '1',
+    engine: {
+      contentFormat: 'MCQ', playerType: 'mazechase', musicType: 'fun',
+      engineType: 'action', scoringPolicy: 'time-speed',
+      hasLeaderboard: true, hasTimer: true, inputMode: 'tap',
+      supportedFormats: ['MCQ'],
+    },
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════

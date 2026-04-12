@@ -51,7 +51,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
   const [eliminatedOptions, setEliminatedOptions] = useState([]);
   const [showReveal, setShowReveal] = useState(false);
   const [answerRevealed, setAnswerRevealed] = useState(false);
-  const [fastForward, setFastForward] = useState(false);
+  const [fastForwardQ, setFastForwardQ] = useState(-1);
   const [countdownTick, setCountdownTick] = useState(3);
   const [nearMissHint, setNearMissHint] = useState(false);
   const timerRef = useRef(null);
@@ -122,7 +122,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
     setEliminatedOptions([]);
     setShowReveal(false);
     setAnswerRevealed(false);
-    setFastForward(false);
+    setFastForwardQ(-1);
     setNearMissHint(false);
     answerStatsRef.current = { distribution: [0, 0, 0, 0], total: 0, correct: 0, fastest: null };
 
@@ -260,8 +260,9 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
          expectedTimeLeft = Math.max(0, Math.ceil(((tl * 1000) - elapsed) / 1000));
       }
       
-      // Ignore stale `timeLeft === 0` caused by React state lag
-      if (expectedTimeLeft > 2) return;
+      // Ignore stale `timeLeft === 0` caused by React state lag or previous question
+      const isFastForwarded = fastForwardQ === mp.currentQuestion;
+      if (expectedTimeLeft > 2 && !isFastForwarded) return;
 
       // REVEAL ANSWERS FOR EVERYONE
       setShowFeedback(true);
@@ -280,7 +281,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
         startAutoFlow();
       }
     }
-  }, [timeLeft, mp.answeredThisQ, selectedAnswer, mp.phase, handleTimeout, mp.isHost, startAutoFlow, items, mp.currentQuestion, mp.questionStartTime, playerType]);
+  }, [timeLeft, mp.answeredThisQ, selectedAnswer, mp.phase, handleTimeout, mp.isHost, startAutoFlow, items, mp.currentQuestion, mp.questionStartTime, playerType, fastForwardQ]);
 
   // ── Handle Answer ─────────────────────────────────────────
   const handleAnswer = useCallback(async (originalIndex, overridePoints = null) => {
@@ -303,8 +304,11 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
   // ── Host: Continue (skip timer to 0) ──────────────────────
   const handleHostContinue = useCallback(() => {
     if (!mp.isHost) return;
-    setFastForward(true);
+    setFastForwardQ(mp.currentQuestion);
     
+    // Broadcast for students
+    mp.hostFastForwardTimer?.();
+
     // Fast-forward timer bar animation: drop to 0 over 0.5s
     clearInterval(timerRef.current);
     const steps = 10;
@@ -328,9 +332,34 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
     }, 50); // 10 steps × 50ms = 500ms total
   }, [mp, timeLeft, handleTimeout, startAutoFlow, selectedAnswer]);
 
+  // ── Client: Listen to Fast Forward ────────────────────────
+  useEffect(() => {
+    const handleFastForward = () => {
+      if (mp.isHost) return;
+      setFastForwardQ(mp.currentQuestion);
+      if (timerRef.current) clearInterval(timerRef.current);
+      const steps = 10;
+      const currentTime = timeLeft;
+      let step = 0;
+      timerRef.current = setInterval(() => {
+        step++;
+        const newTime = Math.max(0, Math.round(currentTime * (1 - step / steps)));
+        setTimeLeft(newTime);
+        if (step >= steps) {
+          clearInterval(timerRef.current);
+          setTimeLeft(0);
+        }
+      }, 50);
+    };
+
+    window.addEventListener('tina_fast_forward_timer', handleFastForward);
+    return () => window.removeEventListener('tina_fast_forward_timer', handleFastForward);
+  }, [mp.isHost, timeLeft, mp.currentQuestion]);
+
   // ── Auto-forward when all players answered ────────────────
   useEffect(() => {
-    if (!mp.isHost || mp.phase !== 'playing' || timeLeft <= 0 || fastForward) return;
+    const isFastForwarded = fastForwardQ === mp.currentQuestion;
+    if (!mp.isHost || mp.phase !== 'playing' || timeLeft <= 0 || isFastForwarded) return;
     
     // Count active players (exclude host, must be online)
     const activePlayers = mp.players.filter(p => !p.is_host && p.is_online);
@@ -343,7 +372,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
       console.log('🏁 AUTO-FORWARD TRIGGERED! answersCount:', answersCount, 'activePlayers:', activePlayers.length, 'lastRoundPoints:', mp.lastRoundPoints);
       handleHostContinue();
     }
-  }, [mp.isHost, mp.phase, mp.players, mp.lastRoundPoints, timeLeft, fastForward, handleHostContinue]);
+  }, [mp.isHost, mp.phase, mp.players, mp.lastRoundPoints, timeLeft, fastForwardQ, mp.currentQuestion, handleHostContinue]);
 
   const item = items[mp.currentQuestion] || null;
 

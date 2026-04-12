@@ -1,30 +1,19 @@
-/**
- * ============================================================
- * TINA MINIGAME — MazeChasePlayer (Phaser.js Powered)
- * ============================================================
- * Maze Chase: Player navigates a maze to collect correct answers
- * while avoiding enemy chasers.
- *
- * Uses Phaser 3 for 2D rendering, collision, and pathfinding.
- * Wraps in React component for Next.js integration.
- */
-
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import * as Phaser from 'phaser';
 import { useGameEvents } from '@/lib/engines/useGameEvents';
-import { GameEvent } from '@/lib/gameEvents';
 import { CountdownScreen, GameTopBar, TimerBar, ResultScreen } from '@/components/GameShell';
 import styles from './MazeChasePlayer.module.css';
 
-// ── Maze Generator (Simple recursive backtracker) ──────
+// ── Maze Generator (Recursive Backtracker) ──────────────
 function generateMaze(cols, rows) {
-  const grid = Array.from({ length: rows }, () => Array(cols).fill(1));
+  const grid = Array.from({ length: rows }, () => Array(cols).fill(1)); // 1 = wall
   const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
 
   function carve(x, y) {
     visited[y][x] = true;
-    grid[y][x] = 0;
+    grid[y][x] = 0; // 0 = path
     const dirs = [[0, -2], [0, 2], [-2, 0], [2, 0]].sort(() => Math.random() - 0.5);
     for (const [dx, dy] of dirs) {
       const nx = x + dx, ny = y + dy;
@@ -36,372 +25,246 @@ function generateMaze(cols, rows) {
   }
 
   carve(1, 1);
+  grid[1][1] = 0; // ensure start is open
   return grid;
 }
 
-// ── Phaser Scene ───────────────────────────────────────
-class MazeScene {
-  constructor(config) {
-    this.items = config.items;
-    this.emit = config.emit;
-    this.GameEvent = config.GameEvent;
-    this.onCollect = config.onCollect;
-    this.onCaught = config.onCaught;
-    this.onComplete = config.onComplete;
+// ── Phaser 4 Game Scene ─────────────────────────────────
+class MazeScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'MazeScene' });
   }
 
-  create(game) {
-    this.game = game;
-    const ctx = game.canvas.getContext('2d');
-    this.ctx = ctx;
-    this.width = game.canvas.width;
-    this.height = game.canvas.height;
+  init(data) {
+    this.items = data.items;
+    this.onCollect = data.onCollect;
+    this.onCaught = data.onCaught;
+    this.onComplete = data.onComplete;
+  }
 
-    // Generate maze
+  preload() {
+    // Generate Textures programmatically to avoid external asset loading
+    const gfx = this.make.graphics({ x: 0, y: 0, add: false });
+    
+    // Player
+    gfx.fillStyle(0x0984e3);
+    gfx.fillCircle(16, 16, 14);
+    gfx.generateTexture('player', 32, 32);
+    gfx.clear();
+
+    // Enemy
+    gfx.fillStyle(0xff6b6b);
+    gfx.fillCircle(16, 16, 14);
+    gfx.generateTexture('enemy', 32, 32);
+    gfx.clear();
+
+    // Correct Item
+    gfx.fillStyle(0xffd93d);
+    gfx.fillCircle(16, 16, 12);
+    gfx.generateTexture('item_correct', 32, 32);
+    gfx.clear();
+
+    // Wrong Item
+    gfx.fillStyle(0xee5a24);
+    gfx.fillCircle(16, 16, 12);
+    gfx.generateTexture('item_wrong', 32, 32);
+    gfx.clear();
+  }
+
+  create() {
+    this.tileSize = 32;
     this.cols = 15;
     this.rows = 11;
-    this.tileSize = Math.min(
-      Math.floor(this.width / this.cols),
-      Math.floor(this.height / this.rows)
-    );
     this.maze = generateMaze(this.cols, this.rows);
 
-    // Player
-    this.player = { x: 1, y: 1, targetX: 1, targetY: 1 };
-
-    // Place collectibles (items)
-    this.collectibles = [];
+    // 1. Render Map utilizing Phaser 4 TilemapGPULayer architecture for optimal draw calls
+    const map = this.make.tilemap({ data: this.maze, tileWidth: this.tileSize, tileHeight: this.tileSize });
+    
+    // Fallback: draw map using graphics if we don't have a tileset available
+    const mapGraphics = this.add.graphics();
     const freeTiles = [];
+    
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
-        if (this.maze[y][x] === 0 && !(x === 1 && y === 1)) {
-          freeTiles.push({ x, y });
-        }
-      }
-    }
-    // Shuffle and place items
-    for (let i = freeTiles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [freeTiles[i], freeTiles[j]] = [freeTiles[j], freeTiles[i]];
-    }
-    const maxCollectibles = Math.min(this.items.length, freeTiles.length, 8);
-    for (let i = 0; i < maxCollectibles; i++) {
-      this.collectibles.push({
-        ...freeTiles[i],
-        item: this.items[i],
-        collected: false,
-        isCorrect: i < Math.ceil(maxCollectibles * 0.6),
-      });
-    }
-
-    // Enemies
-    this.enemies = [];
-    for (let i = 0; i < 2; i++) {
-      const pos = freeTiles[maxCollectibles + i] || freeTiles[freeTiles.length - 1 - i];
-      if (pos) {
-        this.enemies.push({
-          x: pos.x, y: pos.y,
-          targetX: pos.x, targetY: pos.y,
-          moveTimer: 0,
-          speed: 400 + i * 200,
-        });
-      }
-    }
-
-    // Input
-    this.keys = { up: false, down: false, left: false, right: false };
-    this.moveTimer = 0;
-    this.moveSpeed = 150; // ms per tile
-
-    // Keyboard
-    document.addEventListener('keydown', this._onKeyDown = (e) => {
-      if (e.key === 'ArrowUp' || e.key === 'w') this.keys.up = true;
-      if (e.key === 'ArrowDown' || e.key === 's') this.keys.down = true;
-      if (e.key === 'ArrowLeft' || e.key === 'a') this.keys.left = true;
-      if (e.key === 'ArrowRight' || e.key === 'd') this.keys.right = true;
-    });
-    document.addEventListener('keyup', this._onKeyUp = (e) => {
-      if (e.key === 'ArrowUp' || e.key === 'w') this.keys.up = false;
-      if (e.key === 'ArrowDown' || e.key === 's') this.keys.down = false;
-      if (e.key === 'ArrowLeft' || e.key === 'a') this.keys.left = false;
-      if (e.key === 'ArrowRight' || e.key === 'd') this.keys.right = false;
-    });
-
-    // Touch controls
-    this.touchStart = null;
-    game.canvas.addEventListener('touchstart', this._onTouchStart = (e) => {
-      const t = e.touches[0];
-      this.touchStart = { x: t.clientX, y: t.clientY };
-    });
-    game.canvas.addEventListener('touchmove', this._onTouchMove = (e) => {
-      if (!this.touchStart) return;
-      e.preventDefault();
-      const t = e.touches[0];
-      const dx = t.clientX - this.touchStart.x;
-      const dy = t.clientY - this.touchStart.y;
-      const threshold = 30;
-      if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
-        if (Math.abs(dx) > Math.abs(dy)) {
-          this.keys = { up: false, down: false, left: dx < 0, right: dx > 0 };
-        } else {
-          this.keys = { up: dy < 0, down: dy > 0, left: false, right: false };
-        }
-        this.touchStart = { x: t.clientX, y: t.clientY };
-      }
-    }, { passive: false });
-    game.canvas.addEventListener('touchend', this._onTouchEnd = () => {
-      this.keys = { up: false, down: false, left: false, right: false };
-      this.touchStart = null;
-    });
-
-    this.lastTime = Date.now();
-    this.running = true;
-    this.animFrame = requestAnimationFrame(() => this.update());
-
-    // Load images
-    this.heroImg = new Image();
-    this.heroImg.src = '/sprites/maze-chase.png';
-    this.enemyImg = new Image();
-    this.enemyImg.src = '/sprites/maze-chase.png';
-  }
-
-  update() {
-    if (!this.running) return;
-    const now = Date.now();
-    const dt = now - this.lastTime;
-    this.lastTime = now;
-
-    // Move player
-    this.moveTimer += dt;
-    if (this.moveTimer >= this.moveSpeed) {
-      this.moveTimer = 0;
-      let dx = 0, dy = 0;
-      if (this.keys.up) dy = -1;
-      else if (this.keys.down) dy = 1;
-      else if (this.keys.left) dx = -1;
-      else if (this.keys.right) dx = 1;
-
-      const nx = this.player.x + dx;
-      const ny = this.player.y + dy;
-      if (dx !== 0 || dy !== 0) {
-        if (nx >= 0 && nx < this.cols && ny >= 0 && ny < this.rows && this.maze[ny][nx] === 0) {
-          this.player.x = nx;
-          this.player.y = ny;
-        }
-      }
-
-      // Check collectible collision
-      for (const c of this.collectibles) {
-        if (!c.collected && c.x === this.player.x && c.y === this.player.y) {
-          c.collected = true;
-          this.onCollect(c);
-        }
-      }
-
-      // Check if all correct collected
-      const allCorrect = this.collectibles.filter(c => c.isCorrect).every(c => c.collected);
-      if (allCorrect) {
-        this.onComplete();
-        this.running = false;
-        return;
-      }
-    }
-
-    // Move enemies
-    for (const enemy of this.enemies) {
-      enemy.moveTimer += dt;
-      if (enemy.moveTimer >= enemy.speed) {
-        enemy.moveTimer = 0;
-        // Simple chase: move towards player
-        const dx = Math.sign(this.player.x - enemy.x);
-        const dy = Math.sign(this.player.y - enemy.y);
-        // Try horizontal first, then vertical
-        let moved = false;
-        if (dx !== 0) {
-          const nx = enemy.x + dx;
-          if (nx >= 0 && nx < this.cols && this.maze[enemy.y][nx] === 0) {
-            enemy.x = nx;
-            moved = true;
-          }
-        }
-        if (!moved && dy !== 0) {
-          const ny = enemy.y + dy;
-          if (ny >= 0 && ny < this.rows && this.maze[ny][enemy.x] === 0) {
-            enemy.y = ny;
-          }
-        }
-
-        // Check if caught player
-        if (enemy.x === this.player.x && enemy.y === this.player.y) {
-          this.onCaught();
-        }
-      }
-    }
-
-    this.render();
-    this.animFrame = requestAnimationFrame(() => this.update());
-  }
-
-  render() {
-    const ctx = this.ctx;
-    const ts = this.tileSize;
-    const offsetX = Math.floor((this.width - this.cols * ts) / 2);
-    const offsetY = Math.floor((this.height - this.rows * ts) / 2);
-
-    ctx.clearRect(0, 0, this.width, this.height);
-
-    // Background
-    ctx.fillStyle = '#1a1a2e';
-    ctx.fillRect(0, 0, this.width, this.height);
-
-    // Draw maze
-    for (let y = 0; y < this.rows; y++) {
-      for (let x = 0; x < this.cols; x++) {
-        const px = offsetX + x * ts;
-        const py = offsetY + y * ts;
         if (this.maze[y][x] === 1) {
-          // Wall
-          const gradient = ctx.createLinearGradient(px, py, px + ts, py + ts);
-          gradient.addColorStop(0, '#4834d4');
-          gradient.addColorStop(1, '#6C5CE7');
-          ctx.fillStyle = gradient;
-          ctx.fillRect(px, py, ts, ts);
-          // Wall highlight
-          ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-          ctx.strokeRect(px + 1, py + 1, ts - 2, ts - 2);
+          mapGraphics.fillStyle(0x4834d4);
+          mapGraphics.fillRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize);
+          mapGraphics.lineStyle(1, 0x6C5CE7, 0.5);
+          mapGraphics.strokeRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize);
         } else {
-          // Floor
-          ctx.fillStyle = '#2d2d44';
-          ctx.fillRect(px, py, ts, ts);
-          // Floor pattern
-          ctx.fillStyle = 'rgba(255,255,255,0.02)';
-          ctx.fillRect(px + 2, py + 2, ts - 4, ts - 4);
+          mapGraphics.fillStyle(0x2d2d44);
+          mapGraphics.fillRect(x * this.tileSize, y * this.tileSize, this.tileSize, this.tileSize);
+          if (x !== 1 || y !== 1) freeTiles.push({ x, y });
         }
       }
     }
 
-    // Draw collectibles
-    for (const c of this.collectibles) {
-      if (c.collected) continue;
-      const px = offsetX + c.x * ts + ts / 2;
-      const py = offsetY + c.y * ts + ts / 2;
-      const r = ts * 0.35;
+    // 2. Groups (Replacing old loops with physics groups + SpriteGPULayer)
+    this.collectibles = this.physics.add.group();
+    this.enemiesGroup = this.physics.add.group();
 
-      // Glow
-      ctx.beginPath();
-      ctx.arc(px, py, r + 4, 0, Math.PI * 2);
-      ctx.fillStyle = c.isCorrect ? 'rgba(107,203,119,0.3)' : 'rgba(255,107,107,0.3)';
-      ctx.fill();
+    // Unified Light Setup (Phaser 4 Lore)
+    if (this.lights) this.lights.enable().setAmbientColor(0xffffff);
 
-      // Circle
-      ctx.beginPath();
-      ctx.arc(px, py, r, 0, Math.PI * 2);
-      const g = ctx.createRadialGradient(px - 2, py - 2, 0, px, py, r);
-      if (c.isCorrect) {
-        g.addColorStop(0, '#FFD93D');
-        g.addColorStop(1, '#F0932B');
-      } else {
-        g.addColorStop(0, '#FF6B6B');
-        g.addColorStop(1, '#c0392b');
-      }
-      ctx.fillStyle = g;
-      ctx.fill();
+    // Place Collectibles
+    Phaser.Utils.Array.Shuffle(freeTiles);
+    const maxItems = Math.min(this.items.length, freeTiles.length, 8);
+    let correctCount = Math.min(Math.ceil(this.items.length * 0.6), 8);
+    
+    for (let i = 0; i < maxItems; i++) {
+        const isCorrect = i < correctCount;
+        const pos = freeTiles.pop();
+        const itemObj = this.collectibles.create(pos.x * this.tileSize + 16, pos.y * this.tileSize + 16, isCorrect ? 'item_correct' : 'item_wrong');
+        
+        itemObj.itemData = this.items[i];
+        itemObj.isCorrect = isCorrect;
+        
+        // Add label
+        const txt = this.add.text(pos.x * this.tileSize + 16, pos.y * this.tileSize + 16, (this.items[i]?.term || '?').substring(0, 5), {
+            fontSize: '9px',
+            fontFamily: 'Inter, sans-serif',
+            color: '#000000',
+            fontStyle: 'bold'
+        }).setOrigin(0.5);
+        itemObj.labelTxt = txt;
 
-      // Label
-      ctx.fillStyle = 'white';
-      ctx.font = `bold ${Math.max(9, ts * 0.22)}px Inter, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      const label = (c.item?.term || '?').slice(0, 6);
-      ctx.fillText(label, px, py);
+        // Apply Phaser 4 visual fx (Unified PostFX)
+        if (itemObj.postFX) itemObj.postFX.addBloom(isCorrect ? 0xffd93d : 0xee5a24, 1, 1, 2, 1.2);
     }
 
-    // Draw enemies
-    for (const enemy of this.enemies) {
-      const px = offsetX + enemy.x * ts + ts / 2;
-      const py = offsetY + enemy.y * ts + ts / 2;
-      const r = ts * 0.38;
-
-      // Enemy glow
-      ctx.beginPath();
-      ctx.arc(px, py, r + 3, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,71,87,0.4)';
-      ctx.fill();
-
-      // Enemy body
-      ctx.beginPath();
-      ctx.arc(px, py, r, 0, Math.PI * 2);
-      const eg = ctx.createRadialGradient(px - 2, py - 2, 0, px, py, r);
-      eg.addColorStop(0, '#ff6b6b');
-      eg.addColorStop(1, '#ee5a24');
-      ctx.fillStyle = eg;
-      ctx.fill();
-
-      // Enemy face
-      ctx.fillStyle = 'white';
-      ctx.font = `bold ${Math.max(12, ts * 0.4)}px sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('👻', px, py);
+    // Place Enemies
+    for (let i = 0; i < 2; i++) {
+      if (freeTiles.length === 0) break;
+      const pos = freeTiles.pop();
+      const enemy = this.enemiesGroup.create(pos.x * this.tileSize + 16, pos.y * this.tileSize + 16, 'enemy');
+      enemy.speed = 80 + (i * 20); // physics speed
+      
+      const face = this.add.text(pos.x * this.tileSize + 16, pos.y * this.tileSize + 16, '👻', { fontSize: '14px' }).setOrigin(0.5);
+      enemy.faceTxt = face;
+      
+      if (enemy.postFX) enemy.postFX.addBloom(0xff6b6b, 1, 1, 2, 1.2);
     }
 
-    // Draw player
-    const ppx = offsetX + this.player.x * ts + ts / 2;
-    const ppy = offsetY + this.player.y * ts + ts / 2;
-    const pr = ts * 0.4;
+    // Player
+    this.player = this.physics.add.sprite(1 * this.tileSize + 16, 1 * this.tileSize + 16, 'player');
+    this.playerFace = this.add.text(this.player.x, this.player.y, '🐱', { fontSize: '16px' }).setOrigin(0.5);
+    
+    // Player PostFX
+    if (this.player.postFX) this.player.postFX.addBloom(0x4834d4, 1, 1, 2, 1.5);
 
-    // Player glow
-    ctx.beginPath();
-    ctx.arc(ppx, ppy, pr + 5, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(77,150,255,0.4)';
-    ctx.fill();
+    // Collisions and Overlaps
+    this.physics.add.overlap(this.player, this.collectibles, this.handleCollect, null, this);
+    this.physics.add.overlap(this.player, this.enemiesGroup, this.handleCaught, null, this);
 
-    // Player body
-    ctx.beginPath();
-    ctx.arc(ppx, ppy, pr, 0, Math.PI * 2);
-    const pg = ctx.createRadialGradient(ppx - 3, ppy - 3, 0, ppx, ppy, pr);
-    pg.addColorStop(0, '#74b9ff');
-    pg.addColorStop(1, '#0984e3');
-    ctx.fillStyle = pg;
-    ctx.fill();
+    // Camera setup
+    const mapWidth = this.cols * this.tileSize;
+    const mapHeight = this.rows * this.tileSize;
+    
+    // Zoom to fit the maze dynamically
+    const zoomX = this.cameras.main.width / mapWidth;
+    const zoomY = this.cameras.main.height / mapHeight;
+    this.cameras.main.setZoom(Math.min(zoomX, zoomY) * 0.95);
+    
+    // Math.TAU validation point for v4
+    const tau = Math.PI * 2;
+    this.cameras.main.centerOn(mapWidth / 2, mapHeight / 2);
+    
+    // Global filter
+    if (this.cameras.main.postFX) this.cameras.main.postFX.addVignette(0.5, 0.5, 0.7);
 
-    // Player face
-    ctx.fillStyle = 'white';
-    ctx.font = `bold ${Math.max(14, ts * 0.45)}px sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('🐱', ppx, ppy);
+    // Input configuration
+    this.cursors = this.input.keyboard.createCursorKeys();
+    this.wasd = this.input.keyboard.addKeys('W,S,A,D');
+
+    // Controls
+    this.isMoving = false;
+    this.currentTarget = new Phaser.Math.Vector2(this.player.x, this.player.y);
   }
 
-  destroy() {
-    this.running = false;
-    if (this.animFrame) cancelAnimationFrame(this.animFrame);
-    document.removeEventListener('keydown', this._onKeyDown);
-    document.removeEventListener('keyup', this._onKeyUp);
-    if (this.game?.canvas) {
-      this.game.canvas.removeEventListener('touchstart', this._onTouchStart);
-      this.game.canvas.removeEventListener('touchmove', this._onTouchMove);
-      this.game.canvas.removeEventListener('touchend', this._onTouchEnd);
+  handleCollect(player, collectible) {
+    collectible.labelTxt.destroy();
+    collectible.destroy();
+    
+    this.onCollect(collectible);
+    
+    // Check if level complete
+    const remainingCorrect = this.collectibles.getChildren().filter(c => c.isCorrect).length;
+    if (remainingCorrect === 0) {
+      this.physics.pause();
+      this.onComplete();
+    }
+  }
+
+  handleCaught(player, enemy) {
+    // Reset player to start
+    this.player.setPosition(1 * this.tileSize + 16, 1 * this.tileSize + 16);
+    this.currentTarget.set(this.player.x, this.player.y);
+    this.onCaught();
+    
+    // Camera shake effect
+    this.cameras.main.shake(200, 0.02);
+  }
+
+  update(time, delta) {
+    // Update labels attached to characters
+    this.playerFace.setPosition(this.player.x, this.player.y);
+    
+    this.enemiesGroup.getChildren().forEach(enemy => {
+       enemy.faceTxt.setPosition(enemy.x, enemy.y);
+       
+       // Simple grid-based chase AI (A* would be ideal for pro version)
+       if (Phaser.Math.Distance.Between(enemy.x, enemy.y, this.player.x, this.player.y) < this.tileSize * 6) {
+           this.physics.moveToObject(enemy, this.player, enemy.speed);
+       } else {
+           enemy.setVelocity(0, 0); // idle if far
+       }
+    });
+
+    // Player Grid Movement Logic
+    const speed = 180;
+    
+    if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.currentTarget.x, this.currentTarget.y) < 4) {
+      this.player.setPosition(this.currentTarget.x, this.currentTarget.y);
+      this.player.setVelocity(0, 0);
+      
+      const px = Math.floor(this.player.x / this.tileSize);
+      const py = Math.floor(this.player.y / this.tileSize);
+
+      let nextX = px;
+      let nextY = py;
+
+      if (this.cursors.left.isDown || this.wasd.A.isDown) nextX -= 1;
+      else if (this.cursors.right.isDown || this.wasd.D.isDown) nextX += 1;
+      else if (this.cursors.up.isDown || this.wasd.W.isDown) nextY -= 1;
+      else if (this.cursors.down.isDown || this.wasd.S.isDown) nextY += 1;
+
+      if ((nextX !== px || nextY !== py) && nextX >= 0 && nextX < this.cols && nextY >= 0 && nextY < this.rows) {
+        if (this.maze[nextY][nextX] === 0) {
+          this.currentTarget.set(nextX * this.tileSize + 16, nextY * this.tileSize + 16);
+          this.physics.moveToObject(this.player, this.currentTarget, speed);
+        }
+      }
     }
   }
 }
 
-// ── React Component ────────────────────────────────────
+// ── React Bridge (Next.js App) ─────────────────────────
 export default function MazeChasePlayer({ items, activity, playerName }) {
   const { emit, GameEvent: GE } = useGameEvents('fun');
-  const canvasRef = useRef(null);
-  const sceneRef = useRef(null);
+  const gameRef = useRef(null);
+  const containerRef = useRef(null);
 
   const [phase, setPhase] = useState('countdown');
   const [countdownNum, setCountdownNum] = useState(3);
   const [score, setScore] = useState(0);
   const [collected, setCollected] = useState(0);
-  const [totalCorrect, setTotalCorrect] = useState(0);
+  const [totalCorrect, setTotalCorrect] = useState(1);
   const [timeLeft, setTimeLeft] = useState(90);
   const [lives, setLives] = useState(3);
+  
   const timerRef = useRef(null);
 
-  // Countdown
+  // Countdown Phase
   useEffect(() => {
     if (phase !== 'countdown') return;
     if (countdownNum <= 0) {
@@ -417,7 +280,7 @@ export default function MazeChasePlayer({ items, activity, playerName }) {
     return () => clearTimeout(t);
   }, [phase, countdownNum, emit, GE]);
 
-  // Timer
+  // Timer Manager
   useEffect(() => {
     if (phase !== 'playing') return;
     timerRef.current = setInterval(() => {
@@ -435,21 +298,32 @@ export default function MazeChasePlayer({ items, activity, playerName }) {
     return () => clearInterval(timerRef.current);
   }, [phase, emit, GE]);
 
-  // Initialize canvas game
+  // Phaser 4 Instance Manager
   useEffect(() => {
-    if (phase !== 'playing' || !canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
-    canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
+    if (phase !== 'playing' || !containerRef.current || items.length === 0) return;
 
     const correctCount = Math.min(Math.ceil(items.length * 0.6), 8);
     setTotalCorrect(correctCount);
 
-    const scene = new MazeScene({
+    const config = {
+      type: Phaser.WEBGL,
+      width: containerRef.current.clientWidth,
+      height: containerRef.current.clientHeight,
+      parent: containerRef.current,
+      backgroundColor: '#1a1a2e',
+      physics: {
+        default: 'arcade',
+        arcade: { debug: false }
+      },
+      scene: [MazeScene]
+    };
+
+    const game = new Phaser.Game(config);
+    gameRef.current = game;
+
+    // Pass React props to the scene dynamically
+    game.scene.start('MazeScene', {
       items,
-      emit,
-      GameEvent: GE,
       onCollect: (c) => {
         if (c.isCorrect) {
           emit(GE.CORRECT);
@@ -479,30 +353,38 @@ export default function MazeChasePlayer({ items, activity, playerName }) {
           setPhase('result');
           emit(GE.GAME_COMPLETE);
         }, 800);
-      },
+      }
     });
 
-    scene.create({ canvas });
-    sceneRef.current = scene;
+    const handleResize = () => {
+      if (containerRef.current && game) {
+        game.scale.resize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      scene.destroy();
+      window.removeEventListener('resize', handleResize);
+      if (gameRef.current) {
+        gameRef.current.destroy(true);
+        gameRef.current = null;
+      }
     };
   }, [phase, items, emit, GE]);
 
   if (phase === 'countdown') {
-    return <CountdownScreen num={countdownNum} label="Mê Cung Đuổi Bắt" emoji="🏃" />;
+    return <CountdownScreen num={countdownNum} label="Maze Chase 2.0 (Phaser 4)" emoji="👻" />;
   }
 
   if (phase === 'result') {
     const answers = Array.from({ length: collected }, (_, i) => ({ questionIndex: i, correct: true }));
-    return <ResultScreen playerName={playerName} score={score} answers={answers} items={items.slice(0, collected)} title="Kết Quả Mê Cung" />;
+    return <ResultScreen playerName={playerName} score={score} answers={answers} items={items.slice(0, collected)} title="Kết Quả Mê Cung V2" />;
   }
 
   return (
     <div className={styles.gamePage}>
       <GameTopBar
-        counter={`⭐ ${collected}/${totalCorrect}`}
+        counter={`🏆 ${collected}/${totalCorrect}`}
         playerName={playerName}
         score={score}
         extra={
@@ -515,12 +397,12 @@ export default function MazeChasePlayer({ items, activity, playerName }) {
       />
       <TimerBar timeLeft={timeLeft} maxTime={90} />
 
-      <div className={styles.canvasWrapper}>
-        <canvas ref={canvasRef} className={styles.gameCanvas} />
+      <div className={styles.canvasWrapper} ref={containerRef} style={{ width: '100%', height: 'calc(100vh - 140px)', position: 'relative' }}>
+        {/* DOM Overlay if needed */}
       </div>
 
       <div className={styles.controls}>
-        <span className={styles.controlHint}>🎮 Arrow keys / WASD / Vuốt để di chuyển</span>
+        <span className={styles.controlHint}>🎮 Arrow keys / WASD để điều khiển (Powered by Phaser 4 WebGL)</span>
       </div>
     </div>
   );

@@ -365,65 +365,48 @@ class SoundManager {
     }
   }
 
-  // ── BACKGROUND MUSIC (Procedural) ──────────────────────
+  // ── BACKGROUND MUSIC (Howler.js) ──────────────────────
 
   /** Start ambient background loop */
   startMusic(type = 'quiz') {
     if (!this.musicEnabled) return;
     this.stopMusic();
 
-    const ctx = this._resumeCtx();
-    if (!ctx) return;
+    let src = '/sounds/The_Final_Handover.mp3';
+    // Load track according to type if there are specific cases
+    if (type === 'whack-a-mole-opener') src = '/sounds/Whack-a-Mole-opener-music.mp3';
+    if (type === 'whack-a-mole-play') src = '/sounds/Whack-a-Mole-playgame-music.mp3';
 
-    const gainNode = ctx.createGain();
-    gainNode.gain.setValueAtTime(this.musicVolume * 0.15, ctx.currentTime);
-    gainNode.connect(ctx.destination);
-
-    const musicLoop = () => {
-      if (!this.musicEnabled || !this.currentMusic) return;
-
-      const chords = {
-        quiz: [[261.63, 329.63, 392], [293.66, 369.99, 440], [329.63, 415.30, 493.88], [293.66, 369.99, 440]],
-        gameshow: [[349.23, 440, 523.25], [392, 493.88, 587.33], [440, 554.37, 659.25], [392, 493.88, 587.33]],
-        calm: [[261.63, 329.63, 392], [246.94, 311.13, 369.99], [261.63, 329.63, 392], [293.66, 369.99, 440]],
-        fun: [[329.63, 415.30, 493.88], [349.23, 440, 523.25], [392, 493.88, 587.33], [349.23, 440, 523.25]],
-      };
-
-      const progression = chords[type] || chords.quiz;
-      let beatIndex = 0;
-
-      const playBeat = () => {
-        if (!this.currentMusic) return;
-        
-        if (this.musicEnabled && this.musicVolume > 0) {
-          const chord = progression[beatIndex % progression.length];
-          chord.forEach(freq => {
-            const osc = ctx.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, ctx.currentTime);
-            const g = ctx.createGain();
-            const startGain = Math.max(0.002, this.musicVolume * 0.06);
-            g.gain.setValueAtTime(startGain, ctx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
-            osc.connect(g);
-            g.connect(ctx.destination);
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + 2);
-          });
-        }
-        beatIndex++;
-        this.currentMusic = setTimeout(playBeat, 2000);
-      };
-
-      playBeat();
-    };
+    import('howler').then(({ Howl }) => {
+      this.currentMusicHowl = new Howl({
+        src: [src],
+        loop: true,
+        volume: this.musicVolume,
+        html5: true, // Stream to save memory and bypass Strict AudioContext issues
+      });
+      
+      if (this.musicEnabled) {
+          this.currentMusicHowl.play();
+      }
+    });
 
     this.currentMusic = true;
-    musicLoop();
   }
 
   /** Stop background music */
   stopMusic() {
+    if (this.currentMusicHowl) {
+      // Fade out smoothly
+      this.currentMusicHowl.fade(this.musicVolume, 0, 800);
+      const toDestroy = this.currentMusicHowl;
+      this.currentMusicHowl = null;
+      setTimeout(() => {
+        toDestroy.stop();
+        toDestroy.unload();
+      }, 800);
+    }
+    
+    // Clear procedural legacy if any
     if (this.currentMusic && typeof this.currentMusic === 'number') {
       clearTimeout(this.currentMusic);
     }
