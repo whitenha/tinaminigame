@@ -113,3 +113,10 @@
 .slider::-webkit-slider-thumb:hover {
   transform: scale(1.3);
 }
+
+/* ── Hide on mobile: too obtrusive during gameplay ── */
+@media (max-width: 640px) {
+  .container {
+    display: none;
+  }
+}
