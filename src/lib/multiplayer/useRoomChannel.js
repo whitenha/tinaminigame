@@ -358,6 +358,49 @@ export function subscribeToRoom(code, myPlayerId, myName) {
       useRoomStore.getState().setConnectionStatus('connected');
       await channel.track({ playerId: myPlayerId, playerName: myName });
       console.log('[MP] presence tracked for:', myPlayerId);
+
+      // ── CRITICAL FIX: Reconcile state from DB on (re)connect ──
+      // Mobile clients often miss fire-and-forget broadcasts (game_start,
+      // next_question, etc.) due to WebSocket disconnects. On every
+      // reconnect we check the authoritative DB state and fast-forward
+      // the client if it's behind.
+      try {
+        const s = useRoomStore.getState();
+        const isPlayer = !s._refs.myPlayer?.is_host;
+
+        if (isPlayer) {
+          const { data: room } = await supabase
+            .from('mg_rooms')
+            .select('status, current_question, settings')
+            .eq('id', code)
+            .single();
+
+          if (room) {
+            const currentPhase = s.phase;
+
+            if (room.status === 'playing' && (currentPhase === 'waiting' || currentPhase === 'idle')) {
+              // Client is stuck in waiting — fast-forward to playing
+              console.log('[MP] Reconcile: room is playing, client was', currentPhase, '→ fast-forwarding');
+              if (room.settings?.shareScreen !== undefined) {
+                s.setShareScreen(room.settings.shareScreen);
+              }
+              s.setRoomSettings(room.settings || {});
+              s.setPhase('playing');
+              s.setCurrentQuestion(room.current_question ?? 0);
+              s.setQuestionStartTime(Date.now());
+              s.setAnsweredThisQ(false);
+            } else if (room.status === 'finished' && currentPhase !== 'podium') {
+              console.log('[MP] Reconcile: room is finished → setting podium');
+              s.setPhase('podium');
+            }
+          }
+        }
+
+        // Always refresh player list on reconnect
+        s.fetchPlayersDebounced(code);
+      } catch (err) {
+        console.warn('[MP] Reconcile check failed:', err);
+      }
     } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
       useRoomStore.getState().setConnectionStatus('error');
     } else if (status === 'CLOSED') {

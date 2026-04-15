@@ -156,7 +156,17 @@ export function useRoomActions(activityId) {
       s._refs.myPlayer = playerData;
 
       await subscribeToRoom(upperCode, playerData.id, trimmedName);
-      s.setPhase('waiting');
+      
+      // Fix: If mobile rejoins an in-progress game, sync phase
+      if (room.status === 'playing') {
+        s.setPhase('playing');
+        s.setCurrentQuestion(room.current_question || 0);
+        s.setQuestionStartTime(Date.now());
+      } else if (room.status === 'finished') {
+        s.setPhase('podium');
+      } else {
+        s.setPhase('waiting');
+      }
 
       // Legacy client-side broadcast (still useful until DB trigger is set up)
       s._refs.channel?.send({
