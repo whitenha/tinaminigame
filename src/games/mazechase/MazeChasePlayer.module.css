@@ -2,9 +2,11 @@
 
 .gamePage {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: #0f0c29;
+  overflow: hidden;
 }
 
 .canvasWrapper {
@@ -14,19 +16,16 @@
   justify-content: center;
   padding: 8px;
   position: relative;
+  min-height: 0; /* Allow flex shrink */
 }
 
-.gameCanvas {
-  width: 100%;
-  max-width: 700px;
-  aspect-ratio: 15/11;
+/* Phaser injects a canvas — style it via the wrapper */
+.canvasWrapper canvas {
   border-radius: 16px;
   border: 3px solid rgba(108, 92, 231, 0.5);
   box-shadow:
     0 0 30px rgba(108, 92, 231, 0.3),
     inset 0 0 20px rgba(0,0,0,0.5);
-  background: #1a1a2e;
-  image-rendering: pixelated;
 }
 
 .controls {
@@ -63,7 +62,79 @@
   transform: scale(0.8);
 }
 
+/* ── D-Pad for Mobile ── */
+.dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0 16px;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.dpadMiddle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dpadCenter {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(108, 92, 231, 0.15);
+  border: 2px solid rgba(108, 92, 231, 0.3);
+}
+
+.dpadBtn {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  border: 2px solid rgba(108, 92, 231, 0.5);
+  background: rgba(108, 92, 231, 0.2);
+  color: white;
+  font-size: 22px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: all 0.1s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dpadBtn:active {
+  background: rgba(108, 92, 231, 0.5);
+  transform: scale(0.9);
+  box-shadow: 0 0 16px rgba(108, 92, 231, 0.6);
+}
+
+/* ── Mobile Responsive ── */
 @media (max-width: 640px) {
-  .gameCanvas { border-radius: 12px; }
-  .controlHint { font-size: 11px; }
+  .gamePage {
+    padding-top: env(safe-area-inset-top);
+  }
+  .canvasWrapper {
+    padding: 4px;
+  }
+  .canvasWrapper canvas {
+    border-radius: 12px;
+    border-width: 2px;
+  }
+  .controlHint {
+    font-size: 11px;
+  }
+  .dpadBtn {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+  }
+  .dpadCenter {
+    width: 42px;
+    height: 42px;
+  }
 }
