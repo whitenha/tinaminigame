@@ -488,17 +488,6 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
           <PowerUpInventory inventory={mp.inventory} onUseItem={(idx) => mp.usePowerUp(idx)} activeEffects={mp.activeEffects} itemMultiplier={mp.itemMultiplier} />
         )}
 
-        {/* Component Live Feeds - Rất gọn */}
-        <HostLiveFeeds 
-          isHost={mp.isHost} 
-          wrongGuesses={mp.wrongGuesses} 
-          correctPlayers={
-            (playerType === 'unjumble' || playerType === 'spelltheword' || !hasOptions)
-              ? mp.correctPlayers?.filter(p => p.correct)
-              : mp.correctPlayers
-          } 
-          answerRevealed={showFeedback || answerRevealed}
-        />
 
         {(!isShareScreen || mp.isHost) && !['groupsort', 'matchingpairs', 'matchup', 'hangman', 'minionhangman'].includes(playerType) && (
           <div className={styles.questionSection}>
@@ -532,6 +521,20 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
             </div>
           </div>
         )}
+
+        {/* Component Live Feeds — placed between question and answers.
+            Desktop: position:absolute (right column overlay).
+            Mobile: position:relative (horizontal centered strip). */}
+        <HostLiveFeeds 
+          isHost={mp.isHost} 
+          wrongGuesses={mp.wrongGuesses} 
+          correctPlayers={
+            (playerType === 'unjumble' || playerType === 'spelltheword' || !hasOptions)
+              ? mp.correctPlayers?.filter(p => p.correct)
+              : mp.correctPlayers
+          } 
+          answerRevealed={showFeedback || answerRevealed}
+        />
 
         {/* ── ANSWER AREA Tách Gọi Components ───────────────── */}
         <div className={`${styles.answerArea} ${(['groupsort', 'matchingpairs', 'matchup', 'hangman', 'minionhangman'].includes(playerType)) ? styles.answerAreaFlex : ''}`}>
