@@ -196,10 +196,8 @@ class MazeScene extends Phaser.Scene {
 
     // ── Camera (Phaser 4 Scale.FIT handles canvas scaling — center on maze) ──
     this.cameras.main.centerOn(mapWidth / 2, mapHeight / 2);
-    // Zoom to fit maze in the game canvas
-    const zoomX = this.scale.width / mapWidth;
-    const zoomY = this.scale.height / mapHeight;
-    this.cameras.main.setZoom(Math.min(zoomX, zoomY) * 0.92);
+    // Double-zoom is not needed when Scale.FIT is active, just reset zoom
+    this.cameras.main.setZoom(1);
 
     if (this.cameras.main.postFX) this.cameras.main.postFX.addVignette(0.5, 0.5, 0.7);
 
