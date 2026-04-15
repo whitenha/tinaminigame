@@ -28,6 +28,24 @@ body {
   line-height: var(--leading-normal);
   font-size: var(--text-base);
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Mobile Viewport Height Fix ──────────────────────────────── */
+/* 100vh on iOS Safari includes address bar. Use dvh as primary, vh as fallback */
+:root {
+  --app-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --app-height: 100dvh;
+  }
+}
+
+/* ── Touch Optimization ──────────────────────────────────────── */
+button, [role="button"], a {
+  touch-action: manipulation; /* Disable double-tap zoom on interactive elements */
 }
 
 a {

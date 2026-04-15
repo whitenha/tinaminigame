@@ -1,12 +1,15 @@
 .joinPage {
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
   background: radial-gradient(circle at 50% 50%, #4834d4 0%, #1e1b4b 100%);
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto; /* Allow scroll when keyboard opens */
   padding: 24px;
+  padding-top: env(safe-area-inset-top, 24px);
+  padding-bottom: env(safe-area-inset-bottom, 24px);
 }
 
 .joinCard {

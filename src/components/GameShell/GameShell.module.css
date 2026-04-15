@@ -18,7 +18,7 @@
 
 /* ── COUNTDOWN SCREEN ──────────────────────────────────────── */
 .countdownPage {
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -309,12 +309,13 @@
 
 /* ── RESULT SCREEN ─────────────────────────────────────────── */
 .resultPage {
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--gs-gradient-vibrant);
   padding: 24px;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
   position: relative;
   overflow: hidden;
 }

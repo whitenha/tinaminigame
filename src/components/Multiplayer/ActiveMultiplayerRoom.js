@@ -477,8 +477,8 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
         <TimerBar timeLeft={timeLeft} maxTime={maxTime} showBubble={false} />
 
         {mp.isHost && (
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', padding: '8px 24px 0' }}>
-            <button onClick={handleHostContinue} className={styles.hostContinueBtn} style={{ margin: 0, padding: '8px 24px', fontSize: 14 }}>
+          <div className={styles.hostContinueRow}>
+            <button onClick={handleHostContinue} className={styles.hostContinueBtn}>
               Continue ⏭
             </button>
           </div>
@@ -534,7 +534,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
         )}
 
         {/* ── ANSWER AREA Tách Gọi Components ───────────────── */}
-        <div style={{ marginTop: 'auto', width: '100%', paddingBottom: '24px', flex: (['groupsort', 'matchingpairs', 'matchup', 'hangman', 'minionhangman'].includes(playerType)) ? 1 : 'none', display: 'flex', justifyContent: 'center' }}>
+        <div className={`${styles.answerArea} ${(['groupsort', 'matchingpairs', 'matchup', 'hangman', 'minionhangman'].includes(playerType)) ? styles.answerAreaFlex : ''}`}>
           {playerType === 'groupsort' ? (
             <MultiplayerGroupSortBoard 
               items={items}

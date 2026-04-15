@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   gap: 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -40,12 +40,13 @@
 
 /* ── LOBBY ──────────────────────────────────────────────── */
 .lobbyPage {
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 24px;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
 }
 
 .lobbyCard {
@@ -257,12 +258,13 @@
 
 /* ── GAME PAGE ──────────────────────────────────────────── */
 .gamePage {
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   display: flex;
   flex-direction: column;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
   position: relative;
   overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Top bar */
@@ -539,12 +541,13 @@
 
 /* ── RESULT PAGE ────────────────────────────────────────── */
 .resultPage {
-  min-height: 100vh;
+  min-height: var(--app-height, 100vh);
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 24px;
+  padding-bottom: env(safe-area-inset-bottom, 24px);
 }
 
 .resultCard {
@@ -712,6 +715,7 @@
   .optionBtn {
     padding: 14px 16px;
     font-size: 15px;
+    min-height: 48px; /* Fix #6: Touch target minimum */
   }
 
   .lobbyTitle {
@@ -727,6 +731,34 @@
     flex-direction: row;
     justify-content: space-between;
     padding: 12px 16px;
+  }
+
+  .questionCard {
+    padding: 16px 16px 12px;
+    border-radius: 18px;
+  }
+
+  .questionImage {
+    max-height: 120px;
+  }
+}
+
+/* Fix #4: Extra narrow screens (< 400px) — prevent text overflow */
+@media (max-width: 400px) {
+  .optionBtn {
+    padding: 12px 12px;
+    font-size: 14px;
+    gap: 10px;
+  }
+
+  .optionLetter {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  .questionText {
+    font-size: 18px;
   }
 }
 
@@ -917,4 +949,85 @@
   20%, 80% { transform: translate3d(4px, 0, 0); }
   30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
   40%, 60% { transform: translate3d(8px, 0, 0); }
+}
+
+/* ── Fix #9: HOST CONTINUE ROW (replaces inline styles) ───── */
+.hostContinueRow {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 24px 0;
+}
+
+@media (max-width: 640px) {
+  .hostContinueRow {
+    padding: 4px 12px 0;
+    justify-content: center;
+  }
+  .hostContinueBtn {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+}
+
+/* ── Fix #9: ANSWER AREA (replaces inline styles) ─────────── */
+.answerArea {
+  margin-top: auto;
+  width: 100%;
+  padding-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.answerAreaFlex {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .answerArea {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+  .scoreFeedbackTitle {
+    font-size: 22px;
+  }
+  .scoreFeedbackPoints {
+    font-size: 18px;
+  }
+  .scoreFeedback {
+    padding: 8px 16px;
+  }
+}
+
+/* ── Fix #8: Reduce backdrop-filter on low-end devices ────── */
+@media (max-width: 640px) {
+  .questionCard {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+/* Mobile feed positioning */
+@media (max-width: 640px) {
+  .correctFeedContainer {
+    right: 8px;
+    max-width: 180px;
+    top: 100px;
+  }
+  .correctFeedBadge {
+    font-size: 14px;
+    padding: 4px 10px 4px 4px;
+    gap: 6px;
+  }
+  .correctFeedAvatar {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+  .wrongGuessesContainer {
+    max-width: 90%;
+  }
+  .wrongGuessBadge {
+    font-size: 14px;
+    padding: 4px 10px;
+  }
 }

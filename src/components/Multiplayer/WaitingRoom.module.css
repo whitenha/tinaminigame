@@ -16,6 +16,8 @@
   font-family: var(--font-display);
   z-index: 50;
   overflow: hidden;
+  /* Safe area padding for notch devices */
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 @media (min-width: 1024px) {
@@ -508,12 +510,22 @@
     background: var(--surface-1);
     border-top: 1px solid var(--border-default);
     padding: var(--space-md) var(--space-lg);
-    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 8px));
+    padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 12px));
     z-index: 100;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
   }
   .main {
-    padding-bottom: 96px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+  .startBtn {
+    min-height: 48px; /* Fix #6: minimum touch target */
+  }
+  .settingsToggle {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .hostJoinBtn {
+    min-height: 48px;
   }
 }
 
@@ -612,6 +624,7 @@
   font-weight: 600;
   text-align: center;
   padding: var(--space-md);
+  padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom, 0px));
 }
 
 /* ── MODALS ──────────────────────────────────────────────────── */

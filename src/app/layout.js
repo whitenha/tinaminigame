@@ -15,11 +15,25 @@ export const metadata = {
     description: '40+ trò chơi tương tác dành cho học sinh K-5.',
     type: 'website',
   },
+  other: {
+    'theme-color': '#4F46E5',
+  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="vi" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body suppressHydrationWarning>
         <QueryProvider>
           <AuthProvider>

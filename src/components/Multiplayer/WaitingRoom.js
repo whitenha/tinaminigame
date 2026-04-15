@@ -61,7 +61,28 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
   const prevOnlineCountRef = useRef(onlineCount);
   const effectsVolRef = useRef(50);
   const previewTimeoutRef = useRef(null);
+  const audioCtxRef = useRef(null); // Fix #5: Reuse single AudioContext
+  const isMobileRef = useRef(false); // Fix #13: Detect mobile for SakuraPetals
   const isSidebarMode = useIsSidebarMode();
+
+  /* ── Fix #13: Detect mobile on mount ────────────────────────── */
+  useEffect(() => {
+    isMobileRef.current = window.innerWidth < 768;
+  }, []);
+
+  /* ── Fix #5: Shared AudioContext (reuse instead of creating per tone) ── */
+  const getAudioCtx = () => {
+    try {
+      if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      // Resume if suspended (iOS requires user gesture)
+      if (audioCtxRef.current.state === 'suspended') {
+        audioCtxRef.current.resume().catch(() => {});
+      }
+      return audioCtxRef.current;
+    } catch { return null; }
+  };
 
   /* ── Join/Leave Sound Effects ──────────────────────────────── */
   useEffect(() => {
@@ -72,7 +93,8 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
 
     const playTone = (freq, duration, type = 'sine') => {
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = getAudioCtx();
+        if (!ctx) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain);
@@ -170,15 +192,33 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
     }
   }, [isHost]);
 
-  /* ── Lock body scroll ──────────────────────────────────────── */
+  /* ── Fix #1: ROBUST Lock body scroll (prevent stuck on disconnect) ── */
   useEffect(() => {
     const origBody = document.body.style.overflow;
     const origHtml = document.documentElement.style.overflow;
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
+    
+    // Failsafe: always unlock after 5 minutes max (in case cleanup never runs)
+    const failsafeTimer = setTimeout(() => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }, 5 * 60 * 1000);
+    
     return () => {
-      document.body.style.overflow = origBody;
-      document.documentElement.style.overflow = origHtml;
+      clearTimeout(failsafeTimer);
+      // Always reset to empty string (not original) to be safe
+      document.body.style.overflow = origBody || '';
+      document.documentElement.style.overflow = origHtml || '';
+    };
+  }, []);
+
+  /* ── Cleanup AudioContext on unmount ───────────────────────── */
+  useEffect(() => {
+    return () => {
+      if (audioCtxRef.current && audioCtxRef.current.state !== 'closed') {
+        try { audioCtxRef.current.close(); } catch {}
+      }
     };
   }, []);
 
@@ -207,7 +247,8 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
     if (previewTimeoutRef.current) clearTimeout(previewTimeoutRef.current);
     previewTimeoutRef.current = setTimeout(() => {
       try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = getAudioCtx();
+        if (!ctx) return;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.connect(gain); gain.connect(ctx.destination);
@@ -319,8 +360,8 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
 
       <audio ref={audioRef} src="/sounds/The_Final_Handover.mp3" loop />
 
-      {/* ── SAKURA PETAL AMBIENT EFFECT ──────────────────── */}
-      {isHost && !settings.optimizePerformance && (
+      {/* ── SAKURA PETAL AMBIENT EFFECT (Fix #13: disabled on mobile) ── */}
+      {isHost && !settings.optimizePerformance && !isMobileRef.current && (
         <SakuraPetals
           isSettingsOpen={isSettingsOpen}
           isSidebarMode={isSidebarMode}
@@ -348,9 +389,13 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
                 tabIndex={0}
                 aria-label="Mã QR, nhấn để phóng to"
               >
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`${window.location.origin}/${roomId}`)}`}
-                  alt="QR Code"
+                {/* Fix #7: Use local QRCodeSVG instead of external API — faster, works offline */}
+                <QRCodeSVG
+                  value={`${window.location.origin}/${roomId}`}
+                  size={72}
+                  bgColor="transparent"
+                  fgColor="#0F172A"
+                  level="M"
                   className={styles.qrImg}
                 />
               </div>
@@ -651,15 +696,19 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
       )}
 
       {/* ── QR Enlarge Modal ─────────────────────────────────── */}
+      {/* Fix #7: QR Modal uses local QRCodeSVG instead of external API */}
       {showQRModal && typeof window !== 'undefined' && (
         <div className={styles.modalOverlay} onClick={() => setShowQRModal(false)}>
           <div className={styles.modalCard} onClick={e => e.stopPropagation()}>
             <div className={styles.qrModalContent}>
               <h2 className={styles.modalTitle}>Quét mã QR để tham gia</h2>
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(`${window.location.origin}/${roomId}`)}`}
-                alt="QR Code phóng to"
-                className={styles.qrModalImg}
+              <QRCodeSVG
+                value={`${window.location.origin}/${roomId}`}
+                size={240}
+                bgColor="#FFFFFF"
+                fgColor="#0F172A"
+                level="H"
+                style={{ borderRadius: 'var(--radius-lg)' }}
               />
               <span className={styles.qrModalPin}>Mã: {roomId}</span>
               <button type="button" className={styles.modalBtnSecondary} onClick={() => setShowQRModal(false)}>
