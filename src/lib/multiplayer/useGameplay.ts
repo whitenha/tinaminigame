@@ -271,7 +271,7 @@ export function useGameplay() {
     const existingAnswers = myPlayer?.answers || [];
     // Use the RPC for atomic, short-transaction updates
     await supabase.rpc('submit_minigame_answer', {
-      p_id: s.playerId,
+      p_id: (s as any).playerId,
       new_score: newScore,
       new_streak: scoreResult.newStreak,
       answer_record: answerRecord

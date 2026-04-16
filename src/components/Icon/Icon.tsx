@@ -11,7 +11,8 @@ type IconName =
   | 'book' | 'heart' | 'arrow-left' | 'dots-vertical' | 'globe' | 'settings' | 'upload'
   | 'pencil' | 'camera' | 'package' | 'crown' | 'help-circle' | 'target'
   | 'refresh-cw' | 'volume-2' | 'shuffle'
-  | 'align-left' | 'align-center' | 'align-top' | 'align-middle';
+  | 'align-left' | 'align-center' | 'align-top' | 'align-middle'
+  | 'check-circle' | 'image';
 
 type IconSize = 14 | 16 | 18 | 20 | 24 | 28 | 32 | 48 | 64;
 
@@ -78,6 +79,8 @@ const PATHS: Record<IconName, string> = {
   'align-center': 'M3 6h18 M6 12h12 M4 18h16',
   'align-top': 'M4 4h16 M12 8v12 M8 12l4-4 4 4',
   'align-middle': 'M4 12h16 M12 5v14 M8 9l4-4 4 4 M8 15l4 4 4-4',
+  'check-circle': 'M22 11.08V12a10 10 0 11-5.93-9.14 M22 4L12 14.01l-3-3',
+  image: 'M3 3h18C22.1 3 23 3.9 23 5v14c0 1.1-.9 2-2 2H3c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2z M8.5 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3z M21 15l-5-5L5 21',
 };
 
 /** Filled icons (use fill instead of stroke) */

@@ -5,7 +5,7 @@ class HostScene extends Scene {
   private timeText!: GameObjects.Text;
   private phaseText!: GameObjects.Text;
   private optionsContainer!: GameObjects.Container;
-  private particleManager!: GameObjects.Particles.ParticleEmitterManager;
+  private particleManager!: GameObjects.Particles.ParticleEmitter;
 
   constructor() {
     super({ key: 'HostScene' });
@@ -13,7 +13,7 @@ class HostScene extends Scene {
 
   preload() {
     // Load particle texture (we can generate one programmatically)
-    const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+    const graphics = this.make.graphics({ x: 0, y: 0 });
     graphics.fillStyle(0xffffff, 1);
     graphics.fillCircle(8, 8, 8);
     graphics.generateTexture('coin-particle', 16, 16);

@@ -410,7 +410,7 @@ export function subscribeToRoom(code: any, myPlayerId: any, myName: any): Promis
             // Question change or return to grid
             if (newQ >= 0) {
               tryNextQuestion(newQ);
-            } else if (newQ === -1 && s.currentQuestion !== -1) {
+            } else if (newQ === -1 && (s as any).currentQuestion !== -1) {
               // @ts-ignore
               s.setCurrentQuestion(-1);
               // @ts-ignore
