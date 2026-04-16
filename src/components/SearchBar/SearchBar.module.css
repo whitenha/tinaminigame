@@ -7,10 +7,11 @@
 .input {
   width: 100%;
   font-family: var(--font-body);
-  font-size: var(--text-lg);
+  font-size: 13px; /* Match the filters */
   font-weight: 600;
-  padding: var(--space-md) var(--space-lg) var(--space-md) 48px;
-  border: 2px solid var(--color-border);
+  padding: 0 var(--space-md) 0 36px;
+  height: 32px; /* Fixed small tight height to match others */
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   background: var(--color-bg-card);
   color: var(--color-text);
@@ -30,10 +31,10 @@
 
 .icon {
   position: absolute;
-  left: 16px;
+  left: 12px; /* Pull it closer to fit the 36px padding */
   top: 50%;
   transform: translateY(-50%);
-  font-size: 20px;
+  font-size: 16px; /* Slightly smaller icon */
   pointer-events: none;
 }
 

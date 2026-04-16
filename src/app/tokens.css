@@ -136,7 +136,7 @@
   --max-width:        1200px;  /* Content max */
   --max-width-narrow: 800px;   /* Text-heavy sections */
   --max-width-wide:   1400px;  /* Full-bleed aware sections */
-  --nav-height:       64px;
+  --nav-height:       54px;
 
   /* ── RADIUS SCALE ─────────────────────────────────────────── */
   --radius-sm:   6px;
@@ -153,6 +153,16 @@
   --shadow-lg:   0 10px 15px rgba(0, 0, 0, 0.06),  0 4px 6px rgba(0, 0, 0, 0.04);
   --shadow-xl:   0 20px 25px rgba(0, 0, 0, 0.08),  0 8px 10px rgba(0, 0, 0, 0.04);
   --shadow-glow: 0 0 20px rgba(79, 70, 229, 0.15);
+  --shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.04);
+
+  /* ── GLASSMORPHISM ────────────────────────────────────────── */
+  --glass-bg:       rgba(255, 255, 255, 0.72);
+  --glass-border:   rgba(255, 255, 255, 0.45);
+  --glass-blur:     20px;
+  --glass-shadow:   0 8px 32px rgba(0, 0, 0, 0.06);
+
+  /* ── CARD TOKENS ──────────────────────────────────────────── */
+  --radius-card:    16px;
 
   /* ── TRANSITIONS ──────────────────────────────────────────── */
   /* Motion rules: Entrance = translateY(8-16px) + fade. No bounce. No wiggle. */

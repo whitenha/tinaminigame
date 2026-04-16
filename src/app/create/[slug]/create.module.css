@@ -196,6 +196,34 @@
   cursor: not-allowed;
 }
 
+.mobileSettingsBtn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-right: 8px;
+}
+
+.mobileSettingsBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.activeMobileSettings {
+  background: rgba(108, 92, 231, 0.15) !important;
+  border-color: rgba(108, 92, 231, 0.5) !important;
+  color: #a29bfe !important;
+  box-shadow: 0 0 15px rgba(108, 92, 231, 0.2);
+}
+
 /* ── 2. MAIN WORKSPACE ───────────────────────────────────── */
 .workspace {
   flex: 1;
@@ -704,6 +732,65 @@
   box-shadow: 0 0 20px rgba(108, 92, 231, 0.15);
 }
 
+.timeInput {
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  height: 38px;
+  width: 60px;
+  outline: none;
+  font-size: 14px;
+}
+.timeInput:focus {
+  border-color: #a29bfe;
+  background: rgba(108, 92, 231, 0.1);
+}
+
+/* Hide spin buttons */
+.timeInput::-webkit-outer-spin-button,
+.timeInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.timeInput[type=number] {
+  -moz-appearance: textfield;
+}
+
+.segmentGroup {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 4px;
+  flex: 1;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.segmentBtn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.segmentBtn[data-active="true"] {
+  background: rgba(108, 92, 231, 0.25);
+  color: #a29bfe;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
 .menuDivider {
   height: 1px;
   background: rgba(255,255,255,0.06);
@@ -914,6 +1001,10 @@
 }
 
 /* ── RESPONSIVE COMPATIBILITY ────────────────────────────── */
+.mobileOnlyContainer {
+  display: none !important;
+}
+
 @media screen and (max-width: 768px) {
   .header {
     padding: 0 12px;
@@ -951,7 +1042,95 @@
   }
   
   .saveBtn {
-    padding: 10px 16px;
-    font-size: 13px;
+    padding: 10px 28px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  
+  .desktopOnlySlide,
+  .desktopOnlySaveTime,
+  .desktopOnlyContainer {
+    display: none !important;
+  }
+  
+  .mobileSettingsBtn {
+    display: flex;
+  }
+
+  /* MOBILE PAGINATION CAROUSEL REPLACEMENT */
+  .footerCarousel {
+    height: 64px;
+    padding: 0 12px;
+    background: rgba(18, 18, 32, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Hide media options on mobile */
+  .inlineMediaPlaceholder,
+  .mediaPanel {
+    display: none !important;
+  }
+
+  .mobileOnlyContainer {
+    display: flex !important;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    gap: 12px;
+    padding: 0;
+  }
+
+  .mobileNavBtn {
+    width: 76px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .mobileNavBtn:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .mobileNavBtn:not(:disabled):active {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(0.95);
+  }
+
+  .mobileAddBtn {
+    background: rgba(0, 184, 148, 0.15);
+    border-color: rgba(0, 184, 148, 0.4);
+    color: #00b894;
+    box-shadow: 0 0 15px rgba(0, 184, 148, 0.15);
+  }
+
+  .mobileNavInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .mobileInlineMenuBtn {
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
   }
 }

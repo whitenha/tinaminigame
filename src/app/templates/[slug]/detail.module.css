@@ -169,10 +169,30 @@
   text-align: center;
 }
 
-.metaEmoji {
-  font-size: 28px;
-  display: block;
+.metaEmojiContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
   margin-bottom: var(--space-xs);
+}
+
+.badgeIconWrapper {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.sectionIcon {
+  display: inline-flex;
+  color: var(--color-primary);
+  margin-right: 8px;
+}
+
+.ctaIcon {
+  display: inline-flex;
+  margin-right: 8px;
+  vertical-align: text-bottom;
 }
 
 .metaLabel {

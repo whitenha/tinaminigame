@@ -885,10 +885,10 @@
 }
 
 .correctFeedContainer {
-  position: absolute; top: 140px; right: 24px;
+  position: absolute; top: 160px; right: 24px;
   display: flex; flex-direction: column; align-items: flex-end; gap: 10px; 
   z-index: 50; pointer-events: none; width: auto; max-width: 300px;
-  max-height: calc(100vh - 160px); overflow-y: hidden;
+  max-height: calc(100vh - 180px); overflow-y: hidden;
 }
 .correctFeedBadge {
   background: rgba(108, 92, 231, 0.95); color: white; padding: 6px 16px 6px 6px;
@@ -953,20 +953,23 @@
 
 /* ── Fix #9: HOST CONTINUE ROW (replaces inline styles) ───── */
 .hostContinueRow {
-  width: 100%;
+  position: absolute;
+  top: 90px;
+  right: 24px;
+  z-index: 100;
   display: flex;
   justify-content: flex-end;
-  padding: 8px 24px 0;
 }
 
 @media (max-width: 640px) {
   .hostContinueRow {
-    padding: 4px 12px 0;
-    justify-content: center;
+    top: 56px;
+    right: 12px;
   }
   .hostContinueBtn {
     font-size: 13px;
     padding: 8px 16px;
+    margin-top: 0;
   }
 }
 
@@ -1055,4 +1058,45 @@
 @keyframes mobilePopIn {
   0% { transform: scale(0); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── ANSWER PROGRESS COUNTER ─────────────────────────────── */
+.answerProgressRow {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 0;
+  z-index: 10;
+}
+
+.answerProgressBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.answerProgressIcon {
+  font-size: 14px;
+}
+
+.answerProgressComplete {
+  background: rgba(46, 204, 113, 0.2);
+  border-color: rgba(46, 204, 113, 0.5);
+  color: #2ecc71;
+  animation: answerCompletePop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes answerCompletePop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
 }

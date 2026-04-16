@@ -365,19 +365,27 @@
 .modalOverlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modalContent {
-  background: white;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   padding: var(--space-xl);
   border-radius: var(--radius-lg);
   width: 90%;
   max-width: 400px;
+  animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modalTitle {
@@ -442,10 +450,43 @@
 .emptyState {
   text-align: center;
   padding: var(--space-3xl);
-  background: white;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border-radius: var(--radius-xl);
   border: 2px dashed var(--color-border);
   color: var(--color-text-light);
+}
+
+.emptyIcon {
+  margin-bottom: var(--space-md);
+  opacity: 0.6;
+}
+
+.folderList {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+}
+
+.folderListItem {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-gray-100);
+  cursor: pointer;
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  transition: background var(--transition-fast);
+}
+
+.folderListItem:last-child {
+  border-bottom: none;
+}
+
+.folderListItem:hover {
+  background: var(--color-gray-50);
 }
 
 .toast {

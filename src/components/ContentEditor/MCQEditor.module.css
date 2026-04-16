@@ -270,24 +270,64 @@
 /* ── THEME: Option D (GREEN) ──────────────────────────────── */
 .optD .optionStrip { background: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%); }
 
-/* ── RESPONSIVE ───────────────────────────────────────────── */
 /* ── RESPONSIVE HANDLING VIA CONTAINER QUERIES ────────────────────────────── */
-/* Thay thế Media Query cứng bằng Container Query để OptionCard tự thích ứng */
-@container (max-width: 440px) {
+/* Use Container Query to ensure Options always present optimally */
+
+.optionsGridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+@container (max-width: 600px) {
+  .optionsGridContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px; /* tighter gap for 2x2 */
+  }
+
   .questionCard {
     padding: var(--space-md);
   }
 
   .questionInput {
     padding: var(--space-md);
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
+    min-height: 120px;
+  }
+
+  .optionCard {
+    /* Stack color strip and answer vertically to save horizontal space, or just make it super skinny */
+    min-height: 80px;
+  }
+
+  .optionStrip {
+    width: 32px; /* Very thin strip */
+  }
+
+  .optionShape {
+    font-size: 18px;
   }
 
   .optionContent {
-    padding: var(--space-sm) var(--space-md);
+    padding: 8px 10px;
+    gap: 4px;
+  }
+
+  .optionMeta {
+    min-height: unset;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .correctBadge, .optionalBadge {
+    padding: 2px 6px;
+    font-size: 8px;
   }
 
   .optionInput {
-    font-size: var(--text-md);
+    font-size: var(--text-sm);
+    min-height: 50px;
+    padding: 0;
   }
 }
