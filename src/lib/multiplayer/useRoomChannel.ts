@@ -104,15 +104,31 @@ function tryNextQuestion(questionIndex: number) {
 }
 
 /** Transition to podium. Only fires once. */
-function tryEndGame() {
+function tryEndGame(finalScores?: Record<string, { score: number, correctCount: number }>) {
   const s = useRoomStore.getState();
   // @ts-ignore
   if (s.phase === 'podium') return;
-  console.log('[MP] tryEndGame');
+  console.log('[MP] tryEndGame — finalScores:', finalScores);
+  
+  // Apply final scores from HOST if available
+  if (finalScores && Object.keys(finalScores).length > 0) {
+    // @ts-ignore
+    s.setPlayers(
+      [...(s as any).players].map((p: any) => {
+        const f = finalScores[p.id];
+        return {
+          ...p,
+          score: f?.score ?? p.score ?? 0,
+          correct_count: f?.correctCount ?? p.correct_count ?? 0,
+        };
+      }).sort((a, b) => (b.score || 0) - (a.score || 0))
+    );
+  } else {
+    // @ts-ignore
+    s.setPlayers([...s.players].sort((a, b) => (b.score || 0) - (a.score || 0)));
+  }
   // @ts-ignore
   s.setPhase('podium');
-  // @ts-ignore
-  s.setPlayers([...s.players].sort((a, b) => (b.score || 0) - (a.score || 0)));
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -125,6 +141,14 @@ export function subscribeToRoom(code: any, myPlayerId: any, myName: any): Promis
     const store = useRoomStore.getState();
     // @ts-ignore
     const refs = store._refs;
+
+    if (refs.channel) {
+      supabase.removeChannel(refs.channel);
+      refs.channel = null;
+    }
+
+    const dangling = supabase.getChannels().find((c: any) => c.topic === `realtime:room:${code}`);
+    if (dangling) supabase.removeChannel(dangling);
 
     const channel = supabase.channel(`room:${code}`, {
       config: { broadcast: { self: true } },
@@ -175,6 +199,71 @@ export function subscribeToRoom(code: any, myPlayerId: any, myName: any): Promis
         const settings = payload?.settings || {};
         const startQ = settings.initialQuestion ?? 0;
         tryStartGame(settings, startQ);
+      })
+      
+      // ── Race Progress (Gameshow v2) ──
+      .on('broadcast', { event: 'race_progress' }, ({ payload }) => {
+        const s = useRoomStore.getState();
+        // @ts-ignore
+        s.updateRaceStat(payload.playerId, payload);
+        // Also enthusiastically update the main players array for score ranking later
+        // @ts-ignore
+        s.setPlayers((prev: any) => prev.map((p: any) =>
+          p.id === payload.playerId
+            ? { ...p, score: payload.score }
+            : p
+        ));
+      })
+
+      // ── Race State Update (v3 — same as race_progress but newer event name) ──
+      .on('broadcast', { event: 'race_state_update' }, ({ payload }) => {
+        if (!payload?.playerId) return;
+        console.log('[MP] race_state_update received:', payload.playerId, 'score:', payload.score);
+        const s = useRoomStore.getState();
+        // Sync score into main players array so podium works
+        // @ts-ignore
+        s.setPlayers((prev: any) => {
+          const updated = prev.map((p: any) =>
+            p.id === payload.playerId
+              ? { ...p, score: payload.score ?? p.score }
+              : p
+          );
+          console.log('[MP] Players after score sync:', updated.map((p: any) => `${p.player_name}:${p.score}`));
+          return updated;
+        });
+      })
+      
+      // ── Race Item Effect (unified v3 — 15 items) ──
+      .on('broadcast', { event: 'race_item_effect' }, ({ payload }) => {
+        window.dispatchEvent(new CustomEvent('tina_race_broadcast', { 
+          detail: { event: 'race_item_effect', payload } 
+        }));
+      })
+
+      // ── Race Help Request (Giúp Đỡ item modal) ──
+      .on('broadcast', { event: 'race_help_request' }, ({ payload }) => {
+        window.dispatchEvent(new CustomEvent('tina_race_broadcast', { 
+          detail: { event: 'race_help_request', payload } 
+        }));
+      })
+
+      // ── Race Help Answer (response from help target) ──
+      .on('broadcast', { event: 'race_help_answer' }, ({ payload }) => {
+        window.dispatchEvent(new CustomEvent('tina_race_broadcast', { 
+          detail: { event: 'race_help_answer', payload } 
+        }));
+      })
+
+      // ── Race Started (broadcast from host after API call) ──
+      .on('broadcast', { event: 'race_started' }, ({ payload }) => {
+        window.dispatchEvent(new CustomEvent('tina_race_broadcast', { 
+          detail: { event: 'race_started', payload } 
+        }));
+      })
+      
+      // ── Race End (Gameshow v2) ──
+      .on('broadcast', { event: 'race_end' }, ({ payload }) => {
+        tryEndGame(payload?.finalScores);
       })
 
       // ── Next Question ──
@@ -512,10 +601,22 @@ export function subscribeToRoom(code: any, myPlayerId: any, myName: any): Promis
     // @ts-ignore
     store.fetchPlayers(code);
 
+    let resolved = false;
+    const safeResolve = (value: boolean) => {
+      if (!resolved) { resolved = true; resolve(value); }
+    };
+
+    // Timeout: don't block UI for more than 5 seconds
+    const timeout = setTimeout(() => {
+      console.warn('[MP] subscribeToRoom timed out after 5s, resolving anyway');
+      safeResolve(true);
+    }, 5000);
+
     channel.subscribe(async (status) => {
       console.log('[MP] channel status:', status);
 
       if (status === 'SUBSCRIBED') {
+        clearTimeout(timeout);
         // @ts-ignore
         useRoomStore.getState().setConnectionStatus('connected');
         await channel.track({ playerId: myPlayerId, playerName: myName });
@@ -547,11 +648,12 @@ export function subscribeToRoom(code: any, myPlayerId: any, myName: any): Promis
           console.warn('[MP] Reconcile failed:', err);
         }
 
-        resolve(true);
+        safeResolve(true);
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        clearTimeout(timeout);
         // @ts-ignore
         useRoomStore.getState().setConnectionStatus('error');
-        resolve(false);
+        safeResolve(false);
       } else if (status === 'CLOSED') {
         // @ts-ignore
         useRoomStore.getState().setConnectionStatus('disconnected');

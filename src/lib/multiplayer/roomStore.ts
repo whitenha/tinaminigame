@@ -43,6 +43,9 @@ const initialState = {
   // ── Feed State ────────────────────────────────────────────
   wrongGuesses: [],
   correctPlayers: [],
+  
+  // ── Race State ────────────────────────────────────────────
+  raceStats: {},
 };
 
 const useRoomStore = create((set, get) => ({

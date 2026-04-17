@@ -1,6 +1,7 @@
 'use client';
 
 import Icon from '@/components/Icon/Icon';
+import useRoomStore from '@/lib/multiplayer/roomStore';
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { WaitingRoom, LiveLeaderboard, PodiumScreen, ReactionOverlay } from '@/components/Multiplayer';
@@ -21,6 +22,8 @@ const WinOrLoseHostBoard = dynamic(() => import('./WinOrLoseHostBoard'), { ssr: 
 
 import { CountdownScreen, GameTopBar, TimerBar } from '@/components/GameShell';
 import PowerUpInventory from '@/components/Multiplayer/PowerUpInventory';
+import GameshowRaceHostView from './GameshowRaceHostView';
+import GameshowRacePlayer from './GameshowRacePlayer';
 import { getScoreMessage } from '@/lib/scoringEngine';
 import { getTemplateBySlug } from '@/data/templates';
 import { getEditDistance } from '@/lib/stringUtils';
@@ -31,6 +34,9 @@ import gameStyles from '@/components/GameShell/GameShell.module.css';
 export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, playerName }: any) {
   const templateSlug = activity?.template_slug || activity?.template_id || '';
   const playerType = templateSlug ? resolvePlayerType(templateSlug) : 'quiz';
+
+  // Debug: help diagnose template resolution issues
+  console.log('[ActiveMP] template_slug:', activity?.template_slug, 'template_id:', activity?.template_id, '→ playerType:', playerType);
 
   const items = useMemo(() => {
     let finalItems = rawItems;
@@ -111,6 +117,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
 
   // ── Shuffle options when question changes ─────────────────
   useEffect(() => {
+    if (playerType === 'gameshow') return;
     if (mp.currentQuestion < 0 || !items[mp.currentQuestion]) return;
     const item = items[mp.currentQuestion];
     if (item.options) {
@@ -256,6 +263,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
 
   // ── Watch for Time's Up ──────────────────────────────────
   useEffect(() => {
+    if (playerType === 'gameshow') return;
     if (mp.currentQuestion === -1) return; // DO NOT watch for time up in Grid Phase
 
     if (timeLeft === 0 && mp.phase === 'playing') {
@@ -373,6 +381,7 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
 
   // ── Auto-forward when all players answered ────────────────
   useEffect(() => {
+    if (playerType === 'gameshow') return;
     const isFastForwarded = fastForwardQ === mp.currentQuestion;
     if (!mp.isHost || mp.phase !== 'playing' || timeLeft <= 0 || isFastForwarded) return;
     
@@ -402,12 +411,13 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
   const hasShrinkEffect = mp.activeEffects.some((e: any) => e.effectType === 'shrink_text');
 
   const handleBroadcastWrongGuess = useCallback((word: any) => {
-    if (mp.channelRef?.current) {
-      mp.channelRef.current.send({
+    const ch = (useRoomStore.getState() as any)._refs?.channel;
+    if (ch) {
+      ch.send({
         type: 'broadcast', event: 'wrong_guess', payload: { word }
       });
     }
-  }, [mp]);
+  }, []);
 
   // ── WAITING ROOM ──────────────────────────────────────────
   if (mp.phase === 'waiting' || mp.phase === 'idle') {
@@ -416,7 +426,43 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
         roomId={mp.roomId}
         players={mp.players}
         isHost={mp.isHost}
-        onStart={(settings: any) => mp.hostStartGame({ ...settings, initialQuestion: playerType === 'openbox' ? -1 : 0 })}
+        onStart={async (settings: any) => {
+          if (playerType === 'gameshow') {
+            // Server-authoritative race initialization
+            try {
+              const res = await fetch('/api/race', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'start_race',
+                  room_id: mp.roomId,
+                  race_duration_sec: settings.raceDuration || 300,
+                }),
+              });
+              const data = await res.json();
+              if (!data.success) {
+                console.error('[Race] Failed to start:', data.error);
+              } else {
+                // Broadcast race start with server timestamp for instant sync
+                const ch = (useRoomStore.getState() as any)._refs?.channel;
+                ch?.send({
+                  type: 'broadcast',
+                  event: 'race_started',
+                  payload: {
+                    race_started_at: data.race_started_at,
+                    race_duration_sec: data.race_duration_sec,
+                  },
+                });
+              }
+            } catch (err) {
+              console.error('[Race] Start error:', err);
+            }
+            // Pass activityId so player can reference it when submitting answers
+            mp.hostStartGame({ ...settings, activityId: activity?.id, initialQuestion: 0 });
+          } else {
+            mp.hostStartGame({ ...settings, initialQuestion: playerType === 'openbox' ? -1 : 0 });
+          }
+        }}
         playerId={mp.playerId}
         myPlayer={mp.myPlayer}
         mp={mp}
@@ -487,7 +533,17 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
   }
 
   // ── PLAYING RENDERING ───────────────────────────────────────────────
-  if (mp.phase === 'playing' && item) {
+  if (mp.phase === 'playing') {
+    if (playerType === 'gameshow') {
+      return mp.isHost ? (
+        <GameshowRaceHostView mp={mp} items={items} />
+      ) : (
+        <GameshowRacePlayer mp={mp} items={items} />
+      );
+    }
+    
+    if (!item) return null;
+
     const scoreMsg = roundResult ? getScoreMessage(roundResult.points) : null;
     const hasReverseEffect = mp.activeEffects?.includes('reverse_screen');
     const hasShrinkEffect = mp.activeEffects?.includes('shrink_text');

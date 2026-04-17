@@ -72,6 +72,7 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
     safePlayerNames: true,
     banKicked: false,
     shareScreen: false,
+    raceDuration: 300, // Thêm độ dài trò chơi (giây) cho chế độ đua
   });
 
   /* ── Refs ──────────────────────────────────────────────────── */

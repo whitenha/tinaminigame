@@ -215,6 +215,12 @@ export function useGameplay() {
       payload: {},
     });
 
+    // Explicitly transition host to podium (since host ignores its own broadcasts)
+    // @ts-ignore
+    s.setPhase('podium');
+    // @ts-ignore
+    s.setPlayers([...s.players].sort((a, b) => (b.score || 0) - (a.score || 0)));
+
     // @ts-ignore
     await supabase.from('mg_rooms').delete().eq('id', s.roomId);
   }, []);

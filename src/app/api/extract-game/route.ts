@@ -1,5 +1,6 @@
 import { streamObject } from 'ai';
-import { google } from '@ai-sdk/google';
+import { createGroq } from '@ai-sdk/groq';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { z } from 'zod';
 
 export const maxDuration = 60;
@@ -89,16 +90,23 @@ QUY TẮC CHUNG:
 
 export async function POST(req: Request) {
   try {
-    // 1. Kiểm tra API Key có tồn tại không
-    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    const body = await req.json();
+    const { text, preferredFormat, useFallback } = body;
+
+    // 1. Kiểm tra API Key tương ứng
+    if (useFallback && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
       return new Response(
-        JSON.stringify({ error: 'Chưa cấu hình GOOGLE_GENERATIVE_AI_API_KEY trong file .env.local. Vui lòng thêm key và restart lại server.' }),
+        JSON.stringify({ error: 'Chưa cấu hình GOOGLE_GENERATIVE_AI_API_KEY trong file .env.local.' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
-
-    const body = await req.json();
-    const { text, preferredFormat } = body;
+    
+    if (!useFallback && !process.env.GROQ_API_KEY) {
+      return new Response(
+        JSON.stringify({ error: 'Chưa cấu hình GROQ_API_KEY trong file .env.local.' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     if (!text || typeof text !== 'string' || text.trim().length < 10) {
       return new Response(
@@ -111,19 +119,98 @@ export async function POST(req: Request) {
       ? `Hãy bóc tách văn bản sau thành format "${preferredFormat}":\n\n${text}`
       : `Hãy tự động phát hiện loại nội dung và bóc tách văn bản sau:\n\n${text}`;
 
-    const result = streamObject({
-      model: google('gemini-2.5-flash'),
-      schema: ExtractionSchema,
-      system: SYSTEM_PROMPT,
-      prompt: userPrompt,
-    });
+    let result;
+
+    if (useFallback) {
+      // Dùng Google Gemma 3 27B
+      const customGoogle = createGoogleGenerativeAI({
+        apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+        fetch: async (url, options) => {
+          if (options?.body) {
+            try {
+              const body = JSON.parse(options.body as string);
+              let sys = '';
+              // Bypass Developer Instructions (System Prompt) limitation on Gemma 3
+              if (body.systemInstruction) {
+                body.systemInstruction.parts.forEach((p: any) => sys += p.text + '\\n');
+                delete body.systemInstruction;
+              }
+              // Bypass JSON config limitation on Gemma 3
+              if (body.generationConfig) {
+                if (body.generationConfig.responseSchema) {
+                  sys += '\\nReturn strictly ONE valid JSON object matching this schema (do NOT use markdown \`\`\` wrappers):\\n' + JSON.stringify(body.generationConfig.responseSchema);
+                  delete body.generationConfig.responseSchema;
+                }
+                if (body.generationConfig.responseMimeType) {
+                  delete body.generationConfig.responseMimeType;
+                }
+              }
+              if (sys && body.contents && body.contents.length > 0) {
+                body.contents[0].parts.unshift({ text: 'SYSTEM INSTRUCTIONS:\\n' + sys + '\\n\\nUSER PROMPT:\\n' });
+              }
+              options.body = JSON.stringify(body);
+            } catch (e) {}
+          }
+          return fetch(url, options);
+        }
+      });
+      
+      result = streamObject({
+        model: customGoogle('models/gemma-3-27b-it'),
+        maxRetries: 0,
+        schema: ExtractionSchema,
+        system: SYSTEM_PROMPT,
+        prompt: userPrompt,
+      });
+    } else {
+      // Dùng Groq Llama 3.3 70B
+      const customGroq = createGroq({
+        apiKey: process.env.GROQ_API_KEY,
+        fetch: async (url, options) => {
+          if (options?.body) {
+            try {
+              const body = JSON.parse(options.body as string);
+              if (body.response_format && body.response_format.type === 'json_schema') {
+                const schemaStr = JSON.stringify(body.response_format.json_schema.schema);
+                if (body.messages && body.messages.length > 0) {
+                  body.messages[0].content += '\\n\\nIMPORTANT: You must return ONLY a JSON object that perfectly matches the following JSON Schema:\\n' + schemaStr;
+                }
+                body.response_format = { type: 'json_object' };
+                options.body = JSON.stringify(body);
+              }
+            } catch (e) {}
+          }
+          let res = await fetch(url, options);
+          // If Groq rate limits, we bubble up the error to trigger fallback correctly
+          if (res.status === 429) {
+             throw new Error("GROQ_QUOTA_EXCEEDED");
+          }
+          return res;
+        }
+      });
+
+      result = streamObject({
+        model: customGroq('llama-3.3-70b-versatile'),
+        maxRetries: 0,
+        schema: ExtractionSchema,
+        system: SYSTEM_PROMPT,
+        prompt: userPrompt,
+      });
+    }
 
     return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('Extract game error:', error);
+    
+    // Convert thrown explicitly errors gracefully
+    if (error.message === 'GROQ_QUOTA_EXCEEDED') {
+        return new Response(JSON.stringify({ error: 'GROQ_QUOTA_EXCEEDED', message: 'Quota exceeded' }), { status: 429 });
+    }
+
     return new Response(
       JSON.stringify({ error: error.message || 'Lỗi server' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
+

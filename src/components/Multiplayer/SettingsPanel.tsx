@@ -176,6 +176,24 @@ export default function SettingsPanel({
 
         {/* ── Gameplay Group ── */}
         <SettingsGroup title="Trò chơi" defaultOpen={true}>
+          <div className={styles.teamConfig} style={{ marginBottom: 12 }}>
+            <div className={styles.teamConfigRow}>
+              <label className={styles.teamConfigLabel}>Thời gian (phút):</label>
+              <input
+                type="number"
+                min="2"
+                max="15"
+                value={settings.raceDuration ? settings.raceDuration / 60 : 5}
+                onChange={(e: any) => updateSetting('raceDuration', Math.max(2, parseInt(e.target.value) || 5) * 60)}
+                className={styles.teamInput}
+                aria-label="Thời gian thi đấu (phút)"
+              />
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 4 }}>
+              Thời lượng cuộc đua Gameshow
+            </div>
+          </div>
+
           <ToggleItem
             name="Trình chiếu màn hình"
             description="Tắt đi nếu bạn muốn chơi cùng trên máy này"

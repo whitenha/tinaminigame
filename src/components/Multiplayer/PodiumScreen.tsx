@@ -274,7 +274,7 @@ export default function PodiumScreen({ leaderboard, myPlayerId, totalQ = 0, onRe
             </div>
             <div className={styles.modalBody}>
               {leaderboard.slice(0, 10).map((p: any, idx: any) => {
-                 const correctCount = (p.answers || []).filter((a: any) => a.correct).length;
+                 const correctCount = p.correct_count ?? (p.answers || []).filter((a: any) => a.correct).length;
                  const rankColor = idx === 0 ? '#f1c40f' : idx === 1 ? '#bdc3c7' : idx === 2 ? '#cd7f32' : 'rgba(255,255,255,0.2)';
                  return (
                    <div key={p.id} className={styles.statRow}>

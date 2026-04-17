@@ -97,7 +97,7 @@ export default function GameshowPlayer({ items, activity, playerName }: any) {
         <TimerBubble timeLeft={engine.timeLeft} />
         {isDoubleActive && <div className={styles.doubleBanner}>×2 ĐIỂM</div>}
         {item.image_url && <img src={item.image_url} alt="" className={styles.qImage} />}
-        <h2 className={styles.qText}>{item.term || 'Câu hỏi'}</h2>
+        <h2 className={styles.qText}>{item.term || item.question || '(Trống)'}</h2>
       </div>
 
       {/* Lifelines */}

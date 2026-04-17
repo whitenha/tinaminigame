@@ -74,9 +74,29 @@ export function getEngineType(slug: string): string {
  * based on its engineType.
  */
 export function resolvePlayerType(slug: string): string {
+  // Direct match by slug
   const config = GAME_REGISTRY[slug];
-  if (!config) return 'quiz';
-  return config.playerType;
+  if (config) return config.playerType;
+
+  // Fallback: try matching by numeric ID
+  const numId = parseInt(slug, 10);
+  if (!isNaN(numId)) {
+    const template = TEMPLATES.find(t => t.id === numId);
+    if (template?.engine?.playerType) return template.engine.playerType;
+    if (template?.slug) {
+      const regConfig = GAME_REGISTRY[template.slug];
+      if (regConfig) return regConfig.playerType;
+    }
+  }
+
+  // Fallback: partial match (e.g. "gameshow" matches "gameshow-quiz")
+  const partialMatch = Object.entries(GAME_REGISTRY).find(([key]) => 
+    key.includes(slug) || slug.includes(key)
+  );
+  if (partialMatch) return partialMatch[1].playerType;
+
+  console.warn(`[GameRegistry] Unknown template: "${slug}", defaulting to quiz`);
+  return 'quiz';
 }
 
 /**

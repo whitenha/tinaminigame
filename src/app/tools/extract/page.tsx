@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { experimental_useObject as useObject } from '@ai-sdk/react';
 import { z } from 'zod';
@@ -160,6 +160,8 @@ export default function ExtractPage() {
   const [globalTime, setGlobalTime] = useState(20);
   const [toastMsg, setToastMsg] = useState('');
   
+  const useFallbackRef = useRef(false);
+
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(''), 3000);
@@ -169,7 +171,25 @@ export default function ExtractPage() {
   const { object, submit, isLoading, error: aiError } = useObject({
     api: '/api/extract-game',
     schema: ExtractionSchema,
-    onFinish: ({ object: result }) => {
+    onFinish: ({ object: result, error: finishError }) => {
+      if (finishError) {
+        if (!useFallbackRef.current && (finishError.message.includes('429') || finishError.message.includes('validation failed') || finishError.message.includes('GROQ_QUOTA_EXCEEDED'))) {
+          showToast('Groq vỡ tải! Đang tự động đổi sang Google Gemma 3 27B...');
+          useFallbackRef.current = true;
+          submit({ text: inputText, preferredFormat: preferredFormat || undefined, useFallback: true });
+          return;
+        }
+
+        if (finishError.message.includes('validation failed') && finishError.message.includes('undefined')) {
+          setError('❌ Hệ thống AI bị quá tải hoặc API Key của bạn đã hết hạn mức (Quota) miễn phí trong ngày. Vui lòng thử lại vào ngày mai hoặc nâng cấp tài khoản (Pay-as-you-go).');
+        } else if (finishError.message.includes('429')) {
+          setError('❌ Hạn mức AI đã hết. Vui lòng sử dụng lại vào ngày mai.');
+        } else {
+          setError('❌ AI trả về lỗi: ' + finishError.message);
+        }
+        setPhase('input');
+        return;
+      }
       if (result) {
         setExtractedData(result);
         setEditTitle(result.title || 'Bộ câu hỏi mới');
@@ -177,9 +197,19 @@ export default function ExtractPage() {
         setCompatibleGames(games);
         if (games.length > 0) setSelectedSlug(games[0].slug);
         setPhase('preview');
+      } else {
+        setError('❌ Hệ thống AI bị quá tải hoặc đã hết hạn mức (Quota) sử dụng miễn phí. Vui lòng cấp quyền thanh toán (Pay-as-you-go) hoặc thử lại vào ngày mai!');
+        setPhase('input');
       }
     },
     onError: (err) => {
+      if (!useFallbackRef.current && (err.message.includes('429') || err.message.includes('GROQ_QUOTA_EXCEEDED'))) {
+        showToast('Groq quá tải! Đang đổi sang Google Gemma 3 27B...');
+        useFallbackRef.current = true;
+        submit({ text: inputText, preferredFormat: preferredFormat || undefined, useFallback: true });
+        return;
+      }
+
       // Parse lỗi thân thiện hơn
       if (err.message.includes('401')) {
         setError('❌ Chưa cấu hình API Key, hoặc Key không hợp lệ. Vui lòng kiểm tra lại .env.local và khởi động lại Server.');
@@ -201,7 +231,8 @@ export default function ExtractPage() {
     }
     setError('');
     setPhase('loading');
-    submit({ text: inputText, preferredFormat: preferredFormat || undefined });
+    useFallbackRef.current = false;
+    submit({ text: inputText, preferredFormat: preferredFormat || undefined, useFallback: false });
   }, [inputText, preferredFormat, submit]);
 
   // ── Publish handler ─────────────────────────────────────

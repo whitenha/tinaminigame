@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { useMultiplayerRoom } from '@/lib/useMultiplayerRoom';
-import { getTemplateBySlug } from '@/data/templates';
+import { getTemplateBySlug, TEMPLATES } from '@/data/templates';
 import { getContentFormat, resolvePlayerType } from '@/lib/gameRegistry';
 import { ActiveMultiplayerRoom } from '@/components/Multiplayer';
 import styles from '@/components/Multiplayer/MultiplayerRoom.module.css';
@@ -77,6 +77,8 @@ export default function SmartRoutePage({ params }: any) {
   const [previewIdx, setPreviewIdx] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
+  const [duplicateModalOpen, setDuplicateModalOpen] = useState(false);
+  const [compatibleTemplates, setCompatibleTemplates] = useState<any[]>([]);
 
   // Multiplayer hook
   const mp = useMultiplayerRoom(viewMode === 'playing' ? data?.activity_id : null);
@@ -285,15 +287,40 @@ export default function SmartRoutePage({ params }: any) {
       } catch { alert('Lỗi khi xóa.'); }
     };
 
-    const handleDuplicate = async () => {
+    const openDuplicateModal = () => {
+      setMenuOpen(false);
+      const activeFormat = data.content_format || getTemplateBySlug(data.template_slug)?.engine?.contentFormat;
+      
+      const compatible = TEMPLATES.filter(t => 
+        t.engine && (t.engine.supportedFormats?.includes(activeFormat) || t.engine.contentFormat === activeFormat) && !t.isTool
+      );
+      
+      // Sort so that the current template is first
+      compatible.sort((a, b) => {
+        if (a.slug === data.template_slug) return -1;
+        if (b.slug === data.template_slug) return 1;
+        return 0;
+      });
+
+      setCompatibleTemplates(compatible);
+      setDuplicateModalOpen(true);
+    };
+
+    const handleDuplicate = async (targetSlug: string) => {
+      setDuplicateModalOpen(false);
       try {
+        const targetTemplate = getTemplateBySlug(targetSlug);
+        const newTitle = targetSlug === data.template_slug 
+          ? data.title + ' (Bản sao)' 
+          : data.title + ` (Chuyển sang ${targetTemplate?.nameVi || 'Khác'})`;
+
         const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
         const { data: newAct, error: actErr } = await supabase
           .from('mg_activities')
           .insert({
             creator_id: user.id,
-            title: data.title + ' (Bản sao)',
-            template_slug: data.template_slug,
+            title: newTitle,
+            template_slug: targetSlug,
             content_format: data.content_format,
             share_code: newCode,
             is_public: true,
@@ -309,7 +336,7 @@ export default function SmartRoutePage({ params }: any) {
           }));
           await supabase.from('mg_content_items').insert(newItems);
         }
-        showToast('Đã tạo bản sao thành công!');
+        showToast('Đã tạo bản sao & chuyển đổi thành công!');
         setTimeout(() => router.push(`/${newAct.id}`), 800);
       } catch (err: any) { console.error(err); alert('Lỗi khi tạo bản sao.'); }
     };
@@ -425,6 +452,45 @@ export default function SmartRoutePage({ params }: any) {
         {/* Toast */}
         <div className={`${s.toast} ${toastMsg ? s.toastVisible : ''}`}>✅ {toastMsg}</div>
 
+        {/* Duplicate Modal */}
+        {duplicateModalOpen && (
+          <div className={s.modalOverlay} onClick={() => setDuplicateModalOpen(false)}>
+            <div className={s.modalContent} onClick={e => e.stopPropagation()}>
+              <h3 className={s.modalTitle}>Tạo Bản Sao & Chuyển Đổi</h3>
+              <p className={s.modalDesc}>
+                Trò chơi của bạn hỗ trợ dạng câu hỏi này. Bạn có muốn giữ nguyên cách chơi, hoặc chuyển sang kiểu chơi khác thú vị hơn?
+              </p>
+
+              <div className={s.templateGrid}>
+                {compatibleTemplates.map(t => {
+                  const isCurrent = t.slug === data.template_slug;
+                  return (
+                    <div 
+                      key={t.slug} 
+                      className={s.templateCard} 
+                      onClick={() => handleDuplicate(t.slug)}
+                      style={{ border: isCurrent ? `2px solid ${t.color || '#3b82f6'}` : undefined, background: isCurrent ? 'rgba(240, 249, 255, 0.5)' : undefined }}
+                    >
+                      <div className={s.templateName}>
+                        <span style={{ color: t.color || '#3b82f6', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          {t.badges?.includes('PRO') && <span style={{fontSize: 14}}>👑</span>}
+                          {t.nameVi}
+                        </span>
+                        {isCurrent && <span className={s.badge} style={{ background: '#10b981', fontSize: 10 }}>Hiện tại</span>}
+                      </div>
+                      <div className={s.templateDesc}>{t.description}</div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className={s.modalActions}>
+                <button className={s.cancelBtn} onClick={() => setDuplicateModalOpen(false)}>Hủy</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── Hero Bar: Back + Title + Badge + Actions ── */}
         <div className={s.heroBar}>
           <button className={s.backBtn} onClick={() => router.push(isOwner ? '/dashboard' : '/')}>
@@ -446,8 +512,8 @@ export default function SmartRoutePage({ params }: any) {
                   <button className={s.moreBtn} onClick={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}>⋯</button>
                   {menuOpen && (
                     <div className={s.moreDropdown} onClick={(e) => e.stopPropagation()}>
-                      <button className={s.menuItem} onClick={handleDuplicate}>
-                        <span className={s.menuItemIcon}>📋</span> Tạo bản sao
+                      <button className={s.menuItem} onClick={openDuplicateModal}>
+                        <span className={s.menuItemIcon}>📋</span> Tạo bản sao & Chuyển đổi
                       </button>
                       <button className={s.menuItem} onClick={handleCopy}>
                         <span className={s.menuItemIcon}>🔗</span> Sao chép link chia sẻ

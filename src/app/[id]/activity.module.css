@@ -626,3 +626,71 @@
   .slideQuestion { font-size: 24px; }
   .heroActions { margin-left: auto; }
 }
+
+/* ── DUPLICATE MODAL ────────────────────────────────────────── */
+.modalOverlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+.modalContent {
+  background: white;
+  border-radius: 28px;
+  padding: 32px;
+  max-width: 600px; width: 100%;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.1), 0 0 0 1px rgba(226,232,240,0.8);
+  animation: dropPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modalTitle {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 800; color: #0f172a;
+  margin-bottom: 8px;
+}
+.modalDesc {
+  font-size: 15px; color: #64748b; margin-bottom: 24px; line-height: 1.5;
+}
+.templateGrid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+  max-height: 400px; overflow-y: auto;
+  padding-right: 8px;
+}
+/* custom scrollbar for templateGrid */
+.templateGrid::-webkit-scrollbar { width: 6px; }
+.templateGrid::-webkit-scrollbar-track { background: transparent; }
+.templateGrid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+.templateCard {
+  border: 1px solid rgba(226, 232, 240, 1);
+  border-radius: 16px; padding: 16px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; gap: 8px;
+  background: #f8fafc;
+}
+.templateCard:hover {
+  background: white;
+  border-color: #3b82f6; transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.1);
+}
+.templateName {
+  font-weight: 800; font-size: 16px; color: #0f172a;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.templateDesc {
+  font-size: 13px; color: #64748b; line-height: 1.4;
+}
+.modalActions {
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding-top: 16px; border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+.cancelBtn {
+  padding: 12px 24px; border-radius: 100px;
+  font-weight: 700; font-size: 15px;
+  background: white; border: 1px solid #cbd5e1;
+  color: #475569; cursor: pointer; transition: all 0.2s;
+}
+.cancelBtn:hover { background: #f1f5f9; color: #0f172a; }
