@@ -21,6 +21,7 @@ interface CandyPhysics {
   radius: number;
   color: string;
   targetY: number;
+  targetX: number;
   jarIndex: number;
   isSettled: boolean;
   settledPos: { x: number, y: number } | null;
