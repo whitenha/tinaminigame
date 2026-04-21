@@ -6,7 +6,7 @@ const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
 const bucketName = process.env.R2_BUCKET_NAME;
 
 if (!accountId || !accessKeyId || !secretAccessKey || !bucketName) {
-  throw new Error('Cloudflare R2 Storage credentials are not fully configured in environment variables.');
+  console.warn('WARNING: Cloudflare R2 Storage credentials are not fully configured in environment variables.');
 }
 
 /**
@@ -14,10 +14,10 @@ if (!accountId || !accessKeyId || !secretAccessKey || !bucketName) {
  */
 export const r2Client = new S3Client({
   region: 'auto',
-  endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+  endpoint: `https://${accountId || 'placeholder'}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId,
-    secretAccessKey,
+    accessKeyId: accessKeyId || 'placeholder',
+    secretAccessKey: secretAccessKey || 'placeholder',
   },
 });
 
