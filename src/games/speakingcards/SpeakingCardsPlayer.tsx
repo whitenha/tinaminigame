@@ -218,13 +218,21 @@ function FloatingParticles() {
 //  MAIN COMPONENT
 // ══════════════════════════════════════════════════════════════
 export default function SpeakingCardsPlayer({ items: rawItems = [], activity, playerName, onFinish }: any) {
+  const isSwapped = !!activity?.settings?.swap_question_answer;
+
   const cards = useMemo(() => {
     return rawItems
       // @ts-ignore
-      .map(item => typeof item === 'string' ? item : (item.term || item.question || item.text || item.label || item.definition || ''))
+      .map(item => {
+        if (typeof item === 'string') return item;
+        if (isSwapped) {
+          return item.definition || (item.options && item.options[0]) || item.term || item.question || item.text || '';
+        }
+        return item.term || item.question || item.text || item.label || item.definition || '';
+      })
       // @ts-ignore
       .filter(t => t.trim());
-  }, [rawItems]);
+  }, [rawItems, isSwapped]);
 
   const total = cards.length;
 

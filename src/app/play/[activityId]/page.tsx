@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useMultiplayerRoom } from '@/lib/useMultiplayerRoom';
+import useRoomStore from '@/lib/multiplayer/roomStore';
 import { ActiveMultiplayerRoom } from '@/components/Multiplayer';
 import styles from '@/components/Multiplayer/MultiplayerRoom.module.css';
 
@@ -12,6 +13,13 @@ export default function HostRoomPage({ params }: any) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
+  const hasCreatedRoomRef = useRef(false);
+
+  // Aggressively clear any lingering room state from memory on mount
+  useEffect(() => {
+    // @ts-ignore
+    useRoomStore.getState().resetStore();
+  }, []);
 
   // ── Multiplayer hook (use real UUID, not URL param) ────────
   const mp = useMultiplayerRoom(activity?.id || null);
@@ -56,7 +64,7 @@ export default function HostRoomPage({ params }: any) {
 
   // Create room automatically as Host
   useEffect(() => {
-    if (loading || !activity || mp.roomId) return;
+    if (loading || !activity || hasCreatedRoomRef.current) return;
     
     let extraSettings = {};
     if (activity.settings?.shuffle_questions && items.length > 0) {
@@ -69,9 +77,10 @@ export default function HostRoomPage({ params }: any) {
       extraSettings.shuffledMap = shuffledMap;
     }
     
+    hasCreatedRoomRef.current = true;
     // Auto create room as "Host"
     mp.createRoom('Host Teacher', extraSettings);
-  }, [loading, activity, items, mp.roomId, mp.createRoom]);
+  }, [loading, activity, items, mp.createRoom]);
 
   if (loading || (!mp.roomId && !error)) {
     return (

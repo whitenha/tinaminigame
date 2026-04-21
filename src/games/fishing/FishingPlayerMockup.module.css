@@ -1,0 +1,171 @@
+/* ── LỚP NỀN DÀNH CHO BẢN PC (G123 Desktop Style) ── */
+.gamePage {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  /* Lấy một màu gradient hoành tráng làm giả lập Splash Art hai bên */
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%), 
+              radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: white;
+}
+
+/* ── KHUNG GAME (BẢN MOBILE) ── */
+.mobileFrame {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  /* Trở về tỉ lệ vàng 9:16 tối ưu cho giả lập PC. Trên di động thật, nó tự Scale Fullscreen */
+  aspect-ratio: 9 / 16;
+  max-width: 450px; 
+  /* Có thể bo góc mờ trên PC để nhìn sang trọng hơn giống mobile frame */
+  box-shadow: 0 0 50px rgba(0,0,0,0.5);
+  background-color: #1a1a2e;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Reponsive cho Desktop: Nếu màn hình to hơn điện thoại, bo góc frame lại */
+@media screen and (min-width: 451px) {
+  .mobileFrame {
+    height: 90vh; /* Cách mép trên dưới một chút để ra dáng điện thoại */
+    width: auto; /* tự tính width qua aspect-ratio */
+    max-height: 900px;
+    
+    /* Vỏ điện thoại siêu mỏng (iPhone 17 Style) */
+    border-radius: 40px;
+    border: 6px solid #111;
+    
+    /* Thêm shadow tạo viền nổi khối siêu thực */
+    box-shadow: 
+      0 30px 60px rgba(0,0,0,0.5), 
+      inset 0 0 4px rgba(255,255,255,0.3), 
+      0 0 0 2px #555, /* Viền kim loại/titan mỏng bọc ngoài */
+      0 0 0 4px #222;
+  }
+}
+
+.canvasWrapper {
+  flex: 1; /* Tự động lấy toàn bộ không gian còn lại (khoảng 70-75%) */
+  width: 100%;
+  min-height: 0; /* QUAN TRỌNG: Ngăn chặn Canvas bung chiều cao chèn ép bàn phím */
+  overflow: hidden; /* Cắt gọn gàng các chi tiết thừa của ENVELOP */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1a1a2e;
+}
+
+.canvasWrapper canvas {
+  image-rendering: auto; /* Smoother scaling down/up on mobile screens */
+}
+
+/* ── KHU VỰC BÀN PHÍM ĐIỀU KHIỂN DƯỚI ĐÁY ── */
+.controlsArea {
+  flex-shrink: 0; /* Không bị bóp bẹp */
+  height: 240px; /* Chiều cao cố định chuẩn mực cho ngón tay cái */
+  width: 100%;
+  background-color: #0a0a14;
+  border-top: 4px solid #000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+/* Các phím giống như cũ nhưng chỉnh lại một chút cho hợp frame lớn */
+.dpad {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  pointer-events: auto;
+}
+
+.dpadBtn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 12px;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  touch-action: manipulation;
+  backdrop-filter: blur(4px);
+}
+
+.dpadBtn:active {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.dpadUp { top: 0; left: 46px; }
+.dpadDown { bottom: 0; left: 46px; }
+.dpadLeft { top: 46px; left: 0; }
+.dpadRight { top: 46px; right: 0; }
+
+.actionBtn {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  background: linear-gradient(135deg, #0984e3, #74b9ff);
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  font-size: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  touch-action: manipulation;
+  pointer-events: auto;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.actionBtn:active {
+  transform: scale(0.92);
+  background: linear-gradient(135deg, #74b9ff, #0984e3);
+}
+
+/* NÚT TRẢ LỜI CÂU HỎI */
+.quizBtn {
+  background: #1a1a2e;
+  border: 4px solid #5352ed;
+  border-radius: 16px;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  pointer-events: auto;
+}
+
+.quizBtn:active {
+  background: #5352ed;
+  transform: scale(0.95);
+}
+
+.controlsHint {
+  position: absolute;
+  bottom: -40px; /* Hide slightly if desktop, or change via media query */
+  width: 100%;
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  pointer-events: none;
+}
+

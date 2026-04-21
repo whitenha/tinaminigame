@@ -1,11 +1,23 @@
 'use client';
 
-import { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 import { useRevealEngine } from '@/lib/engines/useRevealEngine';
 import styles from './FlashCardsPlayer.module.css';
 
 export default function FlashCardsPlayer({ items, activity, playerName }: any) {
-  const engine = useRevealEngine(items, { musicType: 'calm', mode: 'cards' });
+  const finalItems = React.useMemo(() => {
+    if (activity?.settings?.shuffle_questions && items.length > 0) {
+      const shuffled = [...items];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+    return items;
+  }, [items, activity]);
+
+  const engine = useRevealEngine(finalItems, { musicType: 'calm', mode: 'cards' });
 
   // ✅ FIX Bug #5: useRef survives re-renders, let does not
   const touchStartX = useRef<any>(null);
@@ -44,6 +56,10 @@ export default function FlashCardsPlayer({ items, activity, playerName }: any) {
   const item = engine.currentCard;
   const total = items.length;
 
+  const isSwapped = !!activity?.settings?.swap_question_answer;
+  const frontText = isSwapped ? (item?.definition || 'Mặt trước (Trống)') : (item?.term || 'Mặt trước');
+  const backText = isSwapped ? (item?.term || 'Mặt sau (Trống)') : (item?.definition || 'Mặt sau');
+
   return (
     <div className={styles.page}>
       <div className={styles.topBar}>
@@ -64,13 +80,13 @@ export default function FlashCardsPlayer({ items, activity, playerName }: any) {
         <div className={`${styles.card} ${engine.flipped ? styles.cardFlipped : ''}`} onClick={engine.flipCard}>
           <div className={styles.cardFront}>
             {item?.image_url && <img src={item.image_url} alt="" className={styles.cardImage} />}
-            <h2 className={styles.cardText}>{item?.term || 'Mặt trước'}</h2>
-            <button className={styles.speakBtn} onClick={(e) => { e.stopPropagation(); engine.speakText(item?.term || ''); }}>🔊</button>
+            <h2 className={styles.cardText}>{frontText}</h2>
+            <button className={styles.speakBtn} onClick={(e) => { e.stopPropagation(); engine.speakText(frontText); }}>🔊</button>
             <p className={styles.flipHint}>Nhấn để lật</p>
           </div>
           <div className={styles.cardBack}>
-            <h2 className={styles.cardText}>{item?.definition || 'Mặt sau'}</h2>
-            <button className={styles.speakBtn} onClick={(e) => { e.stopPropagation(); engine.speakText(item?.definition || ''); }}>🔊</button>
+            <h2 className={styles.cardText}>{backText}</h2>
+            <button className={styles.speakBtn} onClick={(e) => { e.stopPropagation(); engine.speakText(backText); }}>🔊</button>
             <p className={styles.flipHint}>Nhấn để lật lại</p>
           </div>
         </div>

@@ -136,7 +136,7 @@ export function useGameEvents(musicType: string = 'quiz') {
 
     return () => {
       wirings.forEach(unsub => unsub());
-      soundRef.current?.stopMusic();
+      soundRef.current?.stopMusic(true);
       hideTimerDanger();
       bus.clear();
     };

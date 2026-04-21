@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { getTemplateBySlug } from '@/data/templates';
+import { getTemplateBySlug, TEMPLATES } from '@/data/templates';
 import { resolvePlayerType } from '@/lib/gameRegistry';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ const PLAYERS = {
   flashcards: dynamic(() => import('@/games/flashcards/FlashCardsPlayer')),
   speakingcards: dynamic(() => import('@/games/speakingcards/SpeakingCardsPlayer')),
   spinwheel: dynamic(() => import('@/games/spinwheel/SpinWheelPlayer')),
+  candyjar: dynamic(() => import('@/games/candyjar/CandyJarPlayer')),
   // fallback for any other tools/games if needed
   quiz: dynamic(() => import('@/games/quiz/QuizPlayer')),
 };
@@ -36,6 +37,15 @@ export default function StandaloneToolPlayer({ params }: any) {
     const fetchData = async () => {
       setLoading(true);
       try {
+        // @ts-ignore
+        const instantTemplate = TEMPLATES.find(t => t.slug === id && t.instantLaunch);
+        if (instantTemplate) {
+          setData({ template_slug: instantTemplate.slug, id: instantTemplate.slug, creator_id: user?.id });
+          setItems([]); // empty list to start
+          setLoading(false);
+          return;
+        }
+
         const { data: act, error: actErr } = await supabase
           .from('mg_activities').select('*').eq('id', id).single();
 

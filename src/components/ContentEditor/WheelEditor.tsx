@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { CldUploadWidget } from 'next-cloudinary';
+import { R2UploadWidget } from '@/components/Uploader/R2UploadWidget';
 import styles from './WheelEditor.module.css';
 
 // ── Dynamic HSL Color Generator for unbroken gradients ──
@@ -807,9 +807,7 @@ export default function WheelEditor({ items, onChange }: any) {
                 {showImageMenu && (
                   <div className={styles.imageDropdown}>
                     {/* 1) Background image */}
-                    <CldUploadWidget
-                      uploadPreset={UPLOAD_PRESET}
-                      options={{ cropping: true, multiple: false }}
+                    <R2UploadWidget
                       onSuccess={(result) => {
                         // @ts-ignore
                         if (result.info?.secure_url) {
@@ -819,21 +817,19 @@ export default function WheelEditor({ items, onChange }: any) {
                         }
                       }}
                     >
-                      {({ open }) => (
-                        <button className={styles.imageOption} onClick={() => open()}>
+                      {({ open, isUploading }) => (
+                        <button className={styles.imageOption} onClick={() => open()} disabled={isUploading}>
                           <span className={styles.imageOptionIcon}>🌄</span>
                           <div className={styles.imageOptionText}>
-                            <strong>Add background image</strong>
+                            <strong>{isUploading ? 'Đang tải...' : 'Add background image'}</strong>
                             <span>Ảnh nền phía sau vòng quay</span>
                           </div>
                         </button>
                       )}
-                    </CldUploadWidget>
+                    </R2UploadWidget>
 
                     {/* 2) Center image */}
-                    <CldUploadWidget
-                      uploadPreset={UPLOAD_PRESET}
-                      options={{ cropping: true, multiple: false }}
+                    <R2UploadWidget
                       onSuccess={(result) => {
                         // @ts-ignore
                         if (result.info?.secure_url) {
@@ -843,21 +839,19 @@ export default function WheelEditor({ items, onChange }: any) {
                         }
                       }}
                     >
-                      {({ open }) => (
-                        <button className={styles.imageOption} onClick={() => open()}>
+                      {({ open, isUploading }) => (
+                        <button className={styles.imageOption} onClick={() => open()} disabled={isUploading}>
                           <span className={styles.imageOptionIcon}>🎯</span>
                           <div className={styles.imageOptionText}>
-                            <strong>Add center image</strong>
+                            <strong>{isUploading ? 'Đang tải...' : 'Add center image'}</strong>
                             <span>Ảnh ở tâm vòng quay</span>
                           </div>
                         </button>
                       )}
-                    </CldUploadWidget>
+                    </R2UploadWidget>
 
                     {/* 3) Image as entry */}
-                    <CldUploadWidget
-                      uploadPreset={UPLOAD_PRESET}
-                      options={{ cropping: true, multiple: false }}
+                    <R2UploadWidget
                       onSuccess={(result) => {
                         // @ts-ignore
                         if (result.info?.secure_url) {
@@ -866,16 +860,16 @@ export default function WheelEditor({ items, onChange }: any) {
                         }
                       }}
                     >
-                      {({ open }) => (
-                        <button className={styles.imageOption} onClick={() => open()}>
+                      {({ open, isUploading }) => (
+                        <button className={styles.imageOption} onClick={() => open()} disabled={isUploading}>
                           <span className={styles.imageOptionIcon}>➕</span>
                           <div className={styles.imageOptionText}>
-                            <strong>Add image as entry</strong>
+                            <strong>{isUploading ? 'Đang tải...' : 'Add image as entry'}</strong>
                             <span>Thêm ảnh làm mục mới</span>
                           </div>
                         </button>
                       )}
-                    </CldUploadWidget>
+                    </R2UploadWidget>
 
                     {/* Divider + Remove actions */}
                     {(backgroundImage || centerImage) && (

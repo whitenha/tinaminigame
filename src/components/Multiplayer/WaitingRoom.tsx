@@ -383,7 +383,7 @@ export default function WaitingRoom({ roomId, players, isHost, onStart, shareCod
         aria-label={mp?.status === 'connected' ? 'Đã kết nối' : 'Đang kết nối lại'}
       />
 
-      <audio ref={audioRef} src="/sounds/The_Final_Handover.mp3" loop />
+      <audio ref={audioRef} src="https://pub-70d2db8544ed458aaf29a11311e1aaff.r2.dev/music/The_Final_Handover.mp3" loop />
 
       {/* ── SAKURA PETAL AMBIENT EFFECT (Fix #13: disabled on mobile) ── */}
       {isHost && !settings.optimizePerformance && !isMobileRef.current && (

@@ -677,6 +677,23 @@ export const TEMPLATES = [
     },
   },
   {
+    id: 998, slug: 'candy-jar',
+    name: 'Candy Jar', nameVi: 'Lọ kẹo',
+    description: 'Thưởng kẹo ngẫu nhiên trực quan vui nhộn cho học sinh trên màn hình.',
+    howToPlay: 'Nhập tên học sinh để tạo ra số lượng lọ tương ứng. Chạm vào cốc để kẹo rơi vào.',
+    category: 'visual', tier: 'standard', color: COLORS.pink,
+    badges: ['NEW'], difficulty: 1, playerCount: '1-40', isTool: true,
+    // @ts-ignore
+    instantLaunch: true,
+    engine: {
+      contentFormat: 'LIST', playerType: 'candyjar', musicType: 'fun',
+      engineType: 'visual', scoringPolicy: 'none',
+      hasLeaderboard: false, hasTimer: false, inputMode: 'tap',
+      supportedFormats: ['LIST'],
+      fallbackPlayer: 'candyjar',
+    },
+  },
+  {
     id: 999, slug: 'mazechase',
     name: 'Maze Chase', nameVi: 'Mê cung rượt đuổi',
     description: 'Chạy đua trong mê cung và săn điểm bằng cách ăn đáp án.',

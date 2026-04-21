@@ -41,37 +41,55 @@ export default function GameshowRaceHostView({ mp, items }: any) {
   const players = useRoomStore((state: any) => state.players) as any[];
   const raceDuration = mp.roomSettings?.raceDuration || 300;
 
-  // ── Listen for race_state_update broadcasts (FAST path) ────
+  // ── Listen for race_state_update broadcasts (BATCHED path) ────
+  const pendingUpdates = useRef<Record<string, any>>({});
+
   useEffect(() => {
     const ch = getChannel();
     if (!ch) return;
 
-    // Subscribe to race_state_update broadcast events
+    // 1. Tích lũy các thay đổi trạng thái (points/progress) vào kho tạm
     const handleStateUpdate = ({ payload }: any) => {
       if (!payload?.playerId) return;
       
-      setRacePlayers(prev => ({
-        ...prev,
-        [payload.playerId]: {
-          id: payload.playerId,
-          name: payload.playerName || prev[payload.playerId]?.name || '?',
-          avatar: payload.avatar || prev[payload.playerId]?.avatar || '',
-          score: payload.score ?? prev[payload.playerId]?.score ?? 0,
-          currentQ: payload.currentQuestionIndex ?? prev[payload.playerId]?.currentQ ?? 0,
-          correctCount: payload.correctCount ?? prev[payload.playerId]?.correctCount ?? 0,
-          isFinished: payload.isFinished ?? prev[payload.playerId]?.isFinished ?? false,
-          streak: payload.streak ?? prev[payload.playerId]?.streak ?? 0,
-        },
-      }));
+      pendingUpdates.current[payload.playerId] = {
+        ...pendingUpdates.current[payload.playerId],
+        ...payload
+      };
     };
 
-    // Bind to the existing channel's broadcast
+    // Lắng nghe các event từ kênh mạng hiện tại
     ch.on('broadcast', { event: 'race_state_update' }, handleStateUpdate);
+    ch.on('broadcast', { event: 'race_progress' }, handleStateUpdate); // Legacy fallback
 
-    // Also listen for legacy race_progress (backwards compat)
-    ch.on('broadcast', { event: 'race_progress' }, handleStateUpdate);
+    // 2. Chế độ Bơm định kỳ mỗi 100ms (Ngăn chặn Over-rendering / Quá tải luồng UI)
+    const tickInterval = setInterval(() => {
+      if (Object.keys(pendingUpdates.current).length === 0) return;
 
-    // Watch for dev item logs
+      setRacePlayers(prev => {
+        const nextState = { ...prev };
+        
+        for (const [pId, payload] of Object.entries(pendingUpdates.current)) {
+          nextState[pId] = {
+            id: pId,
+            name: payload.playerName || nextState[pId]?.name || '?',
+            avatar: payload.avatar || nextState[pId]?.avatar || '',
+            score: payload.score ?? nextState[pId]?.score ?? 0,
+            currentQ: payload.currentQuestionIndex ?? nextState[pId]?.currentQ ?? 0,
+            correctCount: payload.correctCount ?? nextState[pId]?.correctCount ?? 0,
+            isFinished: payload.isFinished ?? nextState[pId]?.isFinished ?? false,
+            streak: payload.streak ?? nextState[pId]?.streak ?? 0,
+          };
+        }
+        
+        return nextState;
+      });
+
+      // Làm sạch kho tạm để đón kỳ kế tiếp
+      pendingUpdates.current = {};
+    }, 100);
+
+    // Ghi nhận nhật ký Dev (Giữ nguyên luồng xử lý riêng vì nó không làm hại giao diện)
     ch.on('broadcast', { event: 'dev_item_log' }, ({ payload }: any) => {
       if (process.env.NODE_ENV !== 'development') return;
       const tName = payload.target_player_id ? (racePlayersRef.current[payload.target_player_id]?.name || payload.target_player_id) : '';
@@ -85,6 +103,7 @@ export default function GameshowRaceHostView({ mp, items }: any) {
       });
     });
 
+    return () => clearInterval(tickInterval);
   }, []);
 
   // ── Host: beforeunload confirmation ────────────────────────

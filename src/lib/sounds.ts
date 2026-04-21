@@ -378,17 +378,23 @@ class SoundManager {
 
   // ── BACKGROUND MUSIC (Howler.js) ──────────────────────
 
+  private _musicLoadId: number = 0;
+
   /** Start ambient background loop */
   startMusic(type: string = 'quiz'): void {
     if (!this.musicEnabled) return;
-    this.stopMusic();
+    this.stopMusic(true); // immediate stop for quick switches
 
-    let src = '/sounds/The_Final_Handover.mp3';
+    const loadId = ++this._musicLoadId;
+
+    let src = 'https://pub-70d2db8544ed458aaf29a11311e1aaff.r2.dev/music/Point_Tally_Finale.mp3';
     // Load track according to type if there are specific cases
     if (type === 'whack-a-mole-opener') src = '/sounds/Whack-a-Mole-opener-music.mp3';
     if (type === 'whack-a-mole-play') src = '/sounds/Whack-a-Mole-playgame-music.mp3';
 
     import('howler').then(({ Howl }) => {
+      if (this._musicLoadId !== loadId) return; // Component unmounted or music stopped before howl loaded!
+
       this.currentMusicHowl = new Howl({
         src: [src],
         loop: true,
@@ -405,16 +411,24 @@ class SoundManager {
   }
 
   /** Stop background music */
-  stopMusic() {
+  stopMusic(immediate: boolean = false) {
+    this._musicLoadId++; // Invalidate any pending lazy-loaded music
+
     if (this.currentMusicHowl) {
-      // Fade out smoothly
-      this.currentMusicHowl.fade(this.musicVolume, 0, 800);
       const toDestroy = this.currentMusicHowl;
       this.currentMusicHowl = null;
-      setTimeout(() => {
-        toDestroy.stop();
-        toDestroy.unload();
-      }, 800);
+
+      if (immediate) {
+         toDestroy.stop();
+         toDestroy.unload();
+      } else {
+         // Fade out smoothly
+         toDestroy.fade(this.musicVolume, 0, 800);
+         setTimeout(() => {
+           toDestroy.stop();
+           toDestroy.unload();
+         }, 800);
+      }
     }
     
     // Clear procedural legacy if any

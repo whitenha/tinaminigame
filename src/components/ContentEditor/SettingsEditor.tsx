@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CldUploadWidget } from 'next-cloudinary';
+import { R2UploadWidget } from '@/components/Uploader/R2UploadWidget';
 import Icon from '@/components/Icon/Icon';
 import styles from './SettingsEditor.module.css';
 
@@ -11,7 +11,8 @@ export default function SettingsEditor({
   applyTimeToAll,
   readQuestion, setReadQuestion,
   readOptions, setReadOptions,
-  shuffleQuestions, setShuffleQuestions
+  shuffleQuestions, setShuffleQuestions,
+  swapQuestionAnswer, setSwapQuestionAnswer
 }: any) {
   const [globalTime, setGlobalTime] = useState(20);
   return (
@@ -68,9 +69,7 @@ export default function SettingsEditor({
               <div className={styles.coverPreview}>
                 <img src={coverImage} alt="Cover" className={styles.coverImage} />
                 <div className={styles.coverOverlay}>
-                  <CldUploadWidget 
-                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'tina_minigame'}
-                    options={{ cropping: true, showSkipCropButton: false, multiple: false }}
+                  <R2UploadWidget 
                     onSuccess={(result) => {
                       // @ts-ignore
                       if (result.info && result.info.secure_url) {
@@ -79,10 +78,12 @@ export default function SettingsEditor({
                       }
                     }}
                   >
-                    {({ open }) => (
-                      <button className={styles.coverAction} onClick={() => open()} style={{display: 'flex', alignItems: 'center', gap: '6px'}}><Icon name="refresh-cw" size={14} /> Đổi ảnh</button>
+                    {({ open, isUploading }) => (
+                      <button className={styles.coverAction} disabled={isUploading} onClick={() => open()} style={{display: 'flex', alignItems: 'center', gap: '6px', opacity: isUploading ? 0.6 : 1}}>
+                        <Icon name="refresh-cw" size={14} /> {isUploading ? 'Đang tải...' : 'Đổi ảnh'}
+                      </button>
                     )}
-                  </CldUploadWidget>
+                  </R2UploadWidget>
                   <button 
                     className={`${styles.coverAction} ${styles.coverActionDanger}`}
                     onClick={() => setCoverImage(null)}
@@ -103,9 +104,7 @@ export default function SettingsEditor({
                 </div>
                 <p className={styles.coverEmptyText}>Kéo thả ảnh vào đây hoặc</p>
                 
-                <CldUploadWidget 
-                  uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'tina_minigame'}
-                  options={{ cropping: true, showSkipCropButton: false, multiple: false }}
+                <R2UploadWidget 
                   onSuccess={(result) => {
                     // @ts-ignore
                     if (result.info && result.info.secure_url) {
@@ -114,12 +113,12 @@ export default function SettingsEditor({
                     }
                   }}
                 >
-                  {({ open }) => (
-                    <button className={styles.uploadBtn} onClick={() => open()} style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-                      <Icon name="folder" size={16} /> Chọn ảnh từ máy
+                  {({ open, isUploading }) => (
+                    <button className={styles.uploadBtn} disabled={isUploading} onClick={() => open()} style={{display: 'flex', alignItems: 'center', gap: '6px', opacity: isUploading ? 0.6 : 1}}>
+                      <Icon name="folder" size={16} /> {isUploading ? 'Đang tải...' : 'Chọn ảnh từ máy'}
                     </button>
                   )}
-                </CldUploadWidget>
+                </R2UploadWidget>
               </div>
             )}
           </div>
@@ -220,6 +219,16 @@ export default function SettingsEditor({
                 <span>Xáo trộn ngẫu nhiên thứ tự các câu hỏi mỗi lần chơi</span>
               </div>
               <div className={`${styles.toggleSwitch} ${shuffleQuestions ? styles.toggleOn : ''}`} onClick={() => setShuffleQuestions(!shuffleQuestions)}>
+                <div className={styles.toggleKnob}></div>
+              </div>
+            </label>
+
+            <label className={styles.toggleRow} style={{ marginTop: '16px' }}>
+              <div className={styles.toggleText}>
+                <strong>Đảo Mặt Thẻ (Câu Hỏi & Đáp Án)</strong>
+                <span>Mặt trước hiển thị đáp án, mặt sau hiển thị câu hỏi (Áp dụng cho thẻ ghi nhớ, gõ đáp án...)</span>
+              </div>
+              <div className={`${styles.toggleSwitch} ${swapQuestionAnswer ? styles.toggleOn : ''}`} onClick={() => setSwapQuestionAnswer(!swapQuestionAnswer)}>
                 <div className={styles.toggleKnob}></div>
               </div>
             </label>

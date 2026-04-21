@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTemplateBySlug } from '@/data/templates';
 import { supabase } from '@/lib/supabase';
-import { CldUploadWidget } from 'next-cloudinary';
+import { R2UploadWidget } from '@/components/Uploader/R2UploadWidget';
 import { getContentFormat, parseImportText } from '@/lib/gameRegistry';
 import { speak as ttsSpeak, cancelSpeech, preloadVoices, detectLang } from '@/lib/tts';
 import MCQEditor from '@/components/ContentEditor/MCQEditor';
@@ -39,6 +39,7 @@ export default function CreateActivityPage({ params }: any) {
   const [readQuestion, setReadQuestion] = useState(true);
   const [readOptions, setReadOptions] = useState(false);
   const [shuffleQuestions, setShuffleQuestions] = useState(true);
+  const [swapQuestionAnswer, setSwapQuestionAnswer] = useState(false);
   
   // Database State to enable Updating existing record and Auto-Save
   const [activityId, setActivityId] = useState<any>(null);
@@ -119,6 +120,7 @@ export default function CreateActivityPage({ params }: any) {
             setReadQuestion(actData.settings.read_question ?? true);
             setReadOptions(actData.settings.read_options ?? false);
             setShuffleQuestions(actData.settings.shuffle_questions ?? true);
+            setSwapQuestionAnswer(actData.settings.swap_question_answer ?? false);
           }
 
           // Fetch Items
@@ -220,9 +222,9 @@ export default function CreateActivityPage({ params }: any) {
   const autoSaveState = useRef<any>({});
   useEffect(() => {
     autoSaveState.current = {
-      title, contentItems, coverImage, contentFormat, readQuestion, readOptions, shuffleQuestions, activityId, user, template
+      title, contentItems, coverImage, contentFormat, readQuestion, readOptions, shuffleQuestions, swapQuestionAnswer, activityId, user, template
     };
-  }, [title, contentItems, coverImage, contentFormat, readQuestion, readOptions, shuffleQuestions, activityId, user, template]);
+  }, [title, contentItems, coverImage, contentFormat, readQuestion, readOptions, shuffleQuestions, swapQuestionAnswer, activityId, user, template]);
 
   const performSave = async (isAuto = false) => {
     const s = autoSaveState.current;
@@ -276,7 +278,8 @@ export default function CreateActivityPage({ params }: any) {
               cover_image: s.coverImage,
               read_question: s.readQuestion,
               read_options: s.readOptions,
-              shuffle_questions: s.shuffleQuestions
+              shuffle_questions: s.shuffleQuestions,
+              swap_question_answer: s.swapQuestionAnswer
             }
           })
           .select()
@@ -295,7 +298,8 @@ export default function CreateActivityPage({ params }: any) {
               cover_image: s.coverImage,
               read_question: s.readQuestion,
               read_options: s.readOptions,
-              shuffle_questions: s.shuffleQuestions
+              shuffle_questions: s.shuffleQuestions,
+              swap_question_answer: s.swapQuestionAnswer
             }
           })
           .eq('id', currentActId);
@@ -626,6 +630,8 @@ export default function CreateActivityPage({ params }: any) {
           setReadOptions={setReadOptions}
           shuffleQuestions={shuffleQuestions}
           setShuffleQuestions={setShuffleQuestions}
+          swapQuestionAnswer={swapQuestionAnswer}
+          setSwapQuestionAnswer={setSwapQuestionAnswer}
         />
       );
     }
@@ -749,9 +755,7 @@ export default function CreateActivityPage({ params }: any) {
                 <img src={currentItem.image_url} alt="Media" className={styles.mediaRealImage} />
                 
                 <div className={styles.mediaActionsTop}>
-                  <CldUploadWidget 
-                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'tina_minigame'}
-                    options={{ cropping: true, showSkipCropButton: false, multiple: false }}
+                  <R2UploadWidget 
                     onSuccess={(result) => {
                       // @ts-ignore
                       if (result.info && result.info.secure_url) {
@@ -760,10 +764,12 @@ export default function CreateActivityPage({ params }: any) {
                       }
                     }}
                   >
-                    {({ open }) => (
-                       <button className={styles.editMediaBtn} onClick={() => open()} style={{display: 'flex', alignItems: 'center', gap: '6px'}}><Icon name="pencil" size={14} color="#e84393" /> Đổi / Sửa</button>
+                    {({ open, isUploading }) => (
+                       <button className={styles.editMediaBtn} onClick={() => open()} disabled={isUploading} style={{display: 'flex', alignItems: 'center', gap: '6px', opacity: isUploading ? 0.6 : 1}}>
+                         <Icon name="pencil" size={14} color="#e84393" /> {isUploading ? 'Đang tải...' : 'Đổi / Sửa'}
+                       </button>
                     )}
-                  </CldUploadWidget>
+                  </R2UploadWidget>
                   
                   <button className={styles.removeMediaBtn} onClick={removeSlideMedia} style={{display: 'flex', alignItems: 'center', gap: '6px'}}><Icon name="trash" size={14} color="#ff7675" /> Xóa</button>
                 </div>
@@ -778,22 +784,7 @@ export default function CreateActivityPage({ params }: any) {
               {/* Inline Upload Placeholder when NO image exists */}
               {currentIndex !== -1 && !currentItem?.image_url && (
                 <div className={styles.inlineMediaPlaceholder}>
-                  <CldUploadWidget 
-                    uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'tina_minigame'}
-                    options={{
-                      cropping: true,
-                      showSkipCropButton: false,
-                      multiple: false,
-                      defaultSource: 'local',
-                      language: 'vi',
-                      text: {
-                        vi: {
-                          menu: { files: 'Tải tệp lên' },
-                          local: { browse: 'Chọn ảnh', dd_title_single: 'Kéo thả ảnh vào đây' },
-                          crop: { title: 'Cắt và Chỉnh sửa ảnh', crop_btn: 'Cắt ảnh', skip_btn: 'Bỏ qua' }
-                        }
-                      }
-                    }}
+                  <R2UploadWidget 
                     onSuccess={(result) => {
                       // @ts-ignore
                       if (result.info && result.info.secure_url) {
@@ -802,12 +793,12 @@ export default function CreateActivityPage({ params }: any) {
                       }
                     }}
                   >
-                    {({ open }) => (
-                      <button className={styles.inlineUploadBtn} onClick={() => open()} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-                        <Icon name="camera" size={18} color="#00cec9" /> Nhấn vào đây để thêm hình ảnh minh họa (Tùy chọn)
+                    {({ open, isUploading }) => (
+                      <button className={styles.inlineUploadBtn} disabled={isUploading} onClick={() => open()} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: isUploading ? 0.6 : 1}}>
+                        <Icon name="camera" size={18} color="#00cec9" /> {isUploading ? 'Đang tải...' : 'Nhấn vào đây để thêm hình ảnh minh họa (Tùy chọn)'}
                       </button>
                     )}
-                  </CldUploadWidget>
+                  </R2UploadWidget>
                 </div>
               )}
 

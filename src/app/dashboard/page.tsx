@@ -321,7 +321,8 @@ export default function DashboardPage() {
             return (
               <div 
                 key={act.id} 
-                className={viewMode === 'grid' ? styles.gridItem : styles.listItem}
+                className={`${viewMode === 'grid' ? styles.gridItem : styles.listItem} ${openMenuId === act.id ? styles.itemActiveMenu : ''}`}
+                style={openMenuId === act.id ? { zIndex: 9999 } : undefined}
                 onClick={handleFileClick}
               >
                 {/* Badge Overlay for Grid */}

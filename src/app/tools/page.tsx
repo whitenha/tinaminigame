@@ -34,7 +34,8 @@ const TOOLS = [
   },
   ...TEMPLATES.filter(template => template.isTool).map(template => ({
     ...template,
-    basePath: '/templates',
+    // @ts-ignore
+    basePath: template.instantLaunch ? '/tools/play' : '/templates',
   }))
 ];
 

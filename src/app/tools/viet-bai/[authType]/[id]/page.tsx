@@ -161,17 +161,16 @@ export default function HandwritingNotebook(props: any) {
     return count;
   }, [textCharsPerLine]);
 
-  // Phân trang theo ranh giới câu: mỗi trang luôn bắt đầu bằng 1 câu hoàn chỉnh
+  // Phân trang theo ranh giới câu: mỗi trang luôn chứa nguyên gốc văn bản
   const pages = useMemo(() => {
     if (!text) return [''];
 
-    // Tách text thành các token (từ + khoảng trắng/xuống dòng)
-    // Giữ nguyên dấu xuống dòng như token riêng
     const tokens = text.split(/( +|\n)/);
-
-    const result = [];
+    const result: string[] = [];
+    
+    let startIndex = 0;
+    let currentLength = 0;
     let currentPageText = '';
-    let currentPageLines = 0;
 
     for (const token of tokens) {
       if (!token) continue;
@@ -180,22 +179,21 @@ export default function HandwritingNotebook(props: any) {
       const testLines = estimateLines(testText);
 
       if (testLines <= linesPerPage) {
-        // Từ vừa trang hiện tại
         currentPageText = testText;
-        currentPageLines = testLines;
+        currentLength += token.length;
       } else {
-        // Từ không vừa → đẩy trang hiện tại, bắt đầu trang mới
+        // Overflow -> push current page
         if (currentPageText) {
-          result.push(currentPageText);
+          result.push(text.substring(startIndex, startIndex + currentLength));
+          startIndex += currentLength;
         }
-        currentPageText = token.replace(/^ +/, ''); // Bỏ khoảng trắng đầu trang mới
-        currentPageLines = estimateLines(currentPageText);
+        currentPageText = token;
+        currentLength = token.length;
       }
     }
 
-    // Đẩy trang cuối cùng
-    if (currentPageText) {
-      result.push(currentPageText);
+    if (currentLength > 0) {
+      result.push(text.substring(startIndex, startIndex + currentLength));
     }
 
     if (result.length === 0) result.push('');
@@ -372,7 +370,22 @@ export default function HandwritingNotebook(props: any) {
     const newPageText = (e.target as any).value;
     const newPages = [...pages];
     newPages[currentPage] = newPageText;
-    setText(newPages.join('\n'));
+    
+    // Nối nối tiếp hoàn toàn với join(''), do space/newline đã được bảo tồn
+    const newFullText = newPages.join('');
+    setText(newFullText);
+    
+    // Nếu trang hiện tại bị tràn và sinh ra thêm trang mới do ngắt từ,
+    // hãy tự động nhảy sang trang tiếp theo nếu người dùng đang ở trang cuối cùng
+    const newEstimatedLines = estimateLines(newPageText);
+    if (newEstimatedLines > linesPerPage) {
+      // Khi gõ tràn, useMemo sẽ tính toán lại pages ở vòng render kế để sinh thêm trang.
+      // Dùng 1 trick nhỏ setTimeout để đợi State cập nhật xong rồi tự động Next Page 
+      // nếu họ đang gõ ở cuối một trang!
+      setTimeout(() => {
+        setCurrentPage(p => p + 1);
+      }, 0);
+    }
   };
 
   return (
@@ -546,7 +559,7 @@ export default function HandwritingNotebook(props: any) {
                 const newVal = currentText.substring(0, start) + '\t' + currentText.substring(end);
                 const newPages = [...pages];
                 newPages[currentPage] = newVal;
-                setText(newPages.join('\n'));
+                setText(newPages.join(''));
                 setTimeout(() => {
                   if (e.target) (e.target as any).selectionStart = (e.target as any).selectionEnd = start + 1;
                 }, 0);

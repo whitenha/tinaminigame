@@ -40,7 +40,12 @@ export default function TypeAnswerPlayer({ items, activity, playerName }: any) {
   const submitTypedAnswer = () => {
     if (engine.showFeedback) return;
     const item = items[engine.currentQ];
-    const correctAnswer = item.options?.[0] || item.definition || '';
+    
+    const isSwapped = !!activity?.settings?.swap_question_answer;
+    const originalQuestion = item.term || item.question || 'Câu hỏi';
+    const originalAnswer = item.options?.[0] || item.definition || '';
+    const correctAnswer = isSwapped ? originalQuestion : originalAnswer;
+
     const normalizedTyped = normalize(typedAnswer);
     const normalizedCorrect = normalize(correctAnswer);
     const correct = normalizedTyped === normalizedCorrect ||
@@ -85,9 +90,7 @@ export default function TypeAnswerPlayer({ items, activity, playerName }: any) {
     setHintLevel(prev => prev + 1);
   };
 
-  const renderHint = () => {
-    const item = items[engine.currentQ];
-    const answer = item?.options?.[0] || item?.definition || '';
+  const renderHint = (answer: string) => {
     if (hintLevel === 0) return null;
     if (hintLevel === 1) return <div className={styles.hintBox}>💡 Số ký tự: <strong>{answer.length}</strong></div>;
     if (hintLevel === 2) return <div className={styles.hintBox}>💡 Chữ cái đầu: <strong>{answer[0]?.toUpperCase()}</strong> ({answer.length} ký tự)</div>;
@@ -103,7 +106,13 @@ export default function TypeAnswerPlayer({ items, activity, playerName }: any) {
 
   const item = engine.currentItem;
   if (!item) return null;
-  const correctAnswer = item.options?.[0] || item.definition || '';
+  
+  const isSwapped = !!activity?.settings?.swap_question_answer;
+  const originalQuestion = item.term || item.question || 'Câu hỏi';
+  const originalAnswer = item.options?.[0] || item.definition || '';
+
+  const questionText = isSwapped ? originalAnswer : originalQuestion;
+  const correctAnswer = isSwapped ? originalQuestion : originalAnswer;
 
   return (
     <div className={styles.gamePage}>
@@ -113,8 +122,8 @@ export default function TypeAnswerPlayer({ items, activity, playerName }: any) {
       <div className={styles.questionSection}>
         <TimerBubble timeLeft={engine.timeLeft} />
         {item.image_url && <img src={item.image_url} alt="" className={styles.qImg} />}
-        <h2 className={styles.questionText}>{item.term || 'Câu hỏi'}</h2>
-        {renderHint()}
+        <h2 className={styles.questionText}>{questionText}</h2>
+        {renderHint(correctAnswer)}
       </div>
 
       <div className={styles.answerSection}>

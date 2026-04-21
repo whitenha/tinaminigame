@@ -9,7 +9,7 @@ function LayoutContent({ children }: any) {
   const pathname = usePathname();
   
   const isRoomCode = pathname && /^\/[A-Za-z0-9]{6}$/.test(pathname);
-  const isFullScreen = pathname?.startsWith('/create') || pathname?.startsWith('/play') || isRoomCode;
+  const isFullScreen = pathname?.startsWith('/create') || pathname?.startsWith('/play') || pathname?.startsWith('/dev') || isRoomCode;
 
   return (
     <>

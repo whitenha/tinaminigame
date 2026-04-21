@@ -393,9 +393,10 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
       if (p.is_host && HOST_SPECTATOR_NAMES.includes(p.player_name)) return false;
       return true;
     });
+    const activePlayerIds = new Set(activePlayers.map((p: any) => p.id));
     
     // Count how many have answered THIS round
-    const answersCount = Object.keys(mp.lastRoundPoints || {}).length;
+    const answersCount = Object.keys(mp.lastRoundPoints || {}).filter(id => activePlayerIds.has(id)).length;
     
     // If all active players have answered, skip the timer
     if (activePlayers.length > 0 && answersCount >= activePlayers.length) {
@@ -551,12 +552,13 @@ export default function ActiveMultiplayerRoom({ mp, items: rawItems, activity, p
 
     // ── Answer counter ──────────────────────────────────────
     const HOST_SPECTATOR_NAMES_RENDER = ['Host Teacher', 'Giáo viên'];
-    const activePlayersCount = mp.players.filter((p: any) => {
+    const activePlayerIds = new Set(mp.players.filter((p: any) => {
       if (!p.is_online) return false;
       if (p.is_host && HOST_SPECTATOR_NAMES_RENDER.includes(p.player_name)) return false;
       return true;
-    }).length;
-    const answeredCount = Object.keys(mp.lastRoundPoints || {}).length;
+    }).map((p: any) => p.id));
+    const activePlayersCount = activePlayerIds.size;
+    const answeredCount = Object.keys(mp.lastRoundPoints || {}).filter(id => activePlayerIds.has(id)).length;
 
     return (
       <div className={styles.gamePage} style={hasReverseEffect ? { transform: 'scaleX(-1)' } : {}}>
