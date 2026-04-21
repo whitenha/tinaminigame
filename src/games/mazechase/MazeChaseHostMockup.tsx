@@ -271,9 +271,9 @@ class HostMazeScene extends Phaser.Scene {
     this.floorImages = [];
 
     // ── THUẬT TOÁN AUTOTILE TỰ ĐỘNG CHỌN FRAME GẠCH CHUẨN (Set 1.png - 28 Cột) ──
-    const getFloorFrame = () => {
+    const getFloorFrame = (): number => {
         const arr = this.tileConfig.floors.split(',').map((x: string) => parseInt(x.trim())).filter((x: number) => !isNaN(x));
-        return arr.length > 0 ? Phaser.Math.RND.pick(arr) : 0;
+        return arr.length > 0 ? (Phaser.Math.RND.pick(arr) as number) : 0;
     };
 
 
