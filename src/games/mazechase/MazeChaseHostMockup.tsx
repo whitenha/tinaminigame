@@ -117,7 +117,7 @@ class HostMazeScene extends Phaser.Scene {
 
     // Collectible textures
     // @ts-ignore
-    const gfx = this.make.graphics({ x: 0, y: 0, add: false });
+    const gfx = this.make.graphics({ x: 0, y: 0, add: false } as any);
 
     // Correct
     gfx.fillStyle(0xffd93d);
@@ -412,7 +412,7 @@ class HostMazeScene extends Phaser.Scene {
       // @ts-ignore
       const py = pos.y * this.tileSize + 32;
 
-      const botGfx = this.make.graphics({ x: 0, y: 0, add: false });
+      const botGfx = this.make.graphics({ x: 0, y: 0, add: false } as any);
       botGfx.fillStyle(mp.color);
       botGfx.fillCircle(12, 12, 10);
       botGfx.generateTexture(`bot_${mp.id}`, 24, 24);
