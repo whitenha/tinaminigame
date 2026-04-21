@@ -91,6 +91,15 @@ class HostMazeScene extends Phaser.Scene {
   public frontWallImages: any[] = [];
   public floorImages: any[] = [];
   public tileConfig: any = null;
+  public tileSize: number = 64;
+  public cols: number = 43;
+  public rows: number = 27;
+  public maze: number[][] = [];
+  public freeTiles: any[] = [];
+  public collectibles: any;
+  public enemiesGroup: any;
+  public bots: any[] = [];
+  public updateLeaderboard: any;
 
   constructor() {
     super({ key: 'HostMazeScene' });
