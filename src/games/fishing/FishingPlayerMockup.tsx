@@ -27,7 +27,7 @@ class FishingScene extends Phaser.Scene {
 
   preload() {
     // Generate Textures
-    const gfx = this.make.graphics({ x: 0, y: 0, add: false });
+    const gfx = this.make.graphics({ x: 0, y: 0, add: false } as any);
 
     // Player (Cat / Bear)
     gfx.fillStyle(0xffa502);
